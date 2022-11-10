@@ -2,6 +2,7 @@
 
 #include "Core.hpp"
 #include "spdlog/spdlog.h"
+#include "spdlog/fmt/ostr.h"
 
 namespace EEngine {
 	class Log {
