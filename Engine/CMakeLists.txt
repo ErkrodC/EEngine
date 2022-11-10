@@ -46,10 +46,10 @@ target_link_libraries(engine
 	spdlog
 )
 
-#target_precompile_headers(engine
-#	PUBLIC
-#	EnginePCH.h
-#)
+target_precompile_headers(engine
+	PRIVATE
+	src/EEnginePCH.hpp
+)
 
 target_include_directories(engine
 	PUBLIC

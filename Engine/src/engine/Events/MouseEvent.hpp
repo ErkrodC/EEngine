@@ -2,8 +2,6 @@
 
 #include "Event.hpp"
 
-#include <sstream>
-
 namespace EEngine {
 	class EE_API MouseMovedEvent : public Event {
 	public:

@@ -24,16 +24,21 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/Engine/vendor/spdlog/CMakeLists.txt")
 	message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
 endif()
 
-if (WIN32)
+if(WIN32)
 	add_definitions(-DEE_PLATFORM_WINDOWS)
 endif(WIN32)
 
-if (CMAKE_BUILD_TYPE MATCHES Debug)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions(-DEE_DEBUG)
 elseif(CMAKE_BUILD_TYPE MATCHES Release)
 	add_definitions(-DEE_RELEASE)
 elseif(CMAKE_BUILD_TYPE MATCHES MinSizeRel)
 	add_definitions(-DEE_DIST)
+endif()
+
+if(MSVC)
+	message("${PROJECT_SOURCE_DIR}")
+	add_compile_options(/FI ${PROJECT_SOURCE_DIR}/Engine/src/EEnginePCH.hpp)
 endif()
 
 add_subdirectory(Engine)

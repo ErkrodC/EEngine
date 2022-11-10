@@ -2,10 +2,8 @@
 
 #include "Event.hpp"
 
-#include <sstream>
-
 namespace EEngine {
-	class EE_API KeyEvent : public Event {
+	class KeyEvent : public Event {
 	public:
 		inline int GetKeyCode() const { return m_KeyCode; }
 
@@ -17,7 +15,7 @@ namespace EEngine {
 			int m_KeyCode;
 	};
 
-	class EE_API KeyPressedEvent : public KeyEvent {
+	class KeyPressedEvent : public KeyEvent {
 	public:
 		KeyPressedEvent(int keyCode, int repeatCount)
 			: KeyEvent(keyCode), m_RepeatCount(repeatCount) {}
@@ -35,7 +33,7 @@ namespace EEngine {
 		int m_RepeatCount;
 	};
 
-	class EE_API KeyReleasedEvent : public KeyEvent {
+	class KeyReleasedEvent : public KeyEvent {
 	public:
 		KeyReleasedEvent(int keyCode)
 			: KeyEvent(keyCode) {}

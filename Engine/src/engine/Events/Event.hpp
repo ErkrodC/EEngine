@@ -2,10 +2,6 @@
 
 #include "Core.hpp"
 
-#include <string>
-#include <functional>
-#include <ostream>
-
 namespace EEngine {
 	// ER TODO Events in EEngine are currently synchronous
 	//  make async, likely using event queue, and processing during event stage in update loop
@@ -33,7 +29,7 @@ namespace EEngine {
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
-	class EE_API Event {
+	class Event {
 		friend class EventDispatcher;
 
 	public:
