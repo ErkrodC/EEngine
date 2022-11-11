@@ -11,6 +11,8 @@
 #include <unordered_set>
 #include <utility>
 
+#include "engine/Log.hpp"
+
 #ifdef EE_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif

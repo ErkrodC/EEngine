@@ -8,7 +8,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(vendor/spdlog)
 #add_subdirectory(vendor/glad)
-#add_subdirectory(vendor/glfw)
+add_subdirectory(vendor/glfw)
 
 # source code
 file(GLOB_RECURSE
@@ -42,7 +42,7 @@ target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL)
 target_link_libraries(engine
 	PUBLIC
 #	GLAD
-#	glfw
+	glfw
 	spdlog
 )
 
@@ -61,8 +61,12 @@ target_include_directories(engine
 #	vendor/glm
 #
 	vendor/spdlog/include
-#	PRIVATE
-#	vendor/glfw/include
+	PRIVATE
+	vendor/glfw/include
 #	vendor/glad/include
 #	vendor/stb_image
 )
+
+if(MSVC)
+	target_compile_options(engine PRIVATE /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
+endif()

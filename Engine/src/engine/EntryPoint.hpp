@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Application.hpp"
-#include "Log.hpp"
 
 #ifdef EE_PLATFORM_WINDOWS
 extern EEngine::Application* EEngine::CreateApplication();
