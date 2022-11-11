@@ -7,7 +7,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 # add sub directories for projects with cmake support (currently glad, spdlog, GLFW)
 
 add_subdirectory(vendor/spdlog)
-#add_subdirectory(vendor/glad)
+add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 
 # source code
@@ -37,11 +37,11 @@ add_library(engine
 	${SOURCES}
 )
 
-target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL)
+target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
 
 target_link_libraries(engine
 	PUBLIC
-#	GLAD
+	glad
 	glfw
 	spdlog
 )
@@ -60,10 +60,10 @@ target_include_directories(engine
 #	vendor/imgui
 #	vendor/glm
 #
-	vendor/spdlog/include
 	PRIVATE
+	vendor/spdlog/include
 	vendor/glfw/include
-#	vendor/glad/include
+	vendor/glad/include
 #	vendor/stb_image
 )
 

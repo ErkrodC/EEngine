@@ -1,7 +1,10 @@
+#include "WindowsWindow.hpp"
+
 #include <Events/ApplicationEvent.hpp>
 #include <Events/KeyEvent.hpp>
 #include <Events/MouseEvent.hpp>
-#include "WindowsWindow.hpp"
+
+#include <glad/glad.h>
 
 namespace EEngine {
 	static bool s_GLFWInitialized = false;
@@ -44,6 +47,8 @@ namespace EEngine {
 			nullptr
 		);
 		glfwMakeContextCurrent(m_Window);
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		EE_CORE_ASSERT(status, "Failed to initialize GLAD!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
