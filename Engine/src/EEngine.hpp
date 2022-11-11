@@ -3,6 +3,7 @@
 
 #include "engine/Core.hpp"
 #include "engine/Application.hpp"
+#include "Layer.hpp"
 #include "engine/Log.hpp"
 
 // ---Entry Point--------------------

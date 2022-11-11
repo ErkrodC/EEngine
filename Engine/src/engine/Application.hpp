@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Events/ApplicationEvent.hpp>
 #include "Core.hpp"
+#include "Events/ApplicationEvent.hpp"
+#include "LayerStack.hpp"
 #include "Window.hpp"
 
 namespace EEngine {
@@ -12,10 +13,13 @@ namespace EEngine {
 		void Run();
 		void OnEvent(Event& event);
 
-		bool OnWindowClose(WindowCloseEvent& event);
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* overlay);
 	private:
+		bool OnWindowClose(WindowCloseEvent& event);
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
+		LayerStack m_LayerStack;
 	};
 
 	// to be defined by consumer
