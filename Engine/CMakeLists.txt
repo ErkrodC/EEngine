@@ -9,38 +9,38 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
-
-# source code
-file(GLOB_RECURSE
-	SOURCES CONFIGURE_DEPENDS
-	src/*.cpp
-	src/*.hpp
-	src/*.c
-	src/*.h
-#	src/engine/*.cpp
-#	src/engine/Rendering/*.cpp
-#	src/engine/Rendering/Camera/*.cpp
-#	src/engine/ImGui/*.cpp
-#	src/Platform/OpenGL/*.cpp
-#	src/Platform/GLFW/*.cpp
-
-	# stb_image
-#	vendor/stb_image/*.cpp
-
-	# must compile and link imgui directly to project
-#	vendor/imgui/*.cpp
-	)
+add_subdirectory(vendor/imgui)
 
 # library creation
 add_library(engine
-	STATIC
-	${SOURCES}
+	src/EEnginePCH.hpp
+	src/EEngine.hpp
+	src/engine/Events/ApplicationEvent.hpp
+	src/engine/Events/Event.hpp
+	src/engine/Events/KeyEvent.hpp
+	src/engine/Events/MouseEvent.hpp
+	src/engine/imgui/IMGUILayer.cpp
+	src/engine/imgui/IMGUILayer.hpp
+	src/engine/Application.cpp
+	src/engine/Application.hpp
+	src/engine/Core.hpp
+	src/engine/EntryPoint.hpp
+	src/engine/Layer.cpp
+	src/engine/Layer.hpp
+	src/engine/LayerStack.cpp
+	src/engine/LayerStack.hpp
+	src/engine/Log.cpp
+	src/engine/Log.hpp
+	src/engine/Window.hpp
+	src/Platform/Windows/WindowsWindow.cpp
+	src/Platform/Windows/WindowsWindow.hpp
 )
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
 
 target_link_libraries(engine
 	PUBLIC
+	imgui
 	glad
 	glfw
 	spdlog
@@ -56,10 +56,9 @@ target_include_directories(engine
 	src
 	src/engine
 #	src/Platform
-#
-#	vendor/imgui
 #	vendor/glm
-#
+	vendor/imgui
+
 	PRIVATE
 	vendor/spdlog/include
 	vendor/glfw/include

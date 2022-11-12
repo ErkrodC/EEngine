@@ -15,7 +15,12 @@ namespace EEngine {
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
+
+		static inline Application& Get() { return *s_Instance; }
+		inline Window& GetWindow() const { return *m_Window; }
 	private:
+		static Application* s_Instance;
+
 		bool OnWindowClose(WindowCloseEvent& event);
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;

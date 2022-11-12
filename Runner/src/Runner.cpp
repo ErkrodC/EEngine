@@ -6,7 +6,7 @@ public:
 		: Layer("Example") {}
 
 	void OnUpdate() override {
-		EE_INFO("ExampleLayer::Update");
+
 	}
 
 	void OnEvent(EEngine::Event& event) override {
@@ -18,6 +18,7 @@ class Runner : public EEngine::Application {
 public:
 	Runner() {
 		PushLayer(new ExampleLayer());
+		PushOverlay(new EEngine::IMGUILayer());
 	}
 
 	~Runner() {}
