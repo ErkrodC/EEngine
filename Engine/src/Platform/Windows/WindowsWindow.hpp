@@ -18,10 +18,10 @@ namespace EEngine {
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
+		GLFWwindow* m_Window;
 	private:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
-		GLFWwindow* m_Window;
 
 		struct WindowData {
 			std::string Title;

@@ -60,8 +60,8 @@ target_include_directories(engine
 	vendor/imgui
 
 	PRIVATE
-	vendor/spdlog/include
 	vendor/glfw/include
+	vendor/spdlog/include
 	vendor/glad/include
 #	vendor/stb_image
 )
