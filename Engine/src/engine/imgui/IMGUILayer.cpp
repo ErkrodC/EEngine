@@ -54,8 +54,8 @@ namespace EEngine {
 		IMGUI_MAP_GLFW_KEY(Y, Y);
 		IMGUI_MAP_GLFW_KEY(Z, Z);*/
 
-		WindowsWindow& appWindow = dynamic_cast<WindowsWindow&>(Application::Get().GetWindow());
-		ImGui_ImplGlfw_InitForOpenGL(appWindow.m_Window , true);
+		auto glfwWindow = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		ImGui_ImplGlfw_InitForOpenGL(glfwWindow , true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 

@@ -1,6 +1,8 @@
 #include "Application.hpp"
 #include <glad/glad.h>
 
+#include "Input.hpp"
+
 namespace EEngine {
 	Application* Application::s_Instance = nullptr;
 

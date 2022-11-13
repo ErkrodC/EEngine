@@ -147,4 +147,8 @@ namespace EEngine {
 	bool WindowsWindow::IsVSync() const {
 		return m_Data.VSync;
 	}
+
+	void* WindowsWindow::GetNativeWindow() const {
+		return m_Window;
+	}
 } // EEngine

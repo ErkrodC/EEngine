@@ -34,7 +34,7 @@ add_library(engine
 	src/engine/Window.hpp
 	src/Platform/Windows/WindowsWindow.cpp
 	src/Platform/Windows/WindowsWindow.hpp
-)
+	src/engine/Input.hpp src/Platform/Windows/WindowsInput.cpp src/Platform/Windows/WindowsInput.hpp)
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
 

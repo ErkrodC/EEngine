@@ -14,12 +14,14 @@ namespace EEngine {
 		inline unsigned int GetWidth() const override { return m_Data.Width; }
 		inline unsigned int GetHeight() const override { return m_Data.Height; }
 
+		void* GetNativeWindow() const override;
+
 		// Window attributes
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
-		GLFWwindow* m_Window;
 	private:
+		GLFWwindow* m_Window;
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
 
