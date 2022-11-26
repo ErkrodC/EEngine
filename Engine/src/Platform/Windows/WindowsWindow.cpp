@@ -1,9 +1,9 @@
 #include "WindowsWindow.hpp"
 
-#include <Events/ApplicationEvent.hpp>
-#include <Events/KeyEvent.hpp>
-#include <Events/MouseEvent.hpp>
-
+#include "Events/ApplicationEvent.hpp"
+#include "Events/KeyEvent.hpp"
+#include "Events/MouseEvent.hpp"
+#include "Input.hpp"
 #include <glad/glad.h>
 
 namespace EEngine {
@@ -67,45 +67,47 @@ namespace EEngine {
 			data.EventCallback(event);
 		});
 
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods){
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int glfwKeyCode, int scancode, int action, int mods){
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
+			KeyCode engineKeyCode = Input::GLFWToEngineKeyCode(glfwKeyCode);
 			switch (action) {
 				case GLFW_PRESS: {
-					KeyPressedEvent event(key, 0);
+					KeyPressedEvent event(engineKeyCode, 0);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE: {
-					KeyReleasedEvent event(key);
+					KeyReleasedEvent event(engineKeyCode);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_REPEAT: {
-					KeyPressedEvent event(key, 1);
+					KeyPressedEvent event(engineKeyCode, 1);
 					data.EventCallback(event);
 					break;
 				}
 			}
 		});
 
-		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keyCode) {
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int glfwKeyCode) {
 			WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
-			KeyTypedEvent event(keyCode);
+			KeyTypedEvent event(Input::GLFWToEngineKeyCode(glfwKeyCode));
 			data.EventCallback(event);
 		});
 
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods){
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int glfwMouseButtonCode, int action, int mods){
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
+			MouseButtonCode engineMouseButtonCode = Input::GLFWToEngineMouseButtonCode(glfwMouseButtonCode);
 			switch (action) {
 				case GLFW_PRESS: {
-					MouseButtonPressedEvent event(button);
+					MouseButtonPressedEvent event(engineMouseButtonCode);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE: {
-					MouseButtonReleasedEvent event(button);
+					MouseButtonReleasedEvent event(engineMouseButtonCode);
 					data.EventCallback(event);
 					break;
 				}

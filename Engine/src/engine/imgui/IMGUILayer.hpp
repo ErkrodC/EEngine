@@ -20,8 +20,7 @@ namespace EEngine {
 	private:
 		float m_Time = 0.0f;
 
-		static ImGuiKey GLFWKeyToIMGUIKey(int key);
-		int GLFWKeyToModifier(int key);
+		static ImGuiKey EngineToIMGUIKeyCode(KeyCode key);
 
 		bool OnKeyPressed(KeyPressedEvent& event);
 		bool OnKeyReleased(KeyReleasedEvent& event);

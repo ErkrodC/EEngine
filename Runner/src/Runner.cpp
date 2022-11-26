@@ -10,7 +10,7 @@ public:
 	}
 
 	void OnEvent(EEngine::Event& event) override {
-		EE_TRACE(event);
+		//EE_TRACE(event);
 	}
 };
 

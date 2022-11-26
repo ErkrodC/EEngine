@@ -5,8 +5,8 @@
 namespace EEngine {
 	class WindowsInput : public Input {
 	protected:
-		bool IsKeyPressedImpl(int keyCode) override;
-		bool IsMouseButtonPressedImpl(int button) override;
+		bool IsKeyPressedImpl(KeyCode keyCode) override;
+		bool IsMouseButtonPressedImpl(MouseButtonCode mouseButtonCode) override;
 		std::pair<float, float> GetMousePositionImpl() override;
 		float GetMouseXImpl() override;
 		float GetMouseYImpl() override;
