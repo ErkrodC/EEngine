@@ -56,7 +56,7 @@ target_include_directories(engine
 	src
 	src/engine
 #	src/Platform
-#	vendor/glm
+	vendor/glm
 	vendor/imgui
 
 	PRIVATE
