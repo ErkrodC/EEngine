@@ -1,13 +1,14 @@
 #pragma once
 
+#include <Renderer/GraphicsContext.hpp>
 #include "Window.hpp"
 #include "GLFW/glfw3.h"
 
 namespace EEngine {
 	class WindowsWindow : public Window {
 	public:
-		WindowsWindow(const WindowProps& props);
-		virtual ~WindowsWindow();
+		explicit WindowsWindow(const WindowProps& props);
+		~WindowsWindow() override;
 
 		void OnUpdate() override;
 
@@ -21,8 +22,10 @@ namespace EEngine {
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
 	private:
-		GLFWwindow* m_Window;
-		virtual void Init(const WindowProps& props);
+		GLFWwindow* m_Window{};
+		GraphicsContext* m_Context{};
+
+		virtual void Initialize(const WindowProps& props);
 		virtual void Shutdown();
 
 		struct WindowData {

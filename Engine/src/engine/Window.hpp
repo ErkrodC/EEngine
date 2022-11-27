@@ -9,7 +9,7 @@ namespace EEngine {
 		unsigned int Width;
 		unsigned int Height;
 
-		WindowProps(
+		explicit WindowProps(
 			const std::string& title = "EEngine",
 			unsigned int width = 1280,
 			unsigned int height = 720
@@ -21,7 +21,7 @@ namespace EEngine {
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 
-		virtual ~Window() {}
+		virtual ~Window() = default;
 
 		static Window* Create(const WindowProps& props = WindowProps());
 

@@ -40,7 +40,7 @@ namespace EEngine {
 
 	class AppTickEvent : public Event {
 	public:
-		AppTickEvent() {}
+		AppTickEvent() = default;
 
 		EVENT_CLASS_TYPE(AppTick)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
@@ -54,7 +54,7 @@ namespace EEngine {
 
 	class AppUpdateEvent : public Event {
 	public:
-		AppUpdateEvent() {}
+		AppUpdateEvent() = default;
 
 		EVENT_CLASS_TYPE(AppUpdate)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
@@ -68,7 +68,7 @@ namespace EEngine {
 
 	class AppRenderEvent : public Event {
 	public:
-		AppRenderEvent() {}
+		AppRenderEvent() = default;
 
 		EVENT_CLASS_TYPE(AppRender)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)

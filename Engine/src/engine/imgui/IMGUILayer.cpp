@@ -12,9 +12,7 @@ namespace EEngine {
 
 	}
 
-	IMGUILayer::~IMGUILayer() {
-
-	}
+	IMGUILayer::~IMGUILayer() = default;
 
 	void IMGUILayer::OnAttach() {
 		// Decide GL+GLSL versions

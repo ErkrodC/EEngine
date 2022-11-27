@@ -12,19 +12,17 @@ namespace EEngine {
 		Application::s_Instance = this;
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
-		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 		m_IMGUILayer = new IMGUILayer();
 		PushOverlay(m_IMGUILayer);
 	}
 
-	Application::~Application() {
-
-	}
+	Application::~Application() = default;
 
 	void Application::OnEvent(Event& event) {
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ) {
 			(*--it)->OnEvent(event);

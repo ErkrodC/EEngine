@@ -14,5 +14,5 @@
 	#define EE_CORE_ASSERT(x, ...)
 #endif
 
-#define BIT(x) (1 << x)
-#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+#define BIT(x) (1 << (x))
+#define BIND_EVENT_FN(x) [this](auto && placeholder0) { return x(std::forward<decltype(placeholder0)>(placeholder0)); }

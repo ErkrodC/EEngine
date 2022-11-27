@@ -38,7 +38,7 @@ namespace EEngine {
 		virtual int GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 
-		inline bool IsInCategory(EventCategory category) {
+		inline bool IsInCategory(EventCategory category) const {
 			return GetCategoryFlags() & category;
 		}
 
@@ -49,7 +49,7 @@ namespace EEngine {
 		template<typename T>
 		using EventFn = std::function<bool(T&)>;
 	public:
-		EventDispatcher(Event& event)
+		explicit EventDispatcher(Event& event)
 			: m_Event(event) {}
 
 		template<typename T>

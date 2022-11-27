@@ -4,7 +4,7 @@
 #include "Events/KeyEvent.hpp"
 #include "Events/MouseEvent.hpp"
 #include "Input.hpp"
-#include <glad/glad.h>
+#include <Platform/OpenGL/OpenGLContext.hpp>
 
 namespace EEngine {
 	static bool s_GLFWInitialized = false;
@@ -14,18 +14,17 @@ namespace EEngine {
 	}
 
 	WindowsWindow::WindowsWindow(const EEngine::WindowProps& props) {
-		Init(props);
+		Initialize(props);
 	}
 
 	WindowsWindow::~WindowsWindow() {
 		Shutdown();
 	}
 
-	void WindowsWindow::Init(const WindowProps& props) {
+	void WindowsWindow::Initialize(const WindowProps& props) {
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
-
 		EE_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 		if (!s_GLFWInitialized) {
@@ -46,9 +45,10 @@ namespace EEngine {
 			nullptr,
 			nullptr
 		);
-		glfwMakeContextCurrent(m_Window);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		EE_CORE_ASSERT(status, "Failed to initialize GLAD!");
+
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Initialize();
+
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
@@ -87,12 +87,13 @@ namespace EEngine {
 					data.EventCallback(event);
 					break;
 				}
+				default: break;
 			}
 		});
 
 		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int glfwKeyCode) {
 			WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
-			KeyTypedEvent event(Input::GLFWToEngineKeyCode(glfwKeyCode));
+			KeyTypedEvent event(Input::GLFWToEngineKeyCode((int)glfwKeyCode));
 			data.EventCallback(event);
 		});
 
@@ -111,6 +112,7 @@ namespace EEngine {
 					data.EventCallback(event);
 					break;
 				}
+				default: break;
 			}
 		});
 
@@ -133,7 +135,7 @@ namespace EEngine {
 
 	void WindowsWindow::OnUpdate() {
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		if (m_Context) { m_Context->SwapBuffers(); }
 	}
 
 	void WindowsWindow::SetVSync(bool enabled) {

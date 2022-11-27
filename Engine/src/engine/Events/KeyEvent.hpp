@@ -10,7 +10,7 @@ namespace EEngine {
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
-		KeyEvent(KeyCode keyCode)
+		explicit KeyEvent(KeyCode keyCode)
 			: m_KeyCode(keyCode) {}
 
 			KeyCode m_KeyCode;
@@ -36,7 +36,7 @@ namespace EEngine {
 
 	class KeyReleasedEvent : public KeyEvent {
 	public:
-		KeyReleasedEvent(KeyCode keyCode)
+		explicit KeyReleasedEvent(KeyCode keyCode)
 			: KeyEvent(keyCode) {}
 
 		std::string ToString() const override {
@@ -50,7 +50,7 @@ namespace EEngine {
 
 	class KeyTypedEvent : public KeyEvent {
 	public:
-		KeyTypedEvent(KeyCode keyCode)
+		explicit KeyTypedEvent(KeyCode keyCode)
 			: KeyEvent(keyCode) {}
 
 		std::string ToString() const override {

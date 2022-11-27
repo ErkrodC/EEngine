@@ -50,7 +50,7 @@ namespace EEngine {
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 	protected:
-		MouseButtonEvent(MouseButtonCode button)
+		explicit MouseButtonEvent(MouseButtonCode button)
 			: m_Button(button) {}
 
 		MouseButtonCode m_Button;
@@ -58,7 +58,7 @@ namespace EEngine {
 
 	class MouseButtonPressedEvent : public MouseButtonEvent {
 	public:
-		MouseButtonPressedEvent(MouseButtonCode button)
+		explicit MouseButtonPressedEvent(MouseButtonCode button)
 			: MouseButtonEvent(button) {}
 
 		std::string ToString() const override {
@@ -72,7 +72,7 @@ namespace EEngine {
 
 	class MouseButtonReleasedEvent : public MouseButtonEvent {
 	public:
-		MouseButtonReleasedEvent(MouseButtonCode button)
+		explicit MouseButtonReleasedEvent(MouseButtonCode button)
 			: MouseButtonEvent(button) {}
 
 		std::string ToString() const override {

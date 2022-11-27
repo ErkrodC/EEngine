@@ -30,7 +30,7 @@ public:
 		PushLayer(new ExampleLayer());
 	}
 
-	~Runner() {}
+	~Runner() override {}
 };
 
 EEngine::Application* EEngine::CreateApplication() {
