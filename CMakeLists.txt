@@ -20,7 +20,7 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 	endif()
 endif()
 
-set(PROJECT_CMAKE_SUBMODULES spdlog;glfw;glad;imgui)
+set(PROJECT_CMAKE_SUBMODULES glad;glfw;glm;imgui;spdlog)
 foreach(SUBMOD_NAME ${PROJECT_CMAKE_SUBMODULES})
 	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/Engine/vendor/${SUBMOD_NAME}/CMakeLists.txt")
 		message(SEND_ERROR
