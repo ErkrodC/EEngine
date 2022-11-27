@@ -52,7 +52,7 @@ namespace EEngine {
 		}
 	}
 
-	bool Application::OnWindowClose(EEngine::WindowCloseEvent& event) {
+	bool Application::OnWindowClose(EEngine::WindowCloseEvent&) {
 		m_Running = false;
 		return true;
 	}

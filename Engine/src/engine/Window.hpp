@@ -17,7 +17,7 @@ namespace EEngine {
 	};
 
 	// Interface representing a desktop system based window
-	class EE_API Window {
+	class Window {
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 

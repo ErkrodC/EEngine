@@ -73,6 +73,10 @@ target_include_directories(engine
 #	vendor/stb_image
 )
 
+#[[if (CMAKE_COMPILER_IS_GNUCC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+endif ()]]
+
 if(MSVC)
-	target_compile_options(engine PRIVATE /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
+	target_compile_options(engine PRIVATE /W4 /WX /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
 endif()

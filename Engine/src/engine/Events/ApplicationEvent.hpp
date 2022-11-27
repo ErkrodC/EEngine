@@ -3,7 +3,7 @@
 #include "Event.hpp"
 
 namespace EEngine {
-	class EE_API WindowResizeEvent : public Event {
+	class WindowResizeEvent : public Event {
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height)
 			: m_Width(width), m_Height(height) {}
@@ -24,7 +24,7 @@ namespace EEngine {
 		unsigned int m_Width, m_Height;
 	};
 
-	class EE_API WindowCloseEvent : public Event {
+	class WindowCloseEvent : public Event {
 	public:
 		WindowCloseEvent() {}
 
@@ -38,7 +38,7 @@ namespace EEngine {
 		}
 	};
 
-	class EE_API AppTickEvent : public Event {
+	class AppTickEvent : public Event {
 	public:
 		AppTickEvent() {}
 
@@ -52,7 +52,7 @@ namespace EEngine {
 		}
 	};
 
-	class EE_API AppUpdateEvent : public Event {
+	class AppUpdateEvent : public Event {
 	public:
 		AppUpdateEvent() {}
 
@@ -66,7 +66,7 @@ namespace EEngine {
 		}
 	};
 
-	class EE_API AppRenderEvent : public Event {
+	class AppRenderEvent : public Event {
 	public:
 		AppRenderEvent() {}
 

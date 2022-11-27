@@ -53,7 +53,7 @@ namespace EEngine {
 		SetVSync(true);
 
 		// Set GLFW callbacks
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height){
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.Width = width;
 			data.Height = height;
@@ -61,13 +61,13 @@ namespace EEngine {
 			data.EventCallback(event);
 		});
 
-		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window){
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			WindowCloseEvent event;
 			data.EventCallback(event);
 		});
 
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int glfwKeyCode, int scancode, int action, int mods){
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int glfwKeyCode, int, int action, int) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 			KeyCode engineKeyCode = Input::GLFWToEngineKeyCode(glfwKeyCode);
@@ -96,7 +96,7 @@ namespace EEngine {
 			data.EventCallback(event);
 		});
 
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int glfwMouseButtonCode, int action, int mods){
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int glfwMouseButtonCode, int action, int ) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 			MouseButtonCode engineMouseButtonCode = Input::GLFWToEngineMouseButtonCode(glfwMouseButtonCode);
@@ -114,7 +114,7 @@ namespace EEngine {
 			}
 		});
 
-		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset){
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			MouseScrolledEvent event((float)xOffset, (float)yOffset);
 			data.EventCallback(event);
