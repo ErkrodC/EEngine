@@ -22,11 +22,13 @@ namespace EEngine {
 	private:
 		static Application* s_Instance;
 
-		bool OnWindowClose(WindowCloseEvent& event);
 		std::unique_ptr<Window> m_Window;
 		IMGUILayer* m_IMGUILayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+		unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+
+		bool OnWindowClose(WindowCloseEvent& event);
 	};
 
 	// to be defined by consumer
