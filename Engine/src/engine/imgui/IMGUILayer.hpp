@@ -14,21 +14,11 @@ namespace EEngine {
 
 		void OnAttach() override;
 		void OnDetach() override;
-		void OnUpdate() override;
-		void OnEvent(Event &event) override;
+		void OnIMGUIRender() override;
 
+		void Begin();
+		void End();
 	private:
 		float m_Time = 0.0f;
-
-		static ImGuiKey EngineToIMGUIKeyCode(KeyCode key);
-
-		bool OnKeyPressed(KeyPressedEvent& event);
-		bool OnKeyReleased(KeyReleasedEvent& event);
-		bool OnKeyTyped(KeyTypedEvent& event);
-		bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
-		bool OnMouseButtonReleased(MouseButtonReleasedEvent& event);
-		bool OnMouseMoved(MouseMovedEvent& event);
-		bool OnMouseScrolled(MouseScrolledEvent& event);
-		bool OnWindowResized(WindowResizeEvent& event);
 	};
 } // EEngine

@@ -4,6 +4,7 @@
 #include "Events/ApplicationEvent.hpp"
 #include "LayerStack.hpp"
 #include "Window.hpp"
+#include "imgui/IMGUILayer.hpp"
 
 namespace EEngine {
 	class Application {
@@ -23,6 +24,7 @@ namespace EEngine {
 
 		bool OnWindowClose(WindowCloseEvent& event);
 		std::unique_ptr<Window> m_Window;
+		IMGUILayer* m_IMGUILayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 	};

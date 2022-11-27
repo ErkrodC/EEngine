@@ -12,6 +12,8 @@ add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/imgui)
 
 # library creation
+# ER TODO try making a shared lib (i.e. dll) if any interest in making a commercial engine.
+# just for toy projects for now.
 add_library(engine
 	src/EEnginePCH.hpp
 	src/EEngine.hpp

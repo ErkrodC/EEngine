@@ -13,6 +13,9 @@ namespace EEngine {
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+
+		m_IMGUILayer = new IMGUILayer();
+		PushOverlay(m_IMGUILayer);
 	}
 
 	Application::~Application() {
@@ -37,6 +40,13 @@ namespace EEngine {
 			for (Layer* layer : m_LayerStack) {
 				layer->OnUpdate();
 			}
+
+			// ER TODO will eventually be on a "render" thread, isolated from update/application thread
+			m_IMGUILayer->Begin();
+			for (Layer* layer: m_LayerStack) {
+				layer->OnIMGUIRender();
+			}
+			m_IMGUILayer->End();
 
 			m_Window->OnUpdate();
 		}
