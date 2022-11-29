@@ -13,10 +13,15 @@ namespace EEngine {
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		EE_CORE_ASSERT(status, "Failed to initialize GLAD!");
 
-		EE_CORE_INFO("OpenGL Info:");
-		EE_CORE_INFO("\tVendor: {0}", (char*)glGetString(GL_VENDOR));
-		EE_CORE_INFO("\tRenderer: {0}", (char*)glGetString(GL_RENDERER));
-		EE_CORE_INFO("\tVersion: {0}", (char*)glGetString(GL_VERSION));
+		EE_CORE_INFO(
+			"OpenGL Info:\n"
+			"\tVendor: {0}\n"
+			"\tRenderer: {1}\n"
+			"\tVersion: {2}",
+			(char*)glGetString(GL_VENDOR),
+			(char*)glGetString(GL_RENDERER),
+			(char*)glGetString(GL_VERSION)
+		);
 	}
 
 	void OpenGLContext::SwapBuffers() {

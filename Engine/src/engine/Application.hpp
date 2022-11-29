@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Renderer/Shader.hpp>
 #include "Core.hpp"
 #include "Events/ApplicationEvent.hpp"
 #include "LayerStack.hpp"
@@ -27,6 +28,7 @@ namespace EEngine {
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 		unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+		std::unique_ptr<Shader> m_Shader;
 
 		bool OnWindowClose(WindowCloseEvent& event);
 	};

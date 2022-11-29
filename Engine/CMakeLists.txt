@@ -41,7 +41,12 @@ add_library(engine
 	src/Platform/Windows/WindowsInput.hpp
 	src/engine/KeyCode.hpp
 	src/engine/MouseButtonCode.hpp
-	src/engine/Renderer/GraphicsContext.hpp src/Platform/OpenGL/OpenGLContext.cpp src/Platform/OpenGL/OpenGLContext.hpp)
+	src/engine/Renderer/GraphicsContext.hpp
+	src/Platform/OpenGL/OpenGLContext.cpp
+	src/Platform/OpenGL/OpenGLContext.hpp
+	src/engine/Renderer/Shader.cpp
+	src/engine/Renderer/Shader.hpp
+)
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
 
