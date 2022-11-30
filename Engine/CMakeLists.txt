@@ -46,7 +46,22 @@ add_library(engine
 	src/Platform/OpenGL/OpenGLContext.hpp
 	src/engine/Renderer/Shader.cpp
 	src/engine/Renderer/Shader.hpp
-	src/engine/Renderer/Buffer.cpp src/engine/Renderer/Buffer.hpp src/Platform/OpenGL/OpenGLBuffer.cpp src/Platform/OpenGL/OpenGLBuffer.hpp src/engine/Renderer/Renderer.cpp src/engine/Renderer/Renderer.hpp src/engine/Renderer/VertexArray.cpp src/engine/Renderer/VertexArray.hpp src/Platform/OpenGL/OpenGLVertexArray.cpp src/Platform/OpenGL/OpenGLVertexArray.hpp)
+	src/engine/Renderer/Buffer.cpp
+	src/engine/Renderer/Buffer.hpp
+	src/Platform/OpenGL/OpenGLBuffer.cpp
+	src/Platform/OpenGL/OpenGLBuffer.hpp
+	src/engine/Renderer/Renderer.cpp
+	src/engine/Renderer/Renderer.hpp
+	src/engine/Renderer/VertexArray.cpp
+	src/engine/Renderer/VertexArray.hpp
+	src/Platform/OpenGL/OpenGLVertexArray.cpp
+	src/Platform/OpenGL/OpenGLVertexArray.hpp
+	src/engine/Renderer/IRendererAPI.hpp
+	src/engine/Renderer/RendererAPI.cpp
+	src/engine/Renderer/RendererAPI.hpp
+	src/Platform/OpenGL/OpenGLRendererAPI.cpp
+	src/Platform/OpenGL/OpenGLRendererAPI.hpp
+)
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
 

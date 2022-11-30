@@ -1,6 +1,7 @@
 #include "Application.hpp"
-#include <glad/glad.h>
 #include <Renderer/Shader.hpp>
+#include <Renderer/Renderer.hpp>
+#include <Renderer/RendererAPI.hpp>
 #include <memory>
 
 #include "Input.hpp"
@@ -9,6 +10,7 @@ namespace EEngine {
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application() {
+		EE_CORE_INFO("Selected Renderer API: {0}", Renderer::GetRendererAPIString(Renderer::GetSelectedAPI()));
 		EE_CORE_ASSERT(!s_Instance, "Multiple applications created.");
 
 		Application::s_Instance = this;
@@ -86,12 +88,15 @@ namespace EEngine {
 
 	void Application::Run() {
 		while (m_Running) {
-			glClearColor(0.1f, 0.1f, 0.1f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RendererAPI::Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
-			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, (GLsizei)m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::BeginScene(); {
+				m_Shader->Bind();
+				Renderer::Submit(m_VertexArray);
+			} Renderer::EndScene();
+
+			// ER TODO usually executed on a separate thread
+			//Renderer::Flush();
 
 			for (Layer* layer : m_LayerStack) {
 				layer->OnUpdate();

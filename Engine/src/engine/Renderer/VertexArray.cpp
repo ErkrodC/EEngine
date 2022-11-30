@@ -4,17 +4,17 @@
 
 namespace EEngine {
 	VertexArray* VertexArray::Create() {
-		switch (Renderer::GetAPI()) {
-			case RendererAPI::None: {
-				EE_CORE_ERROR("No RendererAPI selected.");
+		switch (Renderer::GetSelectedAPI()) {
+			case Renderer::API::None: {
+				EE_CORE_ERROR("No rendering API selected.");
 				return nullptr;
 			}
-			case RendererAPI::OpenGL: {
+			case Renderer::API::OpenGL: {
 				return new OpenGLVertexArray();
 			}
 		}
 
-		EE_CORE_ERROR("Unknown RendererAPI.");
+		EE_CORE_ERROR("Unknown rendering API.");
 		return nullptr;
 	}
 } // EEngine

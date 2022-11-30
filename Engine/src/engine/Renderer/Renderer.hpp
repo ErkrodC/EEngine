@@ -1,15 +1,26 @@
 #pragma once
 
-namespace EEngine {
-	enum class RendererAPI {
-		None = 0,
-		OpenGL = 1,
-	};
+#include <glm/vec4.hpp>
+#include "Buffer.hpp"
+#include "IRendererAPI.hpp"
 
+namespace EEngine {
 	class Renderer {
 	public:
-		inline static RendererAPI GetAPI() { return s_RendererAPI; }
+		enum class API {
+			None = 0, OpenGL = 1,
+		};
+
+		static std::string GetRendererAPIString(API api);
+
+		static void BeginScene();
+		static void EndScene();
+
+		static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+
+		inline static API GetSelectedAPI() { return s_SelectedAPI; }
+
 	private:
-		static RendererAPI s_RendererAPI;
+		static API s_SelectedAPI;
 	};
 } // EEngine
