@@ -90,8 +90,8 @@ namespace EEngine {
 	}
 
 	void IMGUILayer::OnIMGUIRender() {
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
+		/*static bool show = true;
+		ImGui::ShowDemoWindow(&show);*/
 	}
 
 	void IMGUILayer::Begin() {

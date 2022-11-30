@@ -8,6 +8,29 @@
 namespace EEngine {
 	Application* Application::s_Instance = nullptr;
 
+	static GLenum ShaderDataToOpenGLBaseType(ShaderData type) {
+		switch (type) {
+			case ShaderData::None:		break;
+
+			case ShaderData::Float:
+			case ShaderData::Float2:
+			case ShaderData::Float3:
+			case ShaderData::Float4:
+			case ShaderData::Mat3:
+			case ShaderData::Mat4:		return GL_FLOAT;
+
+			case ShaderData::Int:
+			case ShaderData::Int2:
+			case ShaderData::Int3:
+			case ShaderData::Int4:			return GL_INT;
+
+			case ShaderData::Bool:			return GL_BOOL;
+		}
+
+		EE_CORE_ERROR("Unknown shader data type.");
+		return GL_NONE;
+	}
+
 	Application::Application() {
 		EE_CORE_ASSERT(!s_Instance, "Multiple applications created.");
 
@@ -22,31 +45,48 @@ namespace EEngine {
 		glGenVertexArrays(1, &m_VertexArray);
 		glBindVertexArray(m_VertexArray);
 
-		float vertices[3 * 3] = {
-			-0.5f, -0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			0.0f, 0.5f, 0.0f,
+		float vertices[3 * 7] = {
+			-0.5f, -0.5f, 0.0f,	0.8f, 0.2f, 0.8f, 1.0f,
+			0.5f, -0.5f, 0.0f,		0.2f, 0.3f, 0.8f, 1.0f,
+			0.0f, 0.5f, 0.0f,		0.8f, 0.8f, 0.2f, 1.0f
 		};
 
 		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-		m_VertexBuffer->Bind();
+		BufferLayout layout = {
+			{ ShaderData::Float3, "a_Position" },
+			{ ShaderData::Float4, "a_Color" },
+		};
 
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
+		uint32_t index = 0;
+		for (const auto& element : layout) {
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(
+				index++,
+				(GLint)element.ComponentCount,
+				ShaderDataToOpenGLBaseType(element.Type),
+				element.Normalized ? GL_TRUE : GL_FALSE,
+				(GLsizei)layout.GetStride(),
+				(const void *)(intptr_t)element.Offset
+			);
+		}
+
+		m_VertexBuffer->SetLayout(layout);
 
 		uint32_t indices[3] = { 0, 1, 2 };
 		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-		m_IndexBuffer->Bind();
 
 		std::string vertexSource = R"(
 			#version 330 core
 
 			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec4 a_Color;
 
 			out vec3 v_Position;
+			out vec4 v_Color;
 
 			void main() {
 				v_Position = a_Position;
+				v_Color = a_Color;
 				gl_Position = vec4(a_Position, 1.0);
 			}
 		)";
@@ -56,9 +96,10 @@ namespace EEngine {
 
 			layout(location = 0) out vec4 color;
 			in vec3 v_Position;
+			in vec4 v_Color;
 
 			void main() {
-				color = vec4((v_Position * 0.5) + 0.5, 1.0);
+				color = v_Color;
 			}
 		)";
 

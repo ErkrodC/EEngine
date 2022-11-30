@@ -14,9 +14,9 @@ public:
 	}
 
 	void OnIMGUIRender() override {
-		ImGui::Begin("Test");
+		/*ImGui::Begin("Test");
 		ImGui::Text("Hello World");
-		ImGui::End();
+		ImGui::End();*/
 	}
 
 	void OnEvent(EEngine::Event& event) override {
