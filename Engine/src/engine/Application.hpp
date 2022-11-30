@@ -22,6 +22,9 @@ namespace EEngine {
 
 		static inline Application& Get() { return *s_Instance; }
 		inline IWindow& GetWindow() const { return *m_Window; }
+
+	protected:
+		virtual void OnSceneUpdate() = 0;
 	private:
 		static Application* s_Instance;
 
@@ -29,8 +32,6 @@ namespace EEngine {
 		IMGUILayer* m_IMGUILayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
-		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<IVertexArray> m_VertexArray;
 
 		bool OnWindowClose(WindowCloseEvent& event);
 	};
