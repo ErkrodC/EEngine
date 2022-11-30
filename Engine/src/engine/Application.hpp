@@ -2,6 +2,7 @@
 
 #include <Renderer/Shader.hpp>
 #include <Renderer/Buffer.hpp>
+#include <Renderer/VertexArray.hpp>
 #include "Core.hpp"
 #include "Events/ApplicationEvent.hpp"
 #include "LayerStack.hpp"
@@ -28,10 +29,8 @@ namespace EEngine {
 		IMGUILayer* m_IMGUILayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
-		unsigned int m_VertexArray;
-		std::unique_ptr<Shader> m_Shader;
-		std::unique_ptr<VertexBuffer> m_VertexBuffer;
-		std::unique_ptr<IndexBuffer> m_IndexBuffer;
+		std::shared_ptr<Shader> m_Shader;
+		std::shared_ptr<VertexArray> m_VertexArray;
 
 		bool OnWindowClose(WindowCloseEvent& event);
 	};
