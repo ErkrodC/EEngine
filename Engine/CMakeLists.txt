@@ -33,7 +33,7 @@ add_library(engine
 	src/engine/LayerStack.hpp
 	src/engine/Log.cpp
 	src/engine/Log.hpp
-	src/engine/Window.hpp
+	src/engine/IWindow.hpp
 	src/Platform/Windows/WindowsWindow.cpp
 	src/Platform/Windows/WindowsWindow.hpp
 	src/engine/Input.hpp
@@ -41,7 +41,7 @@ add_library(engine
 	src/Platform/Windows/WindowsInput.hpp
 	src/engine/KeyCode.hpp
 	src/engine/MouseButtonCode.hpp
-	src/engine/Renderer/GraphicsContext.hpp
+	src/engine/Renderer/IGraphicsContext.hpp
 	src/Platform/OpenGL/OpenGLContext.cpp
 	src/Platform/OpenGL/OpenGLContext.hpp
 	src/engine/Renderer/Shader.cpp
@@ -52,8 +52,8 @@ add_library(engine
 	src/Platform/OpenGL/OpenGLBuffer.hpp
 	src/engine/Renderer/Renderer.cpp
 	src/engine/Renderer/Renderer.hpp
-	src/engine/Renderer/VertexArray.cpp
-	src/engine/Renderer/VertexArray.hpp
+	src/engine/Renderer/IVertexArray.cpp
+	src/engine/Renderer/IVertexArray.hpp
 	src/Platform/OpenGL/OpenGLVertexArray.cpp
 	src/Platform/OpenGL/OpenGLVertexArray.hpp
 	src/engine/Renderer/IRendererAPI.hpp

@@ -24,7 +24,7 @@ namespace EEngine {
 
 	}
 
-	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray) {
+	void Renderer::Submit(const std::shared_ptr<IVertexArray>& vertexArray) {
 		vertexArray->Bind();
 		RendererAPI::DrawIndexed(vertexArray);
 	}

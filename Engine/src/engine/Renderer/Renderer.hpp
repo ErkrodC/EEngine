@@ -16,7 +16,7 @@ namespace EEngine {
 		static void BeginScene();
 		static void EndScene();
 
-		static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+		static void Submit(const std::shared_ptr<IVertexArray>& vertexArray);
 
 		inline static API GetSelectedAPI() { return s_SelectedAPI; }
 

@@ -15,13 +15,13 @@ namespace EEngine {
 
 		Application::s_Instance = this;
 
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = std::unique_ptr<IWindow>(IWindow::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 		m_IMGUILayer = new IMGUILayer();
 		PushOverlay(m_IMGUILayer);
 
-		m_VertexArray.reset(VertexArray::Create());
+		m_VertexArray.reset(IVertexArray::Create());
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f,	0.8f, 0.2f, 0.8f, 1.0f,
@@ -29,8 +29,8 @@ namespace EEngine {
 			0.0f, 0.5f, 0.0f,		0.8f, 0.8f, 0.2f, 1.0f
 		};
 
-		std::shared_ptr<VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+		std::shared_ptr<IVertexBuffer> vertexBuffer;
+		vertexBuffer.reset(IVertexBuffer::Create(vertices, sizeof(vertices)));
 
 		vertexBuffer->SetLayout({
 			{ ShaderData::Float3, "a_Position" },
@@ -39,8 +39,8 @@ namespace EEngine {
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[3] = { 0, 1, 2 };
-		std::shared_ptr<IndexBuffer> indexBuffer;
-		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		std::shared_ptr<IIndexBuffer> indexBuffer;
+		indexBuffer.reset(IIndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		std::string vertexSource = R"(

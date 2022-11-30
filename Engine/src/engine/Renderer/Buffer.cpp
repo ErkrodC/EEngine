@@ -3,7 +3,7 @@
 #include "Renderer.hpp"
 
 namespace EEngine {
-	IndexBuffer* IndexBuffer::Create(
+	IIndexBuffer* IIndexBuffer::Create(
 		uint32_t* indices,
 		uint32_t count
 	) {
@@ -19,7 +19,7 @@ namespace EEngine {
 		return nullptr;
 	}
 
-	VertexBuffer* VertexBuffer::Create(
+	IVertexBuffer* IVertexBuffer::Create(
 		float* vertices,
 		uint32_t size
 	) {

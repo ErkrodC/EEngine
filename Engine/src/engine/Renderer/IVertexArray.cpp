@@ -1,9 +1,9 @@
 #include <Platform/OpenGL/OpenGLVertexArray.hpp>
-#include "VertexArray.hpp"
+#include "IVertexArray.hpp"
 #include "Renderer.hpp"
 
 namespace EEngine {
-	VertexArray* VertexArray::Create() {
+	IVertexArray* IVertexArray::Create() {
 		switch (Renderer::GetSelectedAPI()) {
 			case Renderer::API::None: {
 				EE_CORE_ERROR("No rendering API selected.");

@@ -2,11 +2,11 @@
 
 #include <Renderer/Shader.hpp>
 #include <Renderer/Buffer.hpp>
-#include <Renderer/VertexArray.hpp>
+#include <Renderer/IVertexArray.hpp>
 #include "Core.hpp"
 #include "Events/ApplicationEvent.hpp"
 #include "LayerStack.hpp"
-#include "Window.hpp"
+#include "IWindow.hpp"
 #include "imgui/IMGUILayer.hpp"
 
 namespace EEngine {
@@ -21,16 +21,16 @@ namespace EEngine {
 		void PushOverlay(Layer* overlay);
 
 		static inline Application& Get() { return *s_Instance; }
-		inline Window& GetWindow() const { return *m_Window; }
+		inline IWindow& GetWindow() const { return *m_Window; }
 	private:
 		static Application* s_Instance;
 
-		std::unique_ptr<Window> m_Window;
+		std::unique_ptr<IWindow> m_Window;
 		IMGUILayer* m_IMGUILayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<VertexArray> m_VertexArray;
+		std::shared_ptr<IVertexArray> m_VertexArray;
 
 		bool OnWindowClose(WindowCloseEvent& event);
 	};

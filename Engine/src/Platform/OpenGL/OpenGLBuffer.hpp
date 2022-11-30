@@ -3,7 +3,7 @@
 #include "Renderer/Buffer.hpp"
 
 namespace EEngine {
-	class OpenGLIndexBuffer : public IndexBuffer {
+	class OpenGLIndexBuffer : public IIndexBuffer {
 	public:
 		OpenGLIndexBuffer(uint32_t* indices, uint32_t size);
 		~OpenGLIndexBuffer() override;
@@ -17,7 +17,7 @@ namespace EEngine {
 		uint32_t m_Count;
 	};
 
-	class OpenGLVertexBuffer : public VertexBuffer {
+	class OpenGLVertexBuffer : public IVertexBuffer {
 	public:
 		OpenGLVertexBuffer(float* vertices, uint32_t size);
 		~OpenGLVertexBuffer() override;

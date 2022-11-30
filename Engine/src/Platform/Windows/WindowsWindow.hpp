@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Renderer/GraphicsContext.hpp>
-#include "Window.hpp"
+#include <Renderer/IGraphicsContext.hpp>
+#include "IWindow.hpp"
 #include "GLFW/glfw3.h"
 
 namespace EEngine {
-	class WindowsWindow : public Window {
+	class WindowsWindow : public IWindow {
 	public:
 		explicit WindowsWindow(const WindowProps& props);
 		~WindowsWindow() override;
@@ -23,7 +23,7 @@ namespace EEngine {
 		bool IsVSync() const override;
 	private:
 		GLFWwindow* m_Window{};
-		GraphicsContext* m_Context{};
+		IGraphicsContext* m_Context{};
 
 		virtual void Initialize(const WindowProps& props);
 		virtual void Shutdown();
