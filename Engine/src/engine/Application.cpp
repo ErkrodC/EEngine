@@ -1,6 +1,5 @@
 #include "Application.hpp"
 #include <Renderer/Renderer.hpp>
-#include <Renderer/RendererAPI.hpp>
 #include <memory>
 
 #include "Input.hpp"
@@ -35,17 +34,6 @@ namespace EEngine {
 
 	void Application::Run() {
 		while (m_Running) {
-			{
-				RendererAPI::Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
-
-				Renderer::BeginScene(); {
-					OnSceneUpdate();
-				} Renderer::EndScene();
-
-				// ER TODO usually executed on a separate thread
-				//Renderer::Flush();
-			}
-
 			{
 				for (Layer* layer: m_LayerStack) {
 					layer->OnUpdate();

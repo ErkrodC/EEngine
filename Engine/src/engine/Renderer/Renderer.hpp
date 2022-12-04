@@ -3,6 +3,8 @@
 #include <glm/vec4.hpp>
 #include "Buffer.hpp"
 #include "IRendererAPI.hpp"
+#include "Camera.hpp"
+#include "Shader.hpp"
 
 namespace EEngine {
 	class Renderer {
@@ -13,14 +15,22 @@ namespace EEngine {
 
 		static std::string GetRendererAPIString(API api);
 
-		static void BeginScene();
+		static void BeginScene(const EEngine::Camera& camera);
 		static void EndScene();
 
-		static void Submit(const std::shared_ptr<IVertexArray>& vertexArray);
+		static void Submit(
+			const std::shared_ptr<Shader>& shader,
+			const std::shared_ptr<IVertexArray>& vertexArray
+		);
 
 		inline static API GetSelectedAPI() { return s_SelectedAPI; }
 
 	private:
+		struct SceneData {
+			glm::mat4 ProjectionView;
+		};
+
+		static SceneData* m_SceneData;
 		static API s_SelectedAPI;
 	};
 } // EEngine

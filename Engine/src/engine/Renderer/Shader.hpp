@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/ext/matrix_float4x4.hpp>
+
 namespace EEngine {
 	class Shader {
 	public:
@@ -8,6 +10,11 @@ namespace EEngine {
 
 		void Bind() const;
 		void Unbind() const;
+
+		void UploadUniformMat4(
+			const std::string& name,
+			const glm::mat4& matrix
+		);
 	private:
 		uint32_t m_RendererID;
 

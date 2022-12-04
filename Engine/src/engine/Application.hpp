@@ -3,6 +3,7 @@
 #include <Renderer/Shader.hpp>
 #include <Renderer/Buffer.hpp>
 #include <Renderer/IVertexArray.hpp>
+#include <Renderer/Camera.hpp>
 #include "Core.hpp"
 #include "Events/ApplicationEvent.hpp"
 #include "LayerStack.hpp"
@@ -22,9 +23,6 @@ namespace EEngine {
 
 		static inline Application& Get() { return *s_Instance; }
 		inline IWindow& GetWindow() const { return *m_Window; }
-
-	protected:
-		virtual void OnSceneUpdate() = 0;
 	private:
 		static Application* s_Instance;
 

@@ -11,6 +11,13 @@
 #include "Log.hpp"
 #include "imgui/IMGUILayer.hpp"
 
+#include "Renderer/Buffer.hpp"
+#include "Renderer/Camera.hpp"
+#include "Renderer/IVertexArray.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/RendererAPI.hpp"
+#include "Renderer/Shader.hpp"
+
 // ---Entry Point--------------------
 #include "engine/EntryPoint.hpp"
 // ------------------------------------

@@ -61,7 +61,7 @@ add_library(engine
 	src/engine/Renderer/RendererAPI.hpp
 	src/Platform/OpenGL/OpenGLRendererAPI.cpp
 	src/Platform/OpenGL/OpenGLRendererAPI.hpp
-)
+	src/engine/Renderer/Camera.cpp src/engine/Renderer/Camera.hpp)
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
 
@@ -98,5 +98,5 @@ target_include_directories(engine
 endif ()]]
 
 if(MSVC)
-	target_compile_options(engine PRIVATE /W4 /WX /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
+	target_compile_options(engine PRIVATE /W4 #[[/WX]] /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
 endif()
