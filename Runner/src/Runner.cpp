@@ -65,11 +65,10 @@ public:
 		m_Shader = std::make_unique<EEngine::Shader>(vertexSource, fragmentSource);
 	}
 
-	void OnUpdate() override {
+	void OnUpdate(EEngine::Timestep timestep) override {
 		EEngine::RendererAPI::Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
-		HandleCameraMovement();
-		HandleCameraRotation();
+		HandleCameraMovement(timestep);
 
 		EEngine::Renderer::BeginScene(m_Camera); {
 			EEngine::Renderer::Submit(m_Shader, m_VertexArray);
@@ -105,43 +104,35 @@ public:
 		return false;
 	}
 
-	void HandleCameraMovement() {
-		static const float cameraMoveSpeed = 0.075f;
+	void HandleCameraMovement(EEngine::Timestep timestep) {
+		float deltaDist = 1.0f * timestep.GetSeconds();
 
 		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::Up)
 			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::W)
 		) {
 			const auto& cameraPos = m_Camera.GetPosition();
-			m_Camera.SetPosition({ cameraPos.x, cameraPos.y + 0.075f, cameraPos.z });
+			m_Camera.SetPosition({ cameraPos.x, cameraPos.y + deltaDist, cameraPos.z });
 		}
 
 		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::Left)
 			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::A)
 		) {
 			const auto& cameraPos = m_Camera.GetPosition();
-			m_Camera.SetPosition({ cameraPos.x - 0.075f, cameraPos.y, cameraPos.z });
+			m_Camera.SetPosition({ cameraPos.x - deltaDist, cameraPos.y, cameraPos.z });
 		}
 
 		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::Down)
 			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::S)
 		) {
 			const auto& cameraPos = m_Camera.GetPosition();
-			m_Camera.SetPosition({ cameraPos.x, cameraPos.y - 0.075f, cameraPos.z });
+			m_Camera.SetPosition({ cameraPos.x, cameraPos.y - deltaDist, cameraPos.z });
 		}
 
 		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::Right)
 			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::D)
 		) {
 			const auto& cameraPos = m_Camera.GetPosition();
-			m_Camera.SetPosition({ cameraPos.x + 0.075f, cameraPos.y, cameraPos.z });
-		}
-	}
-
-	void HandleCameraRotation() {
-		static const float cameraRotateSpeed = 0.075f;
-
-		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::LeftControl)) {
-
+			m_Camera.SetPosition({ cameraPos.x + deltaDist, cameraPos.y, cameraPos.z });
 		}
 	}
 private:

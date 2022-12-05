@@ -4,6 +4,7 @@
 #include <Renderer/Buffer.hpp>
 #include <Renderer/IVertexArray.hpp>
 #include <Renderer/Camera.hpp>
+#include <Core/Timestep.hpp>
 #include "Core.hpp"
 #include "Events/ApplicationEvent.hpp"
 #include "LayerStack.hpp"
@@ -30,6 +31,7 @@ namespace EEngine {
 		IMGUILayer* m_IMGUILayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+		float  m_LastFrameTime;
 
 		bool OnWindowClose(WindowCloseEvent& event);
 	};

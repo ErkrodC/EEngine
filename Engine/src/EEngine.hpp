@@ -9,6 +9,9 @@
 
 #include "Layer.hpp"
 #include "Log.hpp"
+
+#include "Core/Timestep.hpp"
+
 #include "imgui/IMGUILayer.hpp"
 
 #include "Renderer/Buffer.hpp"

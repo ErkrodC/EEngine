@@ -61,7 +61,10 @@ add_library(engine
 	src/engine/Renderer/RendererAPI.hpp
 	src/Platform/OpenGL/OpenGLRendererAPI.cpp
 	src/Platform/OpenGL/OpenGLRendererAPI.hpp
-	src/engine/Renderer/Camera.cpp src/engine/Renderer/Camera.hpp)
+	src/engine/Renderer/Camera.cpp
+	src/engine/Renderer/Camera.hpp
+	src/engine/Core/Timestep.hpp
+)
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
 

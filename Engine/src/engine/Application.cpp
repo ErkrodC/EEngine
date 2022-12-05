@@ -1,6 +1,7 @@
 #include "Application.hpp"
 #include <Renderer/Renderer.hpp>
 #include <memory>
+#include <GLFW/glfw3.h>
 
 #include "Input.hpp"
 
@@ -34,9 +35,16 @@ namespace EEngine {
 
 	void Application::Run() {
 		while (m_Running) {
+			float time = (float)glfwGetTime();
+			Timestep timestep {
+				time - m_LastFrameTime
+			};
+			m_LastFrameTime = time;
+
+
 			{
 				for (Layer* layer: m_LayerStack) {
-					layer->OnUpdate();
+					layer->OnUpdate(timestep);
 				}
 			}
 
