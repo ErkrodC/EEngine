@@ -39,6 +39,7 @@ public:
 			layout(location = 1) in vec4 a_Color;
 
 			uniform mat4 u_ProjectionView;
+			uniform mat4 u_Transform;
 
 			out vec3 v_Position;
 			out vec4 v_Color;
@@ -46,7 +47,7 @@ public:
 			void main() {
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = u_ProjectionView *  vec4(a_Position, 1.0);
+				gl_Position = u_ProjectionView * u_Transform *  vec4(a_Position, 1.0);
 			}
 		)";
 
@@ -69,9 +70,10 @@ public:
 		EEngine::RendererAPI::Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
 		HandleCameraMovement(timestep);
+		HandleTriMovement(timestep);
 
 		EEngine::Renderer::BeginScene(m_Camera); {
-			EEngine::Renderer::Submit(m_Shader, m_VertexArray);
+			EEngine::Renderer::Submit(m_Shader, m_VertexArray, glm::translate(glm::mat4(1.0f), m_TriPos));
 		} EEngine::Renderer::EndScene();
 
 		// ER TODO usually executed on a separate thread
@@ -135,10 +137,36 @@ public:
 			m_Camera.SetPosition({ cameraPos.x + deltaDist, cameraPos.y, cameraPos.z });
 		}
 	}
+
+	void HandleTriMovement(EEngine::Timestep timestep) {
+		float deltaDist = 1.0f * timestep.GetSeconds();
+
+		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::I)
+			) {
+			m_TriPos.y += deltaDist;
+		}
+
+		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::J)
+			) {
+			m_TriPos.x -= deltaDist;
+		}
+
+		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::K)
+			) {
+			m_TriPos.y -= deltaDist;
+		}
+
+		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::L)
+			) {
+			m_TriPos.x += deltaDist;
+		}
+	}
 private:
 	std::shared_ptr<EEngine::Shader> m_Shader;
 	std::shared_ptr<EEngine::IVertexArray> m_VertexArray;
 	EEngine::Camera m_Camera;
+
+	glm::vec3 m_TriPos{};
 };
 
 class Runner : public EEngine::Application {

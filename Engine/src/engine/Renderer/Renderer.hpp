@@ -20,7 +20,8 @@ namespace EEngine {
 
 		static void Submit(
 			const std::shared_ptr<Shader>& shader,
-			const std::shared_ptr<IVertexArray>& vertexArray
+			const std::shared_ptr<IVertexArray>& vertexArray,
+			const glm::mat4& transform = glm::mat4(1.0f)
 		);
 
 		inline static API GetSelectedAPI() { return s_SelectedAPI; }

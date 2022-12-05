@@ -12,7 +12,7 @@ namespace EEngine {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate(Timestep timestep) {}
+		virtual void OnUpdate(Timestep) {}
 		virtual void OnIMGUIRender() {}
 		virtual void OnEvent(Event&) {}
 
