@@ -4,7 +4,7 @@
 #include "Buffer.hpp"
 #include "IRendererAPI.hpp"
 #include "Camera.hpp"
-#include "Shader.hpp"
+#include "IShader.hpp"
 
 namespace EEngine {
 	class Renderer {
@@ -19,7 +19,7 @@ namespace EEngine {
 		static void EndScene();
 
 		static void Submit(
-			const std::shared_ptr<Shader>& shader,
+			const std::shared_ptr<IShader>& shader,
 			const std::shared_ptr<IVertexArray>& vertexArray,
 			const glm::mat4& transform = glm::mat4(1.0f)
 		);

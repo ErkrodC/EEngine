@@ -1,9 +1,9 @@
 #include <glad/glad.h>
-#include "Shader.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include "OpenGLShader.hpp"
 
 namespace EEngine {
-	Shader::Shader(
+	OpenGLShader::OpenGLShader(
 		const std::string& vertexSource,
 		const std::string& fragmentSource
 	) {
@@ -105,19 +105,19 @@ namespace EEngine {
 		glDetachShader(m_RendererID, fragmentShader);
 	}
 
-	Shader::~Shader() {
+	OpenGLShader::~OpenGLShader() {
 		glDeleteProgram(m_RendererID);
 	};
 
-	void Shader::Bind() const {
+	void OpenGLShader::Bind() const {
 		glUseProgram(m_RendererID);
 	}
 
-	void Shader::Unbind() const {
+	void OpenGLShader::Unbind() const {
 		glUseProgram(0);
 	}
 
-	void Shader::UploadUniformMat4(
+	void OpenGLShader::UploadUniformMat4(
 		const std::string& name,
 		const glm::mat4& matrix
 	) {
@@ -125,7 +125,15 @@ namespace EEngine {
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
-	void Shader::IndentLog(std::vector<char>& log) {
+	void OpenGLShader::UploadUniformFloat4(
+		const std::string& name,
+		const glm::vec4& values
+	) {
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform4f(location, values.x, values.y, values.z, values.w);
+	}
+
+	void OpenGLShader::IndentLog(std::vector<char>& log) {
 		log.insert(log.begin(), '\t');
 
 		for (auto it = log.end(); it != log.begin();) {

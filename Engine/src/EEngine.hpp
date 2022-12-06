@@ -19,7 +19,7 @@
 #include "Renderer/IVertexArray.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/RendererAPI.hpp"
-#include "Renderer/Shader.hpp"
+#include "Renderer/IShader.hpp"
 
 // ---Entry Point--------------------
 #include "engine/EntryPoint.hpp"

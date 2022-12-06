@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Renderer/Shader.hpp>
+#include <Renderer/IShader.hpp>
 #include <Renderer/Buffer.hpp>
 #include <Renderer/IVertexArray.hpp>
 #include <Renderer/Camera.hpp>

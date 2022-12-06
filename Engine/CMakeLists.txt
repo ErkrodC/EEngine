@@ -44,8 +44,8 @@ add_library(engine
 	src/engine/Renderer/IGraphicsContext.hpp
 	src/Platform/OpenGL/OpenGLContext.cpp
 	src/Platform/OpenGL/OpenGLContext.hpp
-	src/engine/Renderer/Shader.cpp
-	src/engine/Renderer/Shader.hpp
+	src/engine/Renderer/IShader.cpp
+	src/engine/Renderer/IShader.hpp
 	src/engine/Renderer/Buffer.cpp
 	src/engine/Renderer/Buffer.hpp
 	src/Platform/OpenGL/OpenGLBuffer.cpp
@@ -64,6 +64,8 @@ add_library(engine
 	src/engine/Renderer/Camera.cpp
 	src/engine/Renderer/Camera.hpp
 	src/engine/Core/Timestep.hpp
+	src/Platform/OpenGL/OpenGLShader.cpp
+	src/Platform/OpenGL/OpenGLShader.hpp
 )
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)

@@ -63,7 +63,7 @@ public:
 			}
 		)";
 
-		m_Shader = std::make_unique<EEngine::Shader>(vertexSource, fragmentSource);
+		m_Shader.reset(EEngine::IShader::Create(vertexSource, fragmentSource));
 	}
 
 	void OnUpdate(EEngine::Timestep timestep) override {
@@ -73,6 +73,8 @@ public:
 		HandleTriMovement(timestep);
 
 		EEngine::Renderer::BeginScene(m_Camera); {
+			// ER TODO example material usage
+			//EEngine::MaterialRef material = new EEngine::Material(m_Shader);
 			EEngine::Renderer::Submit(m_Shader, m_VertexArray, glm::translate(glm::mat4(1.0f), m_TriPos));
 		} EEngine::Renderer::EndScene();
 
@@ -162,7 +164,7 @@ public:
 		}
 	}
 private:
-	std::shared_ptr<EEngine::Shader> m_Shader;
+	std::shared_ptr<EEngine::IShader> m_Shader;
 	std::shared_ptr<EEngine::IVertexArray> m_VertexArray;
 	EEngine::Camera m_Camera;
 
