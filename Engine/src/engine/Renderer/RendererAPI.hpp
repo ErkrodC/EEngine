@@ -9,7 +9,7 @@ namespace EEngine {
 			s_RendererAPI->ClearImpl(color);
 		}
 
-		static inline void DrawIndexed(const std::shared_ptr<IVertexArray>& vertexArray) {
+		static inline void DrawIndexed(const Ref<IVertexArray>& vertexArray) {
 			s_RendererAPI->DrawIndexedImpl(vertexArray);
 		}
 	private:

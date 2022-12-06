@@ -1,7 +1,7 @@
+#include <glm/ext/matrix_clip_space.hpp>
 #include <Renderer/Renderer.hpp>
 #include <Renderer/Camera.hpp>
 #include <Events/Event.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
 #include "EEngine.hpp"
 
 class ExampleLayer : public EEngine::Layer {
@@ -18,7 +18,7 @@ public:
 			0.0f, 0.5f, 0.0f,		0.8f, 0.8f, 0.2f, 1.0f
 		};
 
-		std::shared_ptr<EEngine::IVertexBuffer> vertexBuffer;
+		EEngine::Ref<EEngine::IVertexBuffer> vertexBuffer;
 		vertexBuffer.reset(EEngine::IVertexBuffer::Create(vertices, sizeof(vertices)));
 
 		vertexBuffer->SetLayout({
@@ -28,7 +28,7 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[3] = { 0, 1, 2 };
-		std::shared_ptr<EEngine::IIndexBuffer> indexBuffer;
+		EEngine::Ref<EEngine::IIndexBuffer> indexBuffer;
 		indexBuffer.reset(EEngine::IIndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -164,8 +164,8 @@ public:
 		}
 	}
 private:
-	std::shared_ptr<EEngine::IShader> m_Shader;
-	std::shared_ptr<EEngine::IVertexArray> m_VertexArray;
+	EEngine::Ref<EEngine::IShader> m_Shader;
+	EEngine::Ref<EEngine::IVertexArray> m_VertexArray;
 	EEngine::Camera m_Camera;
 
 	glm::vec3 m_TriPos{};

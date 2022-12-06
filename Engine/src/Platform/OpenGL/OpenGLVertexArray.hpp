@@ -11,14 +11,14 @@ namespace EEngine {
 		void Bind() const override;
 		void Unbind() const override;
 
-		void SetIndexBuffer(const std::shared_ptr<IIndexBuffer>& indexBuffer) override;
-		void AddVertexBuffer(const std::shared_ptr<IVertexBuffer>& vertexBuffer) override;
+		void SetIndexBuffer(const Ref<IIndexBuffer>& indexBuffer) override;
+		void AddVertexBuffer(const Ref<IVertexBuffer>& vertexBuffer) override;
 
-		const std::shared_ptr<IIndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; }
-		const std::vector<std::shared_ptr<IVertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; }
+		const Ref<IIndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; }
+		const std::vector<Ref<IVertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; }
 	private:
 		uint32_t m_RendererID;
-		std::shared_ptr<IIndexBuffer> m_IndexBuffer;
-		std::vector<std::shared_ptr<IVertexBuffer>> m_VertexBuffers;
+		Ref<IIndexBuffer> m_IndexBuffer;
+		std::vector<Ref<IVertexBuffer>> m_VertexBuffers;
 	};
 } // EEngine

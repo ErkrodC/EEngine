@@ -7,7 +7,7 @@ namespace EEngine {
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void OpenGLRendererAPI::DrawIndexedImpl(const std::shared_ptr<IVertexArray>& vertexArray) {
+	void OpenGLRendererAPI::DrawIndexedImpl(const Ref<IVertexArray>& vertexArray) {
 		glDrawElements(GL_TRIANGLES,
 			(GLsizei)vertexArray->GetIndexBuffer()->GetCount(),
 			GL_UNSIGNED_INT,

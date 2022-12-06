@@ -19,8 +19,8 @@ namespace EEngine {
 		static void EndScene();
 
 		static void Submit(
-			const std::shared_ptr<IShader>& shader,
-			const std::shared_ptr<IVertexArray>& vertexArray,
+			const Ref<IShader>& shader,
+			const Ref<IVertexArray>& vertexArray,
 			const glm::mat4& transform = glm::mat4(1.0f)
 		);
 

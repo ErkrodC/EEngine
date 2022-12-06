@@ -1,5 +1,9 @@
-#include <glad/glad.h>
+#pragma warning(push)
+#pragma warning(disable:4201)
 #include <glm/gtc/type_ptr.hpp>
+#pragma warning(pop)
+
+#include <glad/glad.h>
 #include "OpenGLShader.hpp"
 
 namespace EEngine {

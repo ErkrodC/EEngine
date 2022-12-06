@@ -1,6 +1,10 @@
 #pragma once
+
+#pragma warning(push)
+#pragma warning(disable:4201)
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/quaternion_float.hpp>
+#pragma warning(pop)
 
 #undef near
 #undef far

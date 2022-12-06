@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef EE_PLATFORM_WINDOWS
 
 #else
@@ -16,3 +18,11 @@
 
 #define BIT(x) (1 << (x))
 #define BIND_EVENT_FN(x) [this](auto && placeholder0) { return x(std::forward<decltype(placeholder0)>(placeholder0)); }
+
+namespace EEngine {
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+}

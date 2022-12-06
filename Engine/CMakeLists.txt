@@ -103,5 +103,5 @@ target_include_directories(engine
 endif ()]]
 
 if(MSVC)
-	target_compile_options(engine PRIVATE /W4 #[[/WX]] /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
+	target_compile_options(engine PRIVATE /W4 /WX /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
 endif()
