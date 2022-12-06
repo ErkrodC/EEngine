@@ -7,7 +7,7 @@ namespace EEngine {
 	public:
 		virtual ~IVertexArray() {}
 
-		static IVertexArray* Create();
+		static Ref<IVertexArray> Create();
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;

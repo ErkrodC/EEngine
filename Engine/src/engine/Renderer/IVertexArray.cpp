@@ -3,14 +3,14 @@
 #include "Renderer.hpp"
 
 namespace EEngine {
-	IVertexArray* IVertexArray::Create() {
+	Ref<IVertexArray> IVertexArray::Create() {
 		switch (Renderer::GetSelectedAPI()) {
 			case Renderer::API::None: {
 				EE_CORE_ERROR("No rendering API selected.");
 				return nullptr;
 			}
 			case Renderer::API::OpenGL: {
-				return new OpenGLVertexArray();
+				return std::make_shared<OpenGLVertexArray>();
 			}
 		}
 

@@ -5,7 +5,7 @@ namespace EEngine {
 	public:
 		virtual ~IShader() = default;
 
-		static IShader* Create(const std::string& vertexSource, const std::string& fragmentSource);
+		static Ref<IShader> Create(const std::string& vertexSource, const std::string& fragmentSource);
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;

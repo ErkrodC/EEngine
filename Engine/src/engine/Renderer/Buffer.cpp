@@ -3,7 +3,7 @@
 #include "Renderer.hpp"
 
 namespace EEngine {
-	IIndexBuffer* IIndexBuffer::Create(
+	Ref<IIndexBuffer> IIndexBuffer::Create(
 		uint32_t* indices,
 		uint32_t count
 	) {
@@ -12,14 +12,14 @@ namespace EEngine {
 				EE_CORE_ERROR("No rendering API selected.");
 				break;
 			case Renderer::API::OpenGL:
-				return new OpenGLIndexBuffer(indices, count);
+				return std::make_shared<OpenGLIndexBuffer>(indices, count);
 		}
 
 		EE_CORE_ERROR("Unknown rendering API.");
 		return nullptr;
 	}
 
-	IVertexBuffer* IVertexBuffer::Create(
+	Ref<IVertexBuffer> IVertexBuffer::Create(
 		float* vertices,
 		uint32_t size
 	) {
@@ -28,7 +28,7 @@ namespace EEngine {
 				EE_CORE_ERROR("No rendering API selected.");
 				break;
 			case Renderer::API::OpenGL:
-				return new OpenGLVertexBuffer(vertices, size);
+				return std::make_shared<OpenGLVertexBuffer>(vertices, size);
 		}
 
 		EE_CORE_ERROR("Unknown rendering API.");

@@ -10,6 +10,7 @@ add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/imgui)
+add_subdirectory(vendor/stb_image)
 
 # library creation
 # ER TODO try making a shared lib (i.e. dll) if any interest in making a commercial engine.
@@ -66,6 +67,10 @@ add_library(engine
 	src/engine/Core/Timestep.hpp
 	src/Platform/OpenGL/OpenGLShader.cpp
 	src/Platform/OpenGL/OpenGLShader.hpp
+	src/engine/Renderer/ITexture.cpp
+	src/engine/Renderer/ITexture.hpp
+	src/Platform/OpenGL/OpenGLTexture.cpp
+	src/Platform/OpenGL/OpenGLTexture.hpp
 )
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
@@ -76,6 +81,7 @@ target_link_libraries(engine
 	glad
 	glfw
 	spdlog
+	stb_image
 )
 
 target_precompile_headers(engine
@@ -95,7 +101,7 @@ target_include_directories(engine
 	vendor/glfw/include
 	vendor/spdlog/include
 	vendor/glad/include
-#	vendor/stb_image
+	vendor/stb_image
 )
 
 #[[if (CMAKE_COMPILER_IS_GNUCC)
