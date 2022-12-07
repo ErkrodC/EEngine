@@ -78,10 +78,11 @@ target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
 target_link_libraries(engine
 	PUBLIC
 	imgui
+	spdlog
+	PRIVATE
+	stb_image
 	glad
 	glfw
-	spdlog
-	stb_image
 )
 
 target_precompile_headers(engine

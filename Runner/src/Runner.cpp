@@ -35,46 +35,7 @@ public:
 		indexBuffer =EEngine::IIndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
-		std::string vertexSource = R"(
-			#version 330 core
-
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Color;
-			layout(location = 2) in vec2 a_TexCoord;
-
-			uniform mat4 u_ProjectionView;
-			uniform mat4 u_Transform;
-
-			out vec3 v_Position;
-			out vec4 v_Color;
-			out vec2 v_TexCoord;
-
-			void main() {
-				v_Position = a_Position;
-				v_Color = a_Color;
-				v_TexCoord = a_TexCoord;
-				gl_Position = u_ProjectionView * u_Transform *  vec4(a_Position, 1.0);
-			}
-		)";
-
-		std::string fragmentSource = R"(
-			#version 330 core
-
-			layout(location = 0) out vec4 color;
-			in vec3 v_Position;
-			in vec4 v_Color;
-			in vec2 v_TexCoord;
-
-			uniform sampler2D u_Texture;
-
-			void main() {
-				//color = v_Color;
-				//color = vec4(v_TexCoord, 0.0, 1.0);
-				color = texture(u_Texture, v_TexCoord);
-			}
-		)";
-
-		m_Shader = EEngine::IShader::Create(vertexSource, fragmentSource);
+		m_Shader = EEngine::IShader::Create("assets/shaders/Texture.glsl");
 		m_Texture = EEngine::ITexture2D::Create("assets/textures/test.png");
 
 		const auto& openGLShader = std::dynamic_pointer_cast<EEngine::OpenGLShader>(m_Shader);

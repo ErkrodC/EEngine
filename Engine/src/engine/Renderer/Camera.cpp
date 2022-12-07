@@ -1,10 +1,10 @@
+#include "Camera.hpp"
+
 #pragma warning(push)
 #pragma warning(disable:4201)
 #include <glm/gtx/quaternion.hpp>
 #include <glm/ext/quaternion_float.hpp>
 #pragma warning(pop)
-
-#include "Camera.hpp"
 
 namespace EEngine {
 	Camera::Camera(

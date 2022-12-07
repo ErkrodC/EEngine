@@ -5,6 +5,7 @@ namespace EEngine {
 	public:
 		virtual ~IShader() = default;
 
+		static Ref<EEngine::IShader> Create(const std::string& path);
 		static Ref<IShader> Create(const std::string& vertexSource, const std::string& fragmentSource);
 
 		virtual void Bind() const = 0;

@@ -3,10 +3,15 @@
 #include <glm/mat4x4.hpp>
 #include <Renderer/IShader.hpp>
 
+// ER TODO remove
+typedef unsigned int GLenum;
+typedef unsigned int GLuint;
+
 namespace EEngine {
 	class OpenGLShader : public IShader {
 	public:
 		OpenGLShader(const std::string& vertexSource, const std::string& fragmentSource);
+		explicit OpenGLShader(const std::string& path);
 		~OpenGLShader() override;
 
 		void Bind() const override;
@@ -25,5 +30,14 @@ namespace EEngine {
 		uint32_t m_RendererID;
 
 		static void IndentLog(std::vector<char>& log);
+		static bool TryCompileShader(
+			GLenum shaderType,
+			const std::string& source,
+			GLuint* pInt
+		);
+
+		std::string ReadFile(const std::string& path);
+		std::unordered_map<GLenum, std::string> Preprocess(const std::string& source);
+		void CompileShaders(const std::unordered_map<GLenum, std::string>& shaderSourceByType);
 	};
 } // EEngine
