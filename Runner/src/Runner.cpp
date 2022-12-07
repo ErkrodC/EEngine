@@ -35,10 +35,10 @@ public:
 		indexBuffer =EEngine::IIndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
-		m_Shader = EEngine::IShader::Create("assets/shaders/Texture.glsl");
+		auto textureShader = EEngine::Renderer::GetShaderLibrary()->Load("assets/shaders/Texture.glsl");
 		m_Texture = EEngine::ITexture2D::Create("assets/textures/test.png");
 
-		const auto& openGLShader = std::dynamic_pointer_cast<EEngine::OpenGLShader>(m_Shader);
+		const auto& openGLShader = std::dynamic_pointer_cast<EEngine::OpenGLShader>(textureShader);
 		openGLShader->Bind();
 		openGLShader->UploadUniformInt("u_Texture", 0);
 	}
@@ -53,7 +53,10 @@ public:
 			// ER TODO example material usage
 			//EEngine::MaterialRef material = new EEngine::Material(m_Shader);
 			m_Texture->Bind();
-			EEngine::Renderer::Submit(m_Shader, m_VertexArray, glm::translate(glm::mat4(1.0f), m_TriPos));
+			EEngine::Ref<EEngine::IShader> textureShader;
+			if (EEngine::Renderer::GetShaderLibrary()->TryGet("Texture", &textureShader)) {
+				EEngine::Renderer::Submit(textureShader, m_VertexArray, glm::translate(glm::mat4(1.0f), m_TriPos));
+			}
 		} EEngine::Renderer::EndScene();
 
 		// ER TODO usually executed on a separate thread
@@ -121,28 +124,23 @@ public:
 	void HandleTriMovement(EEngine::Timestep timestep) {
 		float deltaDist = 1.0f * timestep.GetSeconds();
 
-		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::I)
-			) {
+		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::I)) {
 			m_TriPos.y += deltaDist;
 		}
 
-		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::J)
-			) {
+		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::J)) {
 			m_TriPos.x -= deltaDist;
 		}
 
-		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::K)
-			) {
+		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::K)) {
 			m_TriPos.y -= deltaDist;
 		}
 
-		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::L)
-			) {
+		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::L)) {
 			m_TriPos.x += deltaDist;
 		}
 	}
 private:
-	EEngine::Ref<EEngine::IShader> m_Shader;
 	EEngine::Ref<EEngine::IVertexArray> m_VertexArray;
 	EEngine::Ref<EEngine::ITexture2D> m_Texture;
 
@@ -160,7 +158,7 @@ public:
 		PushLayer(new ExampleLayer());
 	}
 
-	~Runner() override {}
+	~Runner() override = default;
 };
 
 EEngine::Application* EEngine::CreateApplication() {

@@ -26,12 +26,15 @@ namespace EEngine {
 
 		inline static API GetSelectedAPI() { return s_SelectedAPI; }
 		static std::string GetRendererAPIString(API api);
+
+		static Ref<ShaderLibrary> GetShaderLibrary() { return s_ShaderLibrary; }
 	private:
 		struct SceneData {
 			glm::mat4 ProjectionView;
 		};
 
-		static SceneData* m_SceneData;
+		static SceneData* s_SceneData;
 		static API s_SelectedAPI;
+		static Ref<ShaderLibrary> s_ShaderLibrary;
 	};
 } // EEngine

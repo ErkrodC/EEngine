@@ -19,9 +19,10 @@ namespace EEngine {
 	}
 
 	OpenGLShader::OpenGLShader(
+		const std::string& name,
 		const std::string& vertexSource,
 		const std::string& fragmentSource
-	) {
+	) : m_Name(name) {
 		CompileShaders({
 			{ GL_VERTEX_SHADER, vertexSource },
 			{ GL_FRAGMENT_SHADER, fragmentSource }
@@ -32,6 +33,20 @@ namespace EEngine {
 		std::string shaderSource = ReadFile(path);
 		auto shaderSourceByType = Preprocess(shaderSource);
 		CompileShaders(shaderSourceByType);
+
+		{
+			// extracts name from path
+			auto lastSlash = path.find_last_of("/\\");
+			lastSlash = lastSlash == std::string::npos
+				? 0
+				: lastSlash + 1;
+
+			auto lastDot = path.rfind('.');
+			auto count = lastDot == std::string::npos
+				? path.size() - lastSlash
+				: lastDot - lastSlash;
+			m_Name = path.substr(lastSlash, count);
+		}
 	}
 
 	OpenGLShader::~OpenGLShader() {
@@ -40,7 +55,7 @@ namespace EEngine {
 
 	std::string OpenGLShader::ReadFile(const std::string& path) {
 		// ER TODO consider virtual fs
-		std::ifstream in(path, std::ios::in, std::ios::binary);
+		std::ifstream in(path, std::ios::in | std::ios::binary);
 		std::string result;
 		if (in) {
 			in.seekg(0, std::ios::end);
@@ -82,12 +97,24 @@ namespace EEngine {
 	}
 
 	void OpenGLShader::CompileShaders(const std::unordered_map<GLenum, std::string>& shaderSourceByType) {
-		std::vector<GLuint> compiledShaderIDs(shaderSourceByType.size());
+		static const size_t MAX_SHADER_SOURCES = 2;
 
+		size_t numShaderSources = shaderSourceByType.size();
+		EE_CORE_ASSERT(
+			numShaderSources <= MAX_SHADER_SOURCES,
+			"Number of shader sources exceeded max supported: {0} > {1}",
+			numShaderSources,
+			MAX_SHADER_SOURCES
+		);
+
+		std::array<GLuint, MAX_SHADER_SOURCES> compiledShaderIDs{};
+		//compiledShaderIDs.reserve(numShaderSources);
+
+		int shaderIDIndex = 0;
 		for (auto& pair : shaderSourceByType) {
 			GLuint compiledShaderID = 0;
 			if (TryCompileShader(pair.first, pair.second, &compiledShaderID)) {
-				compiledShaderIDs.push_back(compiledShaderID);
+				compiledShaderIDs[shaderIDIndex++] = compiledShaderID;
 			} else {
 				for (auto& shaderID : compiledShaderIDs) {
 					glDeleteShader(shaderID);

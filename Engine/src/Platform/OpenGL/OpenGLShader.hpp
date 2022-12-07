@@ -10,12 +10,18 @@ typedef unsigned int GLuint;
 namespace EEngine {
 	class OpenGLShader : public IShader {
 	public:
-		OpenGLShader(const std::string& vertexSource, const std::string& fragmentSource);
+		OpenGLShader(
+			const std::string& name,
+			const std::string& vertexSource,
+			const std::string& fragmentSource
+		);
 		explicit OpenGLShader(const std::string& path);
 		~OpenGLShader() override;
 
 		void Bind() const override;
 		void Unbind() const override;
+
+		const std::string& GetName() const override { return m_Name; };
 
 		void UploadUniformInt(const std::string& name, int32_t value);
 
@@ -28,6 +34,7 @@ namespace EEngine {
 		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
 	private:
 		uint32_t m_RendererID;
+		std::string m_Name;
 
 		static void IndentLog(std::vector<char>& log);
 		static bool TryCompileShader(

@@ -4,7 +4,8 @@
 
 namespace EEngine {
 	Renderer::API Renderer::s_SelectedAPI = Renderer::API::OpenGL;
-	Renderer::SceneData* Renderer::m_SceneData = new SceneData();
+	Renderer::SceneData* Renderer::s_SceneData = new SceneData();
+	Ref<ShaderLibrary> Renderer::s_ShaderLibrary = std::make_shared<ShaderLibrary>();
 
 	void Renderer::Initialize() {
 		RendererAPI::Initialize();
@@ -23,7 +24,7 @@ namespace EEngine {
 	}
 
 	void Renderer::BeginScene(const Camera& camera) {
-		m_SceneData->ProjectionView = camera.GetProjectionViewMatrix();
+		s_SceneData->ProjectionView = camera.GetProjectionViewMatrix();
 	}
 
 	void Renderer::EndScene() {
@@ -39,7 +40,7 @@ namespace EEngine {
 
 		{
 			auto openGLShader = std::dynamic_pointer_cast<OpenGLShader>(shader);
-			openGLShader->UploadUniformMat4("u_ProjectionView", m_SceneData->ProjectionView);
+			openGLShader->UploadUniformMat4("u_ProjectionView", s_SceneData->ProjectionView);
 			openGLShader->UploadUniformMat4("u_Transform", transform);
 		}
 
