@@ -6,6 +6,10 @@ namespace EEngine {
 	Renderer::API Renderer::s_SelectedAPI = Renderer::API::OpenGL;
 	Renderer::SceneData* Renderer::m_SceneData = new SceneData();
 
+	void Renderer::Initialize() {
+		RendererAPI::Initialize();
+	}
+
 	std::string Renderer::GetRendererAPIString(Renderer::API api) {
 		switch (api) {
 			case API::None:

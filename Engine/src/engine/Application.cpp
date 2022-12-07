@@ -17,6 +17,8 @@ namespace EEngine {
 		m_Window = std::unique_ptr<IWindow>(IWindow::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
+		Renderer::Initialize();
+
 		m_IMGUILayer = new IMGUILayer();
 		PushOverlay(m_IMGUILayer);
 	}

@@ -13,7 +13,7 @@ namespace EEngine {
 			None = 0, OpenGL = 1,
 		};
 
-		static std::string GetRendererAPIString(API api);
+		static void Initialize();
 
 		static void BeginScene(const EEngine::Camera& camera);
 		static void EndScene();
@@ -25,7 +25,7 @@ namespace EEngine {
 		);
 
 		inline static API GetSelectedAPI() { return s_SelectedAPI; }
-
+		static std::string GetRendererAPIString(API api);
 	private:
 		struct SceneData {
 			glm::mat4 ProjectionView;
