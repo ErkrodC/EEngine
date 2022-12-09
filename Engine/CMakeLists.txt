@@ -71,6 +71,8 @@ add_library(engine
 	src/engine/Renderer/ITexture.hpp
 	src/Platform/OpenGL/OpenGLTexture.cpp
 	src/Platform/OpenGL/OpenGLTexture.hpp
+	src/engine/CameraController.cpp
+	src/engine/CameraController.hpp
 )
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)

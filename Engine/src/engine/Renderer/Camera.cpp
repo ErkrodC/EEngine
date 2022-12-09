@@ -7,14 +7,16 @@
 #pragma warning(pop)
 
 namespace EEngine {
-	Camera::Camera(
-		const glm::mat4& projection,
-		const glm::vec3 position
-	) : m_Projection(projection),
-		m_Position(position),
-		m_Rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f))
-	{
+	Camera::Camera(const glm::mat4& projection)
+		: m_Projection(projection)
+		, m_Position(glm::vec3(0.0f, 0.0f, 0.0f))
+		, m_Rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f)) {
 		RecalculateViewMatrix();
+	}
+
+	void Camera::SetProjection(const glm::mat4& projection) {
+		m_Projection = projection;
+		m_ProjectionView = m_Projection * m_View;
 	}
 
 	void Camera::RecalculateViewMatrix() {

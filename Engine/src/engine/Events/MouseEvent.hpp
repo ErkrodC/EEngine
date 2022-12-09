@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.hpp"
+#include <MouseButtonCode.hpp>
 
 namespace EEngine {
 	class MouseMovedEvent : public Event {
@@ -50,7 +51,7 @@ namespace EEngine {
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 	protected:
-		explicit MouseButtonEvent(MouseButtonCode button)
+		explicit MouseButtonEvent(const EEngine::MouseButtonCode& button)
 			: m_Button(button) {}
 
 		MouseButtonCode m_Button;

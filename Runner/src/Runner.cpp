@@ -3,14 +3,14 @@
 #include <Renderer/Camera.hpp>
 #include <Events/Event.hpp>
 #include <Platform/OpenGL/OpenGLShader.hpp>
+#include <CameraController.hpp>
 #include "EEngine.hpp"
 
 class ExampleLayer : public EEngine::Layer {
 public:
 	ExampleLayer()
 			: Layer("Example")
-			, m_Camera(glm::ortho(-1.6f, 1.6f, -0.9f, 0.9f, -1.0f, 1.0f)) {
-			//, m_Camera(glm::perspective(glm::radians(120.0f), 9.0f/16.0f/*/9.0f*/, 0.01f, 100.0f)) {
+			, m_CameraController(16.0f / 9.0f) {
 		m_VertexArray = EEngine::IVertexArray::Create();
 
 		float vertices[4 * 9] = {
@@ -46,10 +46,10 @@ public:
 	void OnUpdate(EEngine::Timestep timestep) override {
 		EEngine::RendererAPI::Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
-		HandleCameraMovement(timestep);
+		m_CameraController.OnUpdate(timestep);
 		HandleTriMovement(timestep);
 
-		EEngine::Renderer::BeginScene(m_Camera); {
+		EEngine::Renderer::BeginScene(m_CameraController.GetCamera()); {
 			// ER TODO example material usage
 			//EEngine::MaterialRef material = new EEngine::Material(m_Shader);
 			m_Texture->Bind();
@@ -68,57 +68,7 @@ public:
 	}
 
 	void OnEvent(EEngine::Event& event) override {
-		EEngine::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<EEngine::MouseMovedEvent>(BIND_EVENT_FN(OnMouseMoved));
-	}
-
-	bool OnMouseMoved(EEngine::MouseMovedEvent& event) {
-		bool isCtrlPressed = EEngine::Input::IsKeyPressed(EEngine::KeyCode::LeftControl)
-			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::RightControl);
-
-		if (isCtrlPressed
-			&& EEngine::Input::IsMouseButtonPressed(EEngine::MouseButtonCode::Mouse2)
-		) {
-			// ER TODO still broken
-			const auto& cameraRot = m_Camera.GetRotation();
-			auto normRot = glm::vec2(event.GetX(), event.GetY());
-			normRot = normRot * 0.00001f;
-			m_Camera.SetRotation(cameraRot * glm::quat({ /*normRot.x*/0.0f, normRot.y, 0.0f }));
-		}
-
-		return false;
-	}
-
-	void HandleCameraMovement(EEngine::Timestep timestep) {
-		float deltaDist = 1.0f * timestep.GetSeconds();
-
-		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::Up)
-			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::W)
-		) {
-			const auto& cameraPos = m_Camera.GetPosition();
-			m_Camera.SetPosition({ cameraPos.x, cameraPos.y + deltaDist, cameraPos.z });
-		}
-
-		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::Left)
-			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::A)
-		) {
-			const auto& cameraPos = m_Camera.GetPosition();
-			m_Camera.SetPosition({ cameraPos.x - deltaDist, cameraPos.y, cameraPos.z });
-		}
-
-		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::Down)
-			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::S)
-		) {
-			const auto& cameraPos = m_Camera.GetPosition();
-			m_Camera.SetPosition({ cameraPos.x, cameraPos.y - deltaDist, cameraPos.z });
-		}
-
-		if (EEngine::Input::IsKeyPressed(EEngine::KeyCode::Right)
-			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::D)
-		) {
-			const auto& cameraPos = m_Camera.GetPosition();
-			m_Camera.SetPosition({ cameraPos.x + deltaDist, cameraPos.y, cameraPos.z });
-		}
+		m_CameraController.OnEvent(event);
 	}
 
 	void HandleTriMovement(EEngine::Timestep timestep) {
@@ -145,7 +95,7 @@ private:
 	EEngine::Ref<EEngine::ITexture2D> m_Texture;
 
 
-	EEngine::Camera m_Camera;
+	EEngine::CameraController m_CameraController;
 
 	glm::vec3 m_TriPos{};
 };
