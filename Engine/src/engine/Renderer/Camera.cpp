@@ -1,10 +1,10 @@
 #include "Camera.hpp"
 
-#pragma warning(push)
-#pragma warning(disable:4201)
+DISABLE_WARNING_PUSH
+DISABLE_WARNING_NAMELESS_STRUCT_UNION
 #include <glm/gtx/quaternion.hpp>
 #include <glm/ext/quaternion_float.hpp>
-#pragma warning(pop)
+DISABLE_WARNING_POP
 
 namespace EEngine {
 	Camera::Camera(const glm::mat4& projection)

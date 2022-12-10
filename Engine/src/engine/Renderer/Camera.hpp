@@ -2,11 +2,11 @@
 #undef near
 #undef far
 
-#pragma warning(push)
-#pragma warning(disable:4201)
+DISABLE_WARNING_PUSH
+DISABLE_WARNING_NAMELESS_STRUCT_UNION
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/quaternion_float.hpp>
-#pragma warning(pop)
+DISABLE_WARNING_POP
 
 namespace EEngine {
 	class Camera {

@@ -112,5 +112,7 @@ target_include_directories(engine
 endif ()]]
 
 if(MSVC)
-	target_compile_options(engine PRIVATE /W4 /WX /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
+	#C4100 is unused parameter warning
+	#C4201 is nameless union/struct warning, glm was causing this, but probably better to disable per file
+	target_compile_options(engine PRIVATE /W4 /WX /wd4100 #[[/wd4201]] /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
 endif()

@@ -79,7 +79,7 @@ namespace EEngine {
 		return false;
 	}
 
-	bool CameraController::OnMouseMoved(MouseMovedEvent& /*event*/) {
+	bool CameraController::OnMouseMoved(MouseMovedEvent& event) {
 		bool isCtrlPressed = EEngine::Input::IsKeyPressed(EEngine::KeyCode::LeftControl)
 			|| EEngine::Input::IsKeyPressed(EEngine::KeyCode::RightControl);
 
