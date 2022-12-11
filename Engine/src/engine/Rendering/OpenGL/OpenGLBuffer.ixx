@@ -9,7 +9,8 @@ import :Buffer;
 export namespace EEngine {
 	class OpenGLIndexBuffer : public IIndexBuffer {
 	public:
-		OpenGLIndexBuffer(uint32_t* indices, uint32_t count) {
+		OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
+			: m_Count(count) {
 			glCreateBuffers(1, &m_RendererID);
 			Bind();
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
