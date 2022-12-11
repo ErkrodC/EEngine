@@ -1,27 +1,29 @@
 // For use by EEngine applications
 #pragma once
 
-#include "Core.hpp"
-#include "Application.hpp"
+/*#include "engine/Core/Core.ixx"
+#include "engine/Core/Application.ixx"
 
-#include "Input.hpp"
-#include "KeyCode.hpp"
+#include "engine/Core/Input.ixx"
+#include "engine/Core/KeyCode.ixx"
 
-#include "Layer.hpp"
-#include "Log.hpp"
+#include "engine/Core/Layer.ixx"
+#include "engine/Core/Log.ixx"
 
-#include "Core/Timestep.hpp"
+#include "Core/Timestep.ixx"
 
-#include "imgui/IMGUILayer.hpp"
+#include "imgui/IMGUILayer.ixx"
 
-#include "Renderer/Buffer.hpp"
-#include "Renderer/Camera.hpp"
-#include "Renderer/IShader.hpp"
-#include "Renderer/ITexture.hpp"
-#include "Renderer/IVertexArray.hpp"
-#include "Renderer/Renderer.hpp"
-#include "Renderer/RendererAPI.hpp"
+#include "Renderer/Buffer.ixx"
+#include "Renderer/Camera.ixx"
+#include "Renderer/IShader.ixx"
+#include "Renderer/ITexture.ixx"
+#include "Renderer/IVertexArray.ixx"
+#include "Renderer/Renderer.ixx"
+#include "Renderer/RendererAPI.ixx"*/
 
 // ---Entry Point--------------------
-#include "engine/EntryPoint.hpp"
+//#include "engine/EntryPoint.ixx"
 // ------------------------------------
+
+// ER TODO remove from runner includes

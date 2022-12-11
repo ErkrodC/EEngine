@@ -16,63 +16,96 @@ add_subdirectory(vendor/stb_image)
 # ER TODO try making a shared lib (i.e. dll) if any interest in making a commercial engine.
 # just for toy projects for now.
 add_library(engine
-	src/EEnginePCH.hpp
-	src/EEngine.hpp
-	src/engine/Events/ApplicationEvent.hpp
-	src/engine/Events/Event.hpp
-	src/engine/Events/KeyEvent.hpp
-	src/engine/Events/MouseEvent.hpp
-	src/engine/imgui/IMGUILayer.cpp
-	src/engine/imgui/IMGUILayer.hpp
-	src/engine/Application.cpp
-	src/engine/Application.hpp
-	src/engine/Core.hpp
-	src/engine/EntryPoint.hpp
-	src/engine/Layer.cpp
-	src/engine/Layer.hpp
-	src/engine/LayerStack.cpp
-	src/engine/LayerStack.hpp
-	src/engine/Log.cpp
-	src/engine/Log.hpp
-	src/engine/IWindow.hpp
-	src/Platform/Windows/WindowsWindow.cpp
-	src/Platform/Windows/WindowsWindow.hpp
-	src/engine/Input.hpp
-	src/Platform/Windows/WindowsInput.cpp
-	src/Platform/Windows/WindowsInput.hpp
-	src/engine/KeyCode.hpp
-	src/engine/MouseButtonCode.hpp
-	src/engine/Renderer/IGraphicsContext.hpp
-	src/Platform/OpenGL/OpenGLContext.cpp
-	src/Platform/OpenGL/OpenGLContext.hpp
-	src/engine/Renderer/IShader.cpp
-	src/engine/Renderer/IShader.hpp
+	src/engine/Core/Core.hpp
+	src/engine/Event/Event.hpp
+	#[[src/engine/Core/Log.cpp
 	src/engine/Renderer/Buffer.cpp
-	src/engine/Renderer/Buffer.hpp
-	src/Platform/OpenGL/OpenGLBuffer.cpp
-	src/Platform/OpenGL/OpenGLBuffer.hpp
-	src/engine/Renderer/Renderer.cpp
-	src/engine/Renderer/Renderer.hpp
-	src/engine/Renderer/IVertexArray.cpp
-	src/engine/Renderer/IVertexArray.hpp
-	src/Platform/OpenGL/OpenGLVertexArray.cpp
-	src/Platform/OpenGL/OpenGLVertexArray.hpp
-	src/engine/Renderer/IRendererAPI.hpp
-	src/engine/Renderer/RendererAPI.cpp
-	src/engine/Renderer/RendererAPI.hpp
-	src/Platform/OpenGL/OpenGLRendererAPI.cpp
-	src/Platform/OpenGL/OpenGLRendererAPI.hpp
 	src/engine/Renderer/Camera.cpp
-	src/engine/Renderer/Camera.hpp
-	src/engine/Core/Timestep.hpp
-	src/Platform/OpenGL/OpenGLShader.cpp
-	src/Platform/OpenGL/OpenGLShader.hpp
-	src/engine/Renderer/ITexture.cpp
-	src/engine/Renderer/ITexture.hpp
+	src/engine/Renderer/IShader.cpp
+	src/engine/Renderer/Renderer.cpp
+	src/engine/Renderer/RendererAPI.cpp
+	src/Platform/OpenGL/OpenGLBuffer.cpp
+	src/Platform/OpenGL/OpenGLContext.cpp]]
+	#src/engine/Rendering/OpenGL/OpenGLRendererAPI.cpp
+	#[[src/Platform/OpenGL/OpenGLShader.cpp
 	src/Platform/OpenGL/OpenGLTexture.cpp
-	src/Platform/OpenGL/OpenGLTexture.hpp
-	src/engine/CameraController.cpp
-	src/engine/CameraController.hpp
+	src/Platform/OpenGL/OpenGLVertexArray.cpp
+	src/Platform/Windows/WindowsInput.cpp
+	src/Platform/Windows/WindowsWindow.cpp
+	src/engine/Application/Application.cpp
+	src/engine/Application/CameraController.cpp
+	src/engine/Application/Layer.cpp
+	src/engine/Application/LayerStack.cpp
+	src/engine/Application/IMGUI/IMGUILayer.cpp]]
+	#[[src/EEnginePCH.hpp
+	src/EEngine.hpp]]
+)
+
+target_sources(engine
+	PUBLIC
+		FILE_SET cxx_modules TYPE CXX_MODULES FILES
+			src/engine/EEngine.ixx
+			src/engine/Core/EEngine.Core.ixx
+			#[[src/engine/Core/Core.ixx]]
+			src/engine/Core/IInput.ixx
+			#[[src/engine/Core/Input.ixx
+			src/engine/Core/KeyCode.ixx
+			src/engine/Core/Log.ixx
+			src/engine/Core/MouseButtonCode.ixx
+			src/engine/Core/Timestep.ixx]]
+			src/engine/Event/EEngine.Event.ixx
+			#[[src/engine/Event/ApplicationEvent.ixx
+			src/engine/Event/Event.ixx]]
+			src/engine/Event/KeyEvent.ixx
+			src/engine/Event/MouseEvent.ixx
+			src/engine/Rendering/EEngine.Rendering.ixx
+			src/engine/Rendering/API.ixx
+			src/engine/Rendering/Buffer.ixx
+			src/engine/Rendering/Camera.ixx
+			src/engine/Rendering/IGraphicsContext.ixx
+			src/engine/Rendering/IRendererAPI.ixx
+			src/engine/Rendering/IShader.ixx
+			src/engine/Rendering/ITexture.ixx
+			src/engine/Rendering/IVertexArray.ixx
+			src/engine/Rendering/Renderer.ixx
+			src/engine/Rendering/RendererAPI.ixx
+			src/engine/Rendering/ShaderLibrary.ixx
+			src/engine/Rendering/OpenGL/OpenGLBuffer.ixx
+			src/engine/Rendering/OpenGL/OpenGLContext.ixx
+			src/engine/Rendering/OpenGL/OpenGLRendererAPI.ixx
+			src/engine/Rendering/OpenGL/OpenGLShader.ixx
+			src/engine/Rendering/OpenGL/OpenGLTexture.ixx
+			src/engine/Rendering/OpenGL/OpenGLVertexArray.ixx
+			src/engine/Application/Windows/WindowsInput.ixx
+			src/engine/Application/Windows/WindowsWindow.ixx
+			src/engine/Application/EEngine.Application.ixx
+			src/engine/Application/Application.ixx
+			src/engine/Application/CameraController.ixx
+			src/engine/Application/IWindow.ixx
+			src/engine/Application/Layer.ixx
+			src/engine/Application/LayerStack.ixx
+			src/engine/Application/IMGUI/IMGUILayer.ixx
+			#[[src/engine/EntryPoint.ixx]]
+		#FILE_SET cxx_module_internal_partitions TYPE CXX_MODULE_INTERNAL_PARTITIONS FILES
+			#src/engine/Core/Log.cpp
+			#src/engine/Rendering/Buffer.cpp
+			#src/engine/Rendering/Camera.cpp
+			#src/engine/Rendering/ShaderLibrary.cpp
+			#src/engine/Rendering/Renderer.cpp
+			#src/engine/Rendering/RendererAPI.cpp
+			#src/engine/Rendering/OpenGL/OpenGLBuffer.cpp
+			#src/engine/Rendering/OpenGL/OpenGLContext.cpp
+			#src/engine/Rendering/OpenGL/OpenGLRendererAPI.cpp
+			#src/engine/Rendering/OpenGL/OpenGLShader.cpp
+			#src/engine/Rendering/OpenGL/OpenGLTexture.cpp
+			#src/engine/Rendering/OpenGL/OpenGLVertexArray.cpp
+			#src/engine/Application/Windows/WindowsInput.cpp
+			#src/engine/Application/Windows/WindowsWindow.cpp
+			#src/engine/Application/Application.cpp
+			#src/engine/Application/CameraController.cpp
+			#src/engine/Application/Layer.cpp
+			#src/engine/Application/LayerStack.cpp
+			#src/engine/Application/IMGUI/IMGUILayer.cpp
 )
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
@@ -87,10 +120,10 @@ target_link_libraries(engine
 	glfw
 )
 
-target_precompile_headers(engine
+#[[target_precompile_headers(engine
 	PRIVATE
 	src/EEnginePCH.hpp
-)
+)]]
 
 target_include_directories(engine
 	PUBLIC
@@ -114,5 +147,5 @@ endif ()]]
 if(MSVC)
 	#C4100 is unused parameter warning
 	#C4201 is nameless union/struct warning, glm was causing this, but probably better to disable per file
-	target_compile_options(engine PRIVATE /W4 /WX /wd4100 #[[/wd4201]] /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
+	target_compile_options(engine PRIVATE /W4 /WX /wd4100 /wd4201 /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
 endif()

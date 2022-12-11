@@ -1,3 +1,4 @@
+/*
 #pragma once
 
 #include <algorithm>
@@ -12,8 +13,8 @@
 #include <unordered_set>
 #include <utility>
 
-#include "engine/Log.hpp"
+#include "engine/Core/Log.hpp"
 
 #ifdef EE_PLATFORM_WINDOWS
 	#include <Windows.h>
-#endif
+#endif*/
