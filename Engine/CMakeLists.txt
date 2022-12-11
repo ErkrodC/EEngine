@@ -18,27 +18,6 @@ add_subdirectory(vendor/stb_image)
 add_library(engine
 	src/engine/Core/Core.hpp
 	src/engine/Event/Event.hpp
-	#[[src/engine/Core/Log.cpp
-	src/engine/Renderer/Buffer.cpp
-	src/engine/Renderer/Camera.cpp
-	src/engine/Renderer/IShader.cpp
-	src/engine/Renderer/Renderer.cpp
-	src/engine/Renderer/RendererAPI.cpp
-	src/Platform/OpenGL/OpenGLBuffer.cpp
-	src/Platform/OpenGL/OpenGLContext.cpp]]
-	#src/engine/Rendering/OpenGL/OpenGLRendererAPI.cpp
-	#[[src/Platform/OpenGL/OpenGLShader.cpp
-	src/Platform/OpenGL/OpenGLTexture.cpp
-	src/Platform/OpenGL/OpenGLVertexArray.cpp
-	src/Platform/Windows/WindowsInput.cpp
-	src/Platform/Windows/WindowsWindow.cpp
-	src/engine/Application/Application.cpp
-	src/engine/Application/CameraController.cpp
-	src/engine/Application/Layer.cpp
-	src/engine/Application/LayerStack.cpp
-	src/engine/Application/IMGUI/IMGUILayer.cpp]]
-	#[[src/EEnginePCH.hpp
-	src/EEngine.hpp]]
 )
 
 target_sources(engine
@@ -46,16 +25,14 @@ target_sources(engine
 		FILE_SET cxx_modules TYPE CXX_MODULES FILES
 			src/engine/EEngine.ixx
 			src/engine/Core/EEngine.Core.ixx
-			#[[src/engine/Core/Core.ixx]]
-			src/engine/Core/IInput.ixx
-			#[[src/engine/Core/Input.ixx
+			src/engine/Core/Core.ixx
 			src/engine/Core/KeyCode.ixx
 			src/engine/Core/Log.ixx
 			src/engine/Core/MouseButtonCode.ixx
-			src/engine/Core/Timestep.ixx]]
+			src/engine/Core/Timestep.ixx
 			src/engine/Event/EEngine.Event.ixx
-			#[[src/engine/Event/ApplicationEvent.ixx
-			src/engine/Event/Event.ixx]]
+			src/engine/Event/ApplicationEvent.ixx
+			src/engine/Event/Event.ixx
 			src/engine/Event/KeyEvent.ixx
 			src/engine/Event/MouseEvent.ixx
 			src/engine/Rendering/EEngine.Rendering.ixx
@@ -81,31 +58,16 @@ target_sources(engine
 			src/engine/Application/EEngine.Application.ixx
 			src/engine/Application/Application.ixx
 			src/engine/Application/CameraController.ixx
+			src/engine/Application/IInput.ixx
+			src/engine/Application/Input.ixx
 			src/engine/Application/IWindow.ixx
 			src/engine/Application/Layer.ixx
 			src/engine/Application/LayerStack.ixx
 			src/engine/Application/IMGUI/IMGUILayer.ixx
+			src/engine/Application/TBD.ixx
 			#[[src/engine/EntryPoint.ixx]]
 		#FILE_SET cxx_module_internal_partitions TYPE CXX_MODULE_INTERNAL_PARTITIONS FILES
-			#src/engine/Core/Log.cpp
-			#src/engine/Rendering/Buffer.cpp
-			#src/engine/Rendering/Camera.cpp
-			#src/engine/Rendering/ShaderLibrary.cpp
-			#src/engine/Rendering/Renderer.cpp
-			#src/engine/Rendering/RendererAPI.cpp
-			#src/engine/Rendering/OpenGL/OpenGLBuffer.cpp
-			#src/engine/Rendering/OpenGL/OpenGLContext.cpp
-			#src/engine/Rendering/OpenGL/OpenGLRendererAPI.cpp
-			#src/engine/Rendering/OpenGL/OpenGLShader.cpp
-			#src/engine/Rendering/OpenGL/OpenGLTexture.cpp
-			#src/engine/Rendering/OpenGL/OpenGLVertexArray.cpp
-			#src/engine/Application/Windows/WindowsInput.cpp
-			#src/engine/Application/Windows/WindowsWindow.cpp
-			#src/engine/Application/Application.cpp
-			#src/engine/Application/CameraController.cpp
-			#src/engine/Application/Layer.cpp
-			#src/engine/Application/LayerStack.cpp
-			#src/engine/Application/IMGUI/IMGUILayer.cpp
+			#src/engine/Core/Example.cpp
 )
 
 target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)

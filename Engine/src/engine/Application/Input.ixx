@@ -1,14 +1,14 @@
 module;
 #include <utility>
 
-export module EEngine.Core:Input;
+export module EEngine.Application:Input;
 import :IInput;
-import :KeyCode;
-import :MouseButtonCode;
+import EEngine.Core;
 
 namespace EEngine::Input {
 	static IInput* s_Instance;
 
+	export inline void SetInputInstance(IInput* instance) { s_Instance = instance; }
 	export inline bool IsKeyPressed(KeyCode keyCode) { return s_Instance->IsKeyPressedImpl(keyCode); }
 	export inline bool IsMouseButtonPressed(MouseButtonCode mouseButtonCode) { return s_Instance->IsMouseButtonPressedImpl(mouseButtonCode); }
 	export inline std::pair<float, float> GetMousePosition() { return s_Instance->GetMousePositionImpl(); }

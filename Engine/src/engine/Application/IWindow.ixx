@@ -25,7 +25,7 @@ export namespace EEngine {
 
 		virtual ~IWindow() = default;
 
-		static IWindow* Create(const WindowProps& props = WindowProps());
+		//static IWindow* Create(const WindowProps& props = WindowProps());
 
 		virtual void OnUpdate() = 0;
 		virtual unsigned int GetWidth() const = 0;

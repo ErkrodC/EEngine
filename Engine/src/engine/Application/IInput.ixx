@@ -1,9 +1,8 @@
 module;
 #include <utility>
 
-export module EEngine.Core:IInput;
-import :KeyCode;
-import :MouseButtonCode;
+export module EEngine.Application:IInput;
+import EEngine.Core;
 
 export namespace EEngine {
 	class IInput {

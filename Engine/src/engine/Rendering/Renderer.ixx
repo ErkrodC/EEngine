@@ -45,6 +45,7 @@ namespace EEngine::Renderer {
 	export void BeginScene(const Camera& camera) {
 		s_SceneData->ProjectionView = camera.GetProjectionViewMatrix();
 	}
+
 	export void EndScene() {
 
 	}
