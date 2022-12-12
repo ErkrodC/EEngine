@@ -1,5 +1,4 @@
 module;
-#include <memory>
 #include <GLFW/glfw3.h>
 #include "imgui.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -8,6 +7,7 @@ module;
 export module EEngine.Application:IMGUILayer;
 import :IWindow;
 import :Layer;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class IMGUILayer : public Layer {

@@ -1,8 +1,6 @@
-module;
-#include <vector>
-
 export module EEngine.Application:LayerStack;
 import :Layer;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class LayerStack {

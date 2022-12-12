@@ -1,17 +1,9 @@
-//module;
-#include <memory>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
-#include "EEngine.hpp"
 
-//export module Runner;
-import EEngine.Core;
-import EEngine.Application;
-import EEngine.Event;
-import EEngine.Rendering;
-//#include <Platform/OpenGL/OpenGLShader.ixx>
+import EEngine;
 
 class ExampleLayer : public EEngine::Layer {
 public:

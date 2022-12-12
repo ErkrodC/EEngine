@@ -1,10 +1,9 @@
 module;
-#include <functional>
-#include <iostream>
 #include "Core/Core.hpp"
 
 export module EEngine.Event:Event;
 import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	// ER TODO Events in EEngine are currently synchronous

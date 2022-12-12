@@ -1,12 +1,11 @@
 module;
-#include <string>
-#include <unordered_map>
 #include "Core/Core.hpp"
 
 export module EEngine.Rendering:ShaderLibrary;
 import :IShader;
 import :RendererAPI;
 import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class ShaderLibrary {

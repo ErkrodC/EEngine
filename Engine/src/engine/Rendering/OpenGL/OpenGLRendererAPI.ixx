@@ -1,6 +1,4 @@
 module;
-#include <memory>
-#include <string>
 #include <glm/vec4.hpp>
 #include <glad/glad.h>
 
@@ -10,23 +8,15 @@ import :IRendererAPI;
 import :IShader;
 import :IVertexArray;
 import :ITexture;
-import EEngine.Core;
-
-// ER TODO impl specific
-//import :Buffer;
 import :OpenGLBuffer;
 import :OpenGLShader;
 import :OpenGLVertexArray;
 import :OpenGLTexture;
-//import :IShader;
-//import :IVertexArray;
-//import :ITexture;
-//import EEngine.Core;
+import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class OpenGLRendererAPI : public IRendererAPI {
-	/*public:
-	private:*/
 	public:
 		void InitializeImpl() override {
 			glEnable(GL_BLEND);

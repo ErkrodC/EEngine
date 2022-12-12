@@ -1,5 +1,4 @@
 module;
-#include <string>
 #include <glad/glad.h>
 #include <stb_image.hpp>
 #include "Core/Core.hpp"
@@ -7,6 +6,7 @@ module;
 export module EEngine.Rendering:OpenGLTexture;
 import :ITexture;
 import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class OpenGLTexture2D : public ITexture2D {

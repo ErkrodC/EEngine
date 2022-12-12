@@ -1,7 +1,5 @@
-module;
-#include <memory>
-
 export module EEngine.Core:Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	template<typename T>

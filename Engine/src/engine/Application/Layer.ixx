@@ -1,9 +1,7 @@
-module;
-#include <string>
-
 export module EEngine.Application:Layer;
 import EEngine.Core;
 import EEngine.Event;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class Layer {

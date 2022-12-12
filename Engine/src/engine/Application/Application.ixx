@@ -1,5 +1,4 @@
 module;
-#include <memory>
 #include <GLFW/glfw3.h>
 #include "Core/Core.hpp"
 
@@ -13,6 +12,7 @@ import :TBD;
 import EEngine.Core;
 import EEngine.Event;
 import EEngine.Rendering;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class Application {

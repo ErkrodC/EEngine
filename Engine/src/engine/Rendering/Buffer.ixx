@@ -1,10 +1,9 @@
 module;
-#include <string>
-#include <vector>
 #include "Core/Core.hpp"
 
 export module EEngine.Rendering:Buffer;
 import EEngine.Core;
+import EEngine.std.core;
 
 namespace EEngine {
 	export enum class ShaderData {
@@ -63,7 +62,6 @@ namespace EEngine {
 		uint32_t ComponentCount;
 		bool Normalized;
 
-		// ER TODO intellisense says this isn't implemented
 		BufferElement(
 			ShaderData type,
 			const std::string& name,

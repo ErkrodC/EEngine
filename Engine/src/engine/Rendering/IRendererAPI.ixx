@@ -1,5 +1,4 @@
 module;
-#include <string>
 #include <glm/vec4.hpp>
 
 export module EEngine.Rendering:IRendererAPI;
@@ -8,6 +7,7 @@ import :IShader;
 import :IVertexArray;
 import :ITexture;
 import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class IRendererAPI {

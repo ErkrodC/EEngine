@@ -1,9 +1,7 @@
-module;
-#include <utility>
-
 export module EEngine.Application:Input;
 import :IInput;
 import EEngine.Core;
+import EEngine.std.core;
 
 namespace EEngine::Input {
 	static IInput* s_Instance;

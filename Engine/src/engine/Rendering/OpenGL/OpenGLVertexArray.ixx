@@ -1,5 +1,4 @@
 module;
-#include <vector>
 #include <glad/glad.h>
 #include "Core/Core.hpp"
 

@@ -1,19 +1,14 @@
 module;
-#include <string>
 #include <GLFW/glfw3.h>
 #include "Core/Core.hpp"
 
 export module EEngine.Application:WindowsWindow;
-/*import EEngine.Core;*/
 import :Input;
 import :IWindow;
+import EEngine.Core;
 import EEngine.Event;
 import EEngine.Rendering;
-
-// ER TODO impl specific
-//import :IWindow;
-import EEngine.Core;
-//import EEngine.Event;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class WindowsWindow : public IWindow {

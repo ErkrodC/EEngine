@@ -1,7 +1,8 @@
 module;
-#include <string>
+#include <cstdint>
 
 export module EEngine.Rendering:ITexture;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class ITexture {

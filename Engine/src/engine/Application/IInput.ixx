@@ -1,8 +1,6 @@
-module;
-#include <utility>
-
 export module EEngine.Application:IInput;
 import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class IInput {

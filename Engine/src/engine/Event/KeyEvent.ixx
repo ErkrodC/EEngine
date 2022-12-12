@@ -1,11 +1,10 @@
 module;
-#include <string>
-#include <sstream>
 #include "Event.hpp"
 
 export module EEngine.Event:KeyEvent;
 import :Event;
 import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class KeyEvent : public Event {

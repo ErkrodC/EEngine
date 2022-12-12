@@ -1,10 +1,9 @@
 module;
-#include <cstdint>
-#include <vector>
 #include <glad/glad.h>
 
 export module EEngine.Rendering:OpenGLBuffer;
 import :Buffer;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class OpenGLIndexBuffer : public IIndexBuffer {

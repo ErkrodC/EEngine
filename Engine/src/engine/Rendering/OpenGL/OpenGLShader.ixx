@@ -1,9 +1,4 @@
 module;
-#include <array>
-#include <fstream>
-#include <string>
-#include <unordered_map>
-#include <vector>
 #include <glm/mat4x4.hpp>
 #include <glad/glad.h>
 #include "Core/Core.hpp"
@@ -15,10 +10,7 @@ DISABLE_WARNING_POP
 export module EEngine.Rendering:OpenGLShader;
 import :IShader;
 import EEngine.Core;
-
-/*// ER TODO remove
-typedef unsigned int GLenum;
-typedef unsigned int GLuint;*/
+import EEngine.std.core;
 
 export namespace EEngine {
 	class OpenGLShader : public IShader {

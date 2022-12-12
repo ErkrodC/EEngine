@@ -65,7 +65,12 @@ target_sources(engine
 			src/engine/Application/LayerStack.ixx
 			src/engine/Application/IMGUI/IMGUILayer.ixx
 			src/engine/Application/TBD.ixx
-			#[[src/engine/EntryPoint.ixx]]
+			src/engine/CoreWrapper.ixx
+		FILE_SET cxx_module_HEADER_UNITS TYPE CXX_MODULE_HEADER_UNITS FILES
+			src/engine/EntryPoint.ixx
+			#ER TODO make these header units once importing is supported: https://gitlab.kitware.com/cmake/cmake/-/issues/18355
+			#src/engine/Core/Core.hpp
+			#src/engine/Event/Event.hpp
 		#FILE_SET cxx_module_internal_partitions TYPE CXX_MODULE_INTERNAL_PARTITIONS FILES
 			#src/engine/Core/Example.cpp
 )
@@ -81,11 +86,6 @@ target_link_libraries(engine
 	glad
 	glfw
 )
-
-#[[target_precompile_headers(engine
-	PRIVATE
-	src/EEnginePCH.hpp
-)]]
 
 target_include_directories(engine
 	PUBLIC
@@ -109,5 +109,6 @@ endif ()]]
 if(MSVC)
 	#C4100 is unused parameter warning
 	#C4201 is nameless union/struct warning, glm was causing this, but probably better to disable per file
-	target_compile_options(engine PRIVATE /W4 /WX /wd4100 /wd4201 /FI ${PROJECT_SOURCE_DIR}/src/EEnginePCH.hpp)
+	# ER TODO rethink /wd4291
+	target_compile_options(engine PRIVATE /W4 /WX /wd4100 /wd4201 /wd4291)
 endif()

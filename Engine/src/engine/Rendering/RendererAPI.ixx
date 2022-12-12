@@ -1,5 +1,4 @@
 module;
-#include <string>
 #include <glm/vec4.hpp>
 
 export module EEngine.Rendering:RendererAPI;
@@ -10,6 +9,7 @@ import :IVertexArray;
 import :ITexture;
 import :OpenGLRendererAPI;
 import EEngine.Core;
+import EEngine.std.core;
 
 namespace EEngine::RendererAPI {
 	static IRendererAPI* s_RendererAPI = new OpenGLRendererAPI();

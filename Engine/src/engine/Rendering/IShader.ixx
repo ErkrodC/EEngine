@@ -1,8 +1,6 @@
-module;
-#include <string>
-
 export module EEngine.Rendering:IShader;
 import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class IShader {

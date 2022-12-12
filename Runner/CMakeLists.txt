@@ -1,8 +1,8 @@
 project(app)
 
-add_executable(app src/Runner.ixx src/Main.ixx)
+add_executable(app src/Runner.ixx)
 target_link_libraries(app
-	#[[PRIVATE]]
+	PRIVATE
 	engine
 )
 
@@ -12,7 +12,3 @@ target_link_libraries(app
 	src/Runner.ixx
 	#[=[../Engine/src/engine/EntryPoint.ixx]=]
 	)]]
-
-if(MSVC)
-	#[[target_compile_options(app PRIVATE /FI ${PROJECT_SOURCE_DIR}/../Engine/src/EEnginePCH.hpp)]]
-endif()

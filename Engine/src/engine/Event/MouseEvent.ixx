@@ -1,11 +1,10 @@
 module;
-#include <string>
-#include <sstream>
 #include "Event.hpp"
 
 export module EEngine.Event:MouseEvent;
 import :Event;
 import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class MouseMovedEvent : public Event {

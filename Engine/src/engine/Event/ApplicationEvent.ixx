@@ -1,10 +1,9 @@
 module;
-#include <string>
-#include <sstream>
 #include "Event.hpp"
 
 export module EEngine.Event:ApplicationEvent;
 import :Event;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class WindowResizeEvent : public Event {

@@ -1,9 +1,7 @@
-module;
-#include <vector>
-
 export module EEngine.Rendering:IVertexArray;
 import :Buffer;
 import EEngine.Core;
+import EEngine.std.core;
 
 export namespace EEngine {
 	class IVertexArray {

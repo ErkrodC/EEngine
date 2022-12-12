@@ -1,6 +1,4 @@
 module;
-#include <memory>
-#include <string>
 #include "Core/Core.hpp"
 DISABLE_WARNING_PUSH
 DISABLE_WARNING_NAMELESS_STRUCT_UNION
@@ -13,17 +11,11 @@ import :Buffer;
 import :Camera;
 import :IShader;
 import :IVertexArray;
+import :OpenGLShader;
+import :RendererAPI;
 import :ShaderLibrary;
 import EEngine.Core;
-
-// ER TODO impl specific, from refactor
-/*import :API;
-import :Camera;
-import :IShader;
-import :IVertexArray;*/
-import :RendererAPI;
-import :OpenGLShader;
-/*import EEngine.Core;*/
+import EEngine.std.core;
 
 namespace EEngine::Renderer {
 	struct SceneData {
