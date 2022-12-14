@@ -34,6 +34,10 @@ namespace EEngine::Renderer {
 		RendererAPI::Initialize();
 	}
 
+	export void OnWindowResized(uint32_t width, uint32_t height) {
+		RendererAPI::SetViewport(0, 0, width, height);
+	}
+
 	export void BeginScene(const Camera& camera) {
 		s_SceneData->ProjectionView = camera.GetProjectionViewMatrix();
 	}

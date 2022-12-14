@@ -37,6 +37,7 @@ export namespace EEngine {
 		void OnEvent(Event& event) {
 			EventDispatcher dispatcher(event);
 			dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+			dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResized));
 
 			for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ) {
 				(*--it)->OnEvent(event);
@@ -46,14 +47,14 @@ export namespace EEngine {
 
 		void Run() {
 			while (m_Running) {
-				float time = (float)glfwGetTime();
+				auto time = (float)glfwGetTime();
 				Timestep timestep {
 					time - m_LastFrameTime
 				};
 				m_LastFrameTime = time;
 
 
-				{
+				if (!m_Minimized) {
 					for (Layer* layer: m_LayerStack) {
 						layer->OnUpdate(timestep);
 					}
@@ -90,11 +91,41 @@ export namespace EEngine {
 		std::shared_ptr<IWindow> m_Window;
 		IMGUILayer* m_IMGUILayer;
 		bool m_Running = true;
+		bool m_Minimized = false;
 		LayerStack m_LayerStack;
 		float  m_LastFrameTime;
 
 		bool OnWindowClose(WindowCloseEvent& event) {
 			m_Running = false;
+			return true;
+		}
+
+		bool OnWindowResized(WindowResizeEvent& event) {
+			if (event.GetWidth() == 0 || event.GetHeight() == 0) {
+				m_Minimized = true;
+				return false;
+			}
+
+			m_Minimized = false;
+			// ER TODO do resize only on mouse up/drag end.
+			// no mouse button event for dragging window edge tho...
+			/*if (!Input::IsMouseButtonPressed(MouseButtonCode::Mouse1)) {
+				EE_CORE_TRACE("{} {} {} {} {} {} {} {}",
+					Input::IsMouseButtonPressed(MouseButtonCode::Mouse1),
+					Input::IsMouseButtonPressed(MouseButtonCode::Mouse2),
+					Input::IsMouseButtonPressed(MouseButtonCode::Mouse3),
+					Input::IsMouseButtonPressed(MouseButtonCode::Mouse4),
+					Input::IsMouseButtonPressed(MouseButtonCode::Mouse5),
+					Input::IsMouseButtonPressed(MouseButtonCode::Mouse6),
+					Input::IsMouseButtonPressed(MouseButtonCode::Mouse7),
+					Input::IsMouseButtonPressed(MouseButtonCode::Mouse8)
+				);
+				EE_CORE_TRACE("Resized to ({}, {})", event.GetWidth(), event.GetHeight());
+				Renderer::OnWindowResized(event.GetWidth(), event.GetHeight());
+			}*/
+
+			Renderer::OnWindowResized(event.GetWidth(), event.GetHeight());
+
 			return true;
 		}
 	};

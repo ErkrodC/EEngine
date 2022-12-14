@@ -18,6 +18,10 @@ namespace EEngine::RendererAPI {
 		s_RendererAPI->InitializeImpl();
 	}
 
+	export inline void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+		s_RendererAPI->SetViewportImpl(x, y, width, height);
+	}
+
 	export inline void Clear(const glm::vec4& color) {
 		s_RendererAPI->ClearImpl(color);
 	}

@@ -92,6 +92,7 @@ export namespace EEngine {
 				data.Width = width;
 				data.Height = height;
 				WindowResizeEvent event(width, height);
+				//EE_CORE_TRACE("{}, {}", width, height);
 				data.EventCallback(event);
 			});
 
