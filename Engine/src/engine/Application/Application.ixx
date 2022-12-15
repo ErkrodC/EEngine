@@ -27,6 +27,7 @@ export namespace EEngine {
 			m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 			Renderer::Initialize();
+			Renderer2D::Initialize();
 
 			m_IMGUILayer = new IMGUILayer(m_Window);
 			PushOverlay(m_IMGUILayer);

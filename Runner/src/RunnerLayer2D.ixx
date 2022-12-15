@@ -8,29 +8,7 @@ public:
 	}
 
 	void OnAttach() override {
-		m_VertexArray = EEngine::RendererAPI::CreateVertexArray();
 
-		float vertices[4 * 3] = {
-			-0.5f, -0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			0.5f, 0.5f, 0.0f,
-			-0.5f, 0.5f, 0.0f,
-		};
-
-		EEngine::Ref<EEngine::IVertexBuffer> vertexBuffer;
-		vertexBuffer = EEngine::RendererAPI::CreateVertexBuffer(vertices, sizeof(vertices));
-
-		vertexBuffer->SetLayout({
-			{ EEngine::ShaderData::Float3, "a_Position" },
-		});
-		m_VertexArray->AddVertexBuffer(vertexBuffer);
-
-		uint32_t indices[6] = { 0, 1, 2, 2, 3, 0 };
-		EEngine::Ref<EEngine::IIndexBuffer> indexBuffer;
-		indexBuffer =EEngine::RendererAPI::CreateIndexBuffer(indices, sizeof(indices) / sizeof(uint32_t));
-		m_VertexArray->SetIndexBuffer(indexBuffer);
-
-		auto flatColorShader = EEngine::Renderer::GetShaderLibrary()->Load("assets/shaders/FlatColor.glsl");
 	}
 
 	void OnDetach() override {
@@ -44,18 +22,9 @@ public:
 
 		HandleTriMovement(timestep);
 
-		EEngine::Renderer::BeginScene(m_CameraController.GetCamera()); {
-			EEngine::Ref<EEngine::IShader> flatColorShader;
-			if (EEngine::Renderer::GetShaderLibrary()->TryGet("FlatColor", &flatColorShader)) {
-				{ // ER TODO hack while no common api for uploading uniform data
-					flatColorShader->Bind();
-					auto glFlatColorShader = std::dynamic_pointer_cast<EEngine::OpenGLShader>(flatColorShader);
-					glFlatColorShader->UploadUniformFloat4("u_Color", m_SquareColor);
-				}
-
-				EEngine::Renderer::Submit(flatColorShader, m_VertexArray, EEngine::Math::translate(EEngine::Math::mat4(1.0f), m_TriPos));
-			}
-		} EEngine::Renderer::EndScene();
+		EEngine::Renderer2D::BeginScene(m_CameraController.GetCamera()); {
+			EEngine::Renderer2D::DrawQuad({ 0.0f, 0.0f }, {1.0f, 1.0f}, m_SquareColor);
+		} EEngine::Renderer2D::EndScene();
 
 		// ER TODO usually executed on a separate thread
 		//EEngine::Renderer::Flush();
@@ -94,8 +63,6 @@ private:
 	EEngine::CameraController m_CameraController;
 
 	// ER TEMP
-	EEngine::Ref<EEngine::IVertexArray> m_VertexArray;
-
-	EEngine::Math::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
+	EEngine::Math::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 	EEngine::Math::vec3 m_TriPos{};
 };

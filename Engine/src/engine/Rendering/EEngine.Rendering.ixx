@@ -10,6 +10,7 @@ export import :IShader;
 export import :ITexture;
 export import :IVertexArray;
 export import :Renderer;
+export import :Renderer2D;
 export import :RendererAPI;
 export import :ShaderLibrary;
 

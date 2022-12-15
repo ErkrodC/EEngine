@@ -45,6 +45,7 @@ target_sources(engine
 			src/engine/Rendering/ITexture.ixx
 			src/engine/Rendering/IVertexArray.ixx
 			src/engine/Rendering/Renderer.ixx
+			src/engine/Rendering/Renderer2D.ixx
 			src/engine/Rendering/RendererAPI.ixx
 			src/engine/Rendering/ShaderLibrary.ixx
 			src/engine/Rendering/OpenGL/OpenGLBuffer.ixx
