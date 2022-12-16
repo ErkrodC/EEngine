@@ -23,7 +23,8 @@ public:
 		HandleTriMovement(timestep);
 
 		EEngine::Renderer2D::BeginScene(m_CameraController.GetCamera()); {
-			EEngine::Renderer2D::DrawQuad({ 0.0f, 0.0f }, {1.0f, 1.0f}, m_SquareColor);
+			EEngine::Renderer2D::DrawQuad({ -1.0f, 0.0f }, {0.8f, 0.8f}, m_SquareColor);
+			EEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, {0.5f, 0.75f}, m_SquareColor);
 		} EEngine::Renderer2D::EndScene();
 
 		// ER TODO usually executed on a separate thread

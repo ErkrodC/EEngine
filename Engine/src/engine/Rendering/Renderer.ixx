@@ -11,7 +11,6 @@ import :Buffer;
 import :Camera;
 import :IShader;
 import :IVertexArray;
-import :OpenGLShader;
 import :RendererAPI;
 import :ShaderLibrary;
 import EEngine.Core;
@@ -52,13 +51,8 @@ namespace EEngine::Renderer {
 		const glm::mat4& transform = glm::mat4(1.0f)
 	) {
 		shader->Bind();
-
-		{
-			auto openGLShader = std::dynamic_pointer_cast<OpenGLShader>(shader);
-			openGLShader->UploadUniformMat4("u_ProjectionView", s_SceneData->ProjectionView);
-			openGLShader->UploadUniformMat4("u_Transform", transform);
-		}
-
+		shader->SetMat4("u_ProjectionView", s_SceneData->ProjectionView);
+		shader->SetMat4("u_Transform", transform);
 		vertexArray->Bind();
 		RendererAPI::DrawIndexed(vertexArray);
 	}

@@ -1,9 +1,12 @@
+module;
+// ER TEMP for some reason operator overloads don't get imported by `import EEngine.Math;`...
+#include <glm/detail/type_mat4x4.hpp>
+
 export module EEngine.Rendering:Renderer2D;
 import :Camera;
 import :Buffer;
 import :IShader;
 import :IVertexArray;
-import :OpenGLShader; // ER TODO hackish?
 import :Renderer;
 import :RendererAPI;
 import :ShaderLibrary;
@@ -46,10 +49,9 @@ namespace EEngine::Renderer2D {
 	}
 
 	export void BeginScene(const Camera& camera) {
-		auto castedShader = std::dynamic_pointer_cast<OpenGLShader>(s_Data->Shader);
-		castedShader->Bind();
-		castedShader->UploadUniformMat4("u_ProjectionView", camera.GetProjectionViewMatrix());
-		castedShader->UploadUniformMat4("u_Transform", Math::mat4(1.0f));
+		auto shader = s_Data->Shader;
+		shader->Bind();
+		shader->SetMat4("u_ProjectionView", camera.GetProjectionViewMatrix());
 	}
 
 	export void EndScene() {
@@ -57,9 +59,15 @@ namespace EEngine::Renderer2D {
 	}
 
 	export void DrawQuad(const Math::vec3& position, const Math::vec2& size, const Math::vec4& color) {
-		auto castedShader = std::dynamic_pointer_cast<OpenGLShader>(s_Data->Shader);
-		castedShader->Bind();
-		castedShader->UploadUniformFloat4("u_Color", color);
+		auto shader = s_Data->Shader;
+		shader->Bind();
+		shader->SetFloat4("u_Color", color);
+
+		Math::mat4 pos = Math::translate(Math::Identity::mat4, position);
+		Math::mat4 rot = Math::Identity::mat4; // ER TODO rotation
+		Math::mat4 scale = Math::scale(Math::Identity::mat4, { size.x, size.y, 1.0f });
+		Math::mat4 transform = pos * rot * scale;
+		shader->SetMat4("u_Transform", transform);
 
 		s_Data->QuadVertexArray->Bind();
 		RendererAPI::DrawIndexed(s_Data->QuadVertexArray);

@@ -16,12 +16,6 @@ module;
 #include <utility>
 #include <vector>
 
-/*#include "engine/Log.hpp"
-
-#ifdef EE_PLATFORM_WINDOWS
-	#include <Windows.h>
-#endif*/
-
 export module EEngine.std.core;
 
 export {

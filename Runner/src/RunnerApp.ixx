@@ -40,9 +40,8 @@ public:
 		auto textureShader = EEngine::Renderer::GetShaderLibrary()->Load("assets/shaders/Texture.glsl");
 		m_Texture = EEngine::RendererAPI::CreateTexture2D("assets/textures/test.png");
 
-		const auto& openGLShader = std::dynamic_pointer_cast<EEngine::OpenGLShader>(textureShader);
-		openGLShader->Bind();
-		openGLShader->UploadUniformInt("u_Texture", 0);
+		textureShader->Bind();
+		textureShader->SetInt("u_Texture", 0);
 	}
 
 	void OnUpdate(EEngine::Timestep timestep) override {
