@@ -8,7 +8,7 @@ public:
 	}
 
 	void OnAttach() override {
-
+		m_Texture = EEngine::RendererAPI::CreateTexture2D("assets/textures/test.png");
 	}
 
 	void OnDetach() override {
@@ -25,6 +25,7 @@ public:
 		EEngine::Renderer2D::BeginScene(m_CameraController.GetCamera()); {
 			EEngine::Renderer2D::DrawQuad({ -1.0f, 0.0f }, {0.8f, 0.8f}, m_SquareColor);
 			EEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, {0.5f, 0.75f}, m_SquareColor);
+			EEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, {0.5f, 0.75f}, m_Texture);
 		} EEngine::Renderer2D::EndScene();
 
 		// ER TODO usually executed on a separate thread
@@ -66,4 +67,5 @@ private:
 	// ER TEMP
 	EEngine::Math::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 	EEngine::Math::vec3 m_TriPos{};
+	EEngine::Ref<EEngine::ITexture2D> m_Texture;
 };

@@ -21,6 +21,8 @@ export namespace EEngine {
 		void InitializeImpl() override {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			//glEnable(GL_DEPTH_TEST);
 		}
 
 		void SetViewportImpl(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override {
@@ -29,7 +31,7 @@ export namespace EEngine {
 
 		void ClearImpl(const glm::vec4& color) override {
 			glClearColor(color.r, color.g, color.b, color.a);
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT/* | GL_DEPTH_BUFFER_BIT*/);
 		}
 
 		void DrawIndexedImpl(const Ref<IVertexArray>& vertexArray) override {
