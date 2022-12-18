@@ -1,15 +1,11 @@
 module;
-#include <glm/mat4x4.hpp>
 #include <glad/glad.h>
 #include "Core/Core.hpp"
-DISABLE_WARNING_PUSH
-DISABLE_WARNING_NAMELESS_STRUCT_UNION
-#include <glm/gtc/type_ptr.hpp>
-DISABLE_WARNING_POP
 
 export module EEngine.Rendering:OpenGLShader;
 import :IShader;
 import EEngine.Core;
+import EEngine.Math;
 import EEngine.std.core;
 
 export namespace EEngine {
@@ -271,29 +267,29 @@ export namespace EEngine {
 			glUniform1f(location, value);
 		}
 
-		void UploadUniformFloat2(const std::string& name, const glm::vec2& values) {
+		void UploadUniformFloat2(const std::string& name, const Math::vec2& values) {
 			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 			glUniform2f(location, values.x, values.y);
 		}
 
-		void UploadUniformFloat3(const std::string& name, const glm::vec3& values) {
+		void UploadUniformFloat3(const std::string& name, const Math::vec3& values) {
 			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 			glUniform3f(location, values.x, values.y, values.z);
 		}
 
-		void UploadUniformFloat4(const std::string& name, const glm::vec4& values) {
+		void UploadUniformFloat4(const std::string& name, const Math::vec4& values) {
 			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 			glUniform4f(location, values.x, values.y, values.z, values.w);
 		}
 
-		void UploadUniformMat3(const std::string& name, const glm::mat3& matrix) {
+		void UploadUniformMat3(const std::string& name, const Math::mat3& matrix) {
 			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-			glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+			glUniformMatrix3fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 		}
 
-		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix) {
+		void UploadUniformMat4(const std::string& name, const Math::mat4& matrix) {
 			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+			glUniformMatrix4fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 		}
 	};
 } // EEngine

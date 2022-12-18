@@ -1,9 +1,5 @@
 module;
 #include "Core/Core.hpp"
-DISABLE_WARNING_PUSH
-DISABLE_WARNING_NAMELESS_STRUCT_UNION
-#include <glm/mat4x4.hpp>
-DISABLE_WARNING_POP
 
 export module EEngine.Rendering:Renderer;
 import :API;
@@ -14,16 +10,13 @@ import :IVertexArray;
 import :RendererAPI;
 import :ShaderLibrary;
 import EEngine.Core;
+import EEngine.Math;
 import EEngine.std.core;
 
 namespace EEngine::Renderer {
 	struct SceneData {
-		glm::mat4 ProjectionView;
+		Math::mat4 ProjectionView;
 	};
-
-	/*static API s_SelectedAPI;
-	static SceneData* s_SceneData;
-	static Ref<ShaderLibrary> s_ShaderLibrary;*/
 
 	static API s_SelectedAPI = API::OpenGL;
 	static SceneData* s_SceneData = new SceneData();
@@ -48,7 +41,7 @@ namespace EEngine::Renderer {
 	export void Submit(
 		const Ref<IShader>& shader,
 		const Ref<IVertexArray>& vertexArray,
-		const glm::mat4& transform = glm::mat4(1.0f)
+		const Math::mat4& transform = Math::mat4(1.0f)
 	) {
 		shader->Bind();
 		shader->SetMat4("u_ProjectionView", s_SceneData->ProjectionView);

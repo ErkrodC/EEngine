@@ -1,5 +1,4 @@
 module;
-#include <glm/vec4.hpp>
 #include <glad/glad.h>
 
 export module EEngine.Rendering:OpenGLRendererAPI;
@@ -13,6 +12,7 @@ import :OpenGLShader;
 import :OpenGLVertexArray;
 import :OpenGLTexture;
 import EEngine.Core;
+import EEngine.Math;
 import EEngine.std.core;
 
 export namespace EEngine {
@@ -29,7 +29,7 @@ export namespace EEngine {
 			glViewport(x, y, width, height);
 		}
 
-		void ClearImpl(const glm::vec4& color) override {
+		void ClearImpl(const Math::vec4& color) override {
 			glClearColor(color.r, color.g, color.b, color.a);
 			glClear(GL_COLOR_BUFFER_BIT/* | GL_DEPTH_BUFFER_BIT*/);
 		}

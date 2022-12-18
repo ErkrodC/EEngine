@@ -1,6 +1,3 @@
-module;
-#include <glm/vec4.hpp>
-
 export module EEngine.Rendering:RendererAPI;
 import :Buffer;
 import :IRendererAPI;
@@ -9,6 +6,7 @@ import :IVertexArray;
 import :ITexture;
 import :OpenGLRendererAPI;
 import EEngine.Core;
+import EEngine.Math;
 import EEngine.std.core;
 
 namespace EEngine::RendererAPI {
@@ -22,7 +20,7 @@ namespace EEngine::RendererAPI {
 		s_RendererAPI->SetViewportImpl(x, y, width, height);
 	}
 
-	export inline void Clear(const glm::vec4& color) {
+	export inline void Clear(const Math::vec4& color) {
 		s_RendererAPI->ClearImpl(color);
 	}
 

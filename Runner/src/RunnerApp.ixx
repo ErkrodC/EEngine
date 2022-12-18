@@ -1,9 +1,3 @@
-module;
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/ext/matrix_transform.hpp>
-
 export module RunnerModule:RunnerApp;
 import :RunnerLayer2D;
 import EEngine;
@@ -56,7 +50,7 @@ public:
 			m_Texture->Bind();
 			EEngine::Ref<EEngine::IShader> textureShader;
 			if (EEngine::Renderer::GetShaderLibrary()->TryGet("Texture", &textureShader)) {
-				EEngine::Renderer::Submit(textureShader, m_VertexArray, glm::translate(glm::mat4(1.0f), m_TriPos));
+				EEngine::Renderer::Submit(textureShader, m_VertexArray, EEngine::Math::translate(EEngine::Math::mat4(1.0f), m_TriPos));
 			}
 		} EEngine::Renderer::EndScene();
 
@@ -98,7 +92,7 @@ private:
 
 	EEngine::CameraController m_CameraController;
 
-	glm::vec3 m_TriPos{};
+	EEngine::Math::vec3 m_TriPos{};
 };
 
 class RunnerApp : public EEngine::Application {

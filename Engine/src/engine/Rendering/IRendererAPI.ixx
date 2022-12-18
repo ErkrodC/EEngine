@@ -1,12 +1,10 @@
-module;
-#include <glm/vec4.hpp>
-
 export module EEngine.Rendering:IRendererAPI;
 import :Buffer;
 import :IShader;
 import :IVertexArray;
 import :ITexture;
 import EEngine.Core;
+import EEngine.Math;
 import EEngine.std.core;
 
 export namespace EEngine {
@@ -15,7 +13,7 @@ export namespace EEngine {
 	/*private:*/public:
 		virtual void InitializeImpl() = 0;
 		virtual void SetViewportImpl(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
-		virtual void ClearImpl(const glm::vec4& color) = 0;
+		virtual void ClearImpl(const Math::vec4& color) = 0;
 		virtual void DrawIndexedImpl(const Ref<IVertexArray>& vertexArray) = 0;
 		virtual Ref<IIndexBuffer> CreateIndexBufferImpl(uint32_t* indices, uint32_t count) = 0;
 		virtual Ref<IVertexBuffer> CreateVertexBufferImpl(float* vertices, uint32_t size) = 0;

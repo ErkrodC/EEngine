@@ -14,7 +14,6 @@ DISABLE_WARNING_NAMELESS_STRUCT_UNION
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-//#include <glm/glm.hpp>
 #include <glm/detail/type_mat4x4.hpp>
 DISABLE_WARNING_POP
 

@@ -1,11 +1,11 @@
 module;
-#include <glm/ext/matrix_clip_space.hpp>
 #include "Core/Core.hpp"
 
 export module EEngine.Application:CameraController;
 import :Input;
 import EEngine.Core;
 import EEngine.Event;
+import EEngine.Math;
 import EEngine.Rendering;
 
 export namespace EEngine {
@@ -13,7 +13,7 @@ export namespace EEngine {
 	public:
 		explicit CameraController(float aspectRatio)
 			: m_AspectRatio(aspectRatio)
-			, m_Camera(glm::ortho(
+			, m_Camera(Math::ortho(
 				-m_AspectRatio * m_ZoomLevel,
 				m_AspectRatio * m_ZoomLevel,
 				-m_ZoomLevel,
@@ -77,7 +77,7 @@ export namespace EEngine {
 			m_ZoomLevel -= event.GetYOffset() * m_ZoomSpeed;
 			m_ZoomLevel = std::max(m_ZoomLevel, 0.01f);
 
-			m_Camera.SetProjection(glm::ortho(
+			m_Camera.SetProjection(Math::ortho(
 				-m_AspectRatio * m_ZoomLevel,
 				m_AspectRatio * m_ZoomLevel,
 				-m_ZoomLevel,
@@ -89,7 +89,7 @@ export namespace EEngine {
 
 		bool OnWindowResized(WindowResizeEvent& event) {
 			m_AspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
-			m_Camera.SetProjection(glm::ortho(
+			m_Camera.SetProjection(Math::ortho(
 				-m_AspectRatio * m_ZoomLevel,
 				m_AspectRatio * m_ZoomLevel,
 				-m_ZoomLevel,
@@ -108,9 +108,9 @@ export namespace EEngine {
 				) {
 				// ER TODO still broken
 				/*const auto& cameraRot = m_Camera.GetRotation();
-				auto normRot = glm::vec2(event.GetX(), event.GetY());
+				auto normRot = Math::vec2(event.GetX(), event.GetY());
 				normRot = normRot * 0.00001f;
-				m_Camera.SetRotation(cameraRot * glm::quat({ *//*normRot.x*//*0.0f, normRot.y, 0.0f }));*/
+				m_Camera.SetRotation(cameraRot * Math::quat({ *//*normRot.x*//*0.0f, normRot.y, 0.0f }));*/
 			}
 
 			return false;

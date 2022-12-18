@@ -1,51 +1,47 @@
 module;
-#include "Core/Core.hpp"
-DISABLE_WARNING_PUSH
-DISABLE_WARNING_NAMELESS_STRUCT_UNION
-#include <glm/ext/matrix_float4x4.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/ext/quaternion_float.hpp>
-DISABLE_WARNING_POP
+// ER TEMP for some reason operator overloads don't get imported by `import EEngine.Math;`...
+#include <glm/detail/type_mat4x4.hpp>
 
 export module EEngine.Rendering:Camera;
+import EEngine.Math;
 
 export namespace EEngine {
 	class Camera {
 	public:
-		explicit Camera(const glm::mat4& projection)
+		explicit Camera(const Math::mat4& projection)
 			: m_Projection(projection)
-			, m_Position(glm::vec3(0.0f, 0.0f, 0.0f))
-			, m_Rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f)
+			, m_Position(Math::vec3(0.0f, 0.0f, 0.0f))
+			, m_Rotation(Math::quat(1.0f, 0.0f, 0.0f, 0.0f)
 		) {
 			RecalculateViewMatrix();
 		}
 
-		void SetProjection(const glm::mat4& projection) {
+		void SetProjection(const Math::mat4& projection) {
 			m_Projection = projection;
 			m_ProjectionView = m_Projection * m_View;
 		}
 
-		const glm::vec3& GetPosition() const { return m_Position; }
-		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
+		const Math::vec3& GetPosition() const { return m_Position; }
+		void SetPosition(const Math::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
 
-		const glm::quat& GetRotation() const { return m_Rotation; }
-		void SetRotation(const glm::quat& rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
+		const Math::quat& GetRotation() const { return m_Rotation; }
+		void SetRotation(const Math::quat& rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
 
 
-		const glm::mat4& GetProjectionMatrix() const { return m_Projection; }
-		const glm::mat4& GetViewMatrix() const { return m_View; }
-		const glm::mat4& GetProjectionViewMatrix() const { return m_ProjectionView; }
+		const Math::mat4& GetProjectionMatrix() const { return m_Projection; }
+		const Math::mat4& GetViewMatrix() const { return m_View; }
+		const Math::mat4& GetProjectionViewMatrix() const { return m_ProjectionView; }
 	private:
-		glm::mat4 m_Projection;
-		glm::mat4 m_View;
-		glm::mat4 m_ProjectionView;
+		Math::mat4 m_Projection;
+		Math::mat4 m_View;
+		Math::mat4 m_ProjectionView;
 
-		glm::vec3 m_Position;
-		glm::quat m_Rotation;
+		Math::vec3 m_Position;
+		Math::quat m_Rotation;
 
 		void RecalculateViewMatrix() {
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) * glm::toMat4(m_Rotation);
-			m_View = glm::inverse(transform);
+			Math::mat4 transform = Math::translate(Math::mat4(1.0f), m_Position) * Math::toMat4(m_Rotation);
+			m_View = Math::inverse(transform);
 			m_ProjectionView = m_Projection * m_View;
 		}
 	};
