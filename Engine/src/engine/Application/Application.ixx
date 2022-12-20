@@ -1,7 +1,6 @@
 module;
 #include <GLFW/glfw3.h>
 #include "Core/Core.hpp"
-#include <functional>
 
 export module EEngine.Application:Application;
 import :IInput;
@@ -25,8 +24,7 @@ export namespace EEngine {
 			Application::s_Instance = this;
 
 			m_Window.reset(TBD::CreateWindow());
-			m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-			m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+			m_Window->SetEventCallback([this](auto& event){ OnEvent(event); });
 
 			Renderer::Initialize();
 			Renderer2D::Initialize();
@@ -39,8 +37,8 @@ export namespace EEngine {
 
 		void OnEvent(Event& event) {
 			EventDispatcher dispatcher(event);
-			dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-			dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResized));
+			dispatcher.Dispatch<WindowCloseEvent>([this](auto& event){ return OnWindowClose(event); });
+			dispatcher.Dispatch<WindowResizeEvent>([this](auto& event){ return OnWindowResized(event); });
 
 			for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ) {
 				(*--it)->OnEvent(event);

@@ -5,8 +5,6 @@
 // i.e. EEngine.Standard.ixx
 #include "spdlog/fmt/ostr.h"
 
-#define BIND_EVENT_FN(x) [this](auto && placeholder0) { return x(std::forward<decltype(placeholder0)>(placeholder0)); }
-
 // cross-compiler warning disable macros
 #if defined(_MSC_VER)
 	#define DISABLE_WARNING_PUSH           __pragma(warning( push ))

@@ -58,9 +58,9 @@ export namespace EEngine {
 
 		void OnEvent(Event& event) {
 			EventDispatcher dispatcher(event);
-			dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(OnMouseScrolled));
-			dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResized));
-			dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(OnMouseMoved));
+			dispatcher.Dispatch<MouseScrolledEvent>([this](auto& event){ return OnMouseScrolled(event); });
+			dispatcher.Dispatch<WindowResizeEvent>([this](auto& event){ return OnWindowResized(event); });
+			dispatcher.Dispatch<MouseMovedEvent>([this](auto& event){ return OnMouseMoved(event); });
 		}
 
 		const Camera& GetCamera() {
