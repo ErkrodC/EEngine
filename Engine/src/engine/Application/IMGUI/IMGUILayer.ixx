@@ -7,7 +7,7 @@ module;
 export module EEngine.Application:IMGUILayer;
 import :IWindow;
 import :Layer;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class IMGUILayer : public Layer {

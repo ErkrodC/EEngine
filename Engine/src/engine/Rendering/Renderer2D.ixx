@@ -13,7 +13,7 @@ import :ShaderLibrary;
 import :ITexture;
 import EEngine.Core;
 import EEngine.Math;
-import EEngine.std.core;
+import EEngine.Standard;
 
 namespace EEngine::Renderer2D {
 	struct Renderer2DData {

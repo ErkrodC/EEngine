@@ -2,7 +2,7 @@ module;
 #include <cstdint>
 
 export module EEngine.Rendering:ITexture;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class ITexture {

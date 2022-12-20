@@ -16,7 +16,7 @@ module;
 #include <utility>
 #include <vector>
 
-export module EEngine.std.core;
+export module EEngine.Standard;
 
 export {
 	using ::int16_t;
@@ -49,6 +49,7 @@ export {
 
 export namespace std {
 	using std::array;
+	using std::bind;
 	using std::dynamic_pointer_cast;
 	using std::find;
 	using std::function;

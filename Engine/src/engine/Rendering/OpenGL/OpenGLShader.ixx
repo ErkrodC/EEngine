@@ -6,7 +6,7 @@ export module EEngine.Rendering:OpenGLShader;
 import :IShader;
 import EEngine.Core;
 import EEngine.Math;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class OpenGLShader : public IShader {
@@ -125,7 +125,7 @@ export namespace EEngine {
 				glDeleteShader(shader);
 
 				OpenGLShader::IndentLog(infoLog);
-				EE_CORE_ERROR("Shader compilation failure:\n{0}", infoLog.data());
+				Log::CoreError("Shader compilation failure:\n{0}", infoLog.data());
 				return false;
 			}
 
@@ -144,19 +144,21 @@ export namespace EEngine {
 				in.read(&result[0], result.size());
 				in.close();
 			} else {
-				EE_CORE_ERROR("Failed to open file {0}", path);
+				Log::CoreError("Failed to open file {0}", path);
 			}
 
 			return result;
 		}
 
 		static GLenum ShaderTypeFromString(const std::string& type) {
+			// ER TODO remove
+			//Log::CoreError("Unknown shader type: {0}", type);
 			if (type == "vertex") {
 				return GL_VERTEX_SHADER;
 			} else if (type == "pixel" || type == "fragment") {
 				return GL_FRAGMENT_SHADER;
 			} else {
-				EE_CORE_ERROR("Unknown shader type: {0}", type);
+				Log::CoreError("Unknown shader type: {0}", type);
 				return GL_NONE;
 			}
 		}
@@ -169,11 +171,11 @@ export namespace EEngine {
 			size_t pos = source.find(typeToken, 0);
 			while (pos != std::string::npos) {
 				size_t eol = source.find_first_of("\r\n", pos);
-				EE_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+				Log::CoreAssert(eol != std::string::npos, "Syntax error");
 				size_t begin = pos + typeTokenLength + 1;
 				std::string type = source.substr(begin, eol - begin);
 				GLenum shaderType = ShaderTypeFromString(type);
-				EE_CORE_ASSERT(shaderType, "Invalid shader type specified: {0}", type);
+				Log::CoreAssert(shaderType, "Invalid shader type specified: {0}", type);
 
 				size_t nextLinePos = source.find_first_not_of("\r\n", eol);
 				pos = source.find(typeToken, nextLinePos);
@@ -191,7 +193,7 @@ export namespace EEngine {
 			static const size_t MAX_SHADER_SOURCES = 2;
 
 			size_t numShaderSources = shaderSourceByType.size();
-			EE_CORE_ASSERT(
+			Log::CoreAssert(
 				numShaderSources <= MAX_SHADER_SOURCES,
 				"Number of shader sources exceeded max supported: {0} > {1}",
 				numShaderSources,
@@ -246,7 +248,7 @@ export namespace EEngine {
 				}
 
 				IndentLog(infoLog);
-				EE_CORE_ERROR("Shader link failure:\n{0}", infoLog.data());
+				Log::CoreError("Shader link failure:\n{0}", infoLog.data());
 				return;
 			}
 

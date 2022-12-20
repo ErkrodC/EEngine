@@ -11,7 +11,7 @@ import :RendererAPI;
 import :ShaderLibrary;
 import EEngine.Core;
 import EEngine.Math;
-import EEngine.std.core;
+import EEngine.Standard;
 
 namespace EEngine::Renderer {
 	struct SceneData {
@@ -59,7 +59,7 @@ namespace EEngine::Renderer {
 				return "OpenGL";
 		}
 
-		EE_CORE_ERROR("Unknown rendering API.");
+		Log::CoreError("Unknown rendering API.");
 		return "";
 	}
 

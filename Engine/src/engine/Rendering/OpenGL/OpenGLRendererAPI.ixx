@@ -13,7 +13,7 @@ import :OpenGLVertexArray;
 import :OpenGLTexture;
 import EEngine.Core;
 import EEngine.Math;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class OpenGLRendererAPI : public IRendererAPI {

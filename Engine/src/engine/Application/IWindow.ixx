@@ -1,6 +1,6 @@
 export module EEngine.Application:IWindow;
 import EEngine.Event;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	struct WindowProps {

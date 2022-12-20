@@ -3,7 +3,7 @@ module;
 
 export module EEngine.Event:Event;
 import EEngine.Core;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	// ER TODO Events in EEngine are currently synchronous

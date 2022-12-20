@@ -1,6 +1,6 @@
 export module EEngine.Application:IInput;
 import EEngine.Core;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class IInput {

@@ -6,8 +6,8 @@ import EEngine.Application;
 int main(int argc, char** argv) {
 	EEngine::Input::SetInputInstance(new EEngine::WindowsInput());
 	EEngine::Log::Initialize();
-	EE_CORE_TRACE("Initialized Logging.");
-	EE_TRACE("Initialized Logging.");
+	EEngine::Log::CoreTrace("Initialized Logging.");
+	EEngine::Log::Trace("Initialized Logging.");
 
 	auto app = EEngine::CreateApplication();
 	app->Run();

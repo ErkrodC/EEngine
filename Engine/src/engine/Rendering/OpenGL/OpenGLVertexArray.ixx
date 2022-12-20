@@ -34,7 +34,7 @@ export namespace EEngine {
 		}
 
 		void AddVertexBuffer(const Ref<IVertexBuffer>& vertexBuffer) override {
-			EE_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex buffer has no layout.");
+			Log::CoreAssert(vertexBuffer->GetLayout().GetElements().size(), "Vertex buffer has no layout.");
 
 			glBindVertexArray(m_RendererID);
 			vertexBuffer->Bind();
@@ -82,7 +82,7 @@ export namespace EEngine {
 				case ShaderData::Bool:			return GL_BOOL;
 			}
 
-			EE_CORE_ERROR("Unknown shader data type.");
+			Log::CoreError("Unknown shader data type.");
 			return GL_NONE;
 		}
 	};

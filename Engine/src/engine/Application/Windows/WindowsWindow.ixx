@@ -8,7 +8,7 @@ import :IWindow;
 import EEngine.Core;
 import EEngine.Event;
 import EEngine.Rendering;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class WindowsWindow : public IWindow {
@@ -63,9 +63,9 @@ export namespace EEngine {
 			if (!s_GLFWInitialized) {
 				// TODO: glfwTerminate on system shutdown
 				int success = glfwInit();
-				EE_CORE_ASSERT(success, "Could not initialize GLFW!");
+				Log::CoreAssert(success, "Could not initialize GLFW!");
 				glfwSetErrorCallback([](int error, const char* description) {
-					EE_CORE_ERROR("GLFW Error {0}: {1}", error, description);
+					Log::CoreError("GLFW Error {0}: {1}", error, description);
 				});
 
 				s_GLFWInitialized = true;
@@ -81,7 +81,7 @@ export namespace EEngine {
 
 			m_Context = new OpenGLContext(m_Window);
 			m_Context->Initialize();
-			EE_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+			Log::CoreInfo("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 			glfwSetWindowUserPointer(m_Window, &m_Data);
 			SetVSync(true);
@@ -92,7 +92,7 @@ export namespace EEngine {
 				data.Width = width;
 				data.Height = height;
 				WindowResizeEvent event(width, height);
-				//EE_CORE_TRACE("{}, {}", width, height);
+				//Log::CoreTrace("{}, {}", width, height);
 				data.EventCallback(event);
 			});
 

@@ -3,7 +3,7 @@ module;
 
 export module EEngine.Event:ApplicationEvent;
 import :Event;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class WindowResizeEvent : public Event {

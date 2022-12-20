@@ -4,7 +4,7 @@ module;
 export module EEngine.Event:KeyEvent;
 import :Event;
 import EEngine.Core;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class KeyEvent : public Event {

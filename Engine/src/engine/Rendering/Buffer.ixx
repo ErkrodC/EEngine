@@ -3,7 +3,7 @@ module;
 
 export module EEngine.Rendering:Buffer;
 import EEngine.Core;
-import EEngine.std.core;
+import EEngine.Standard;
 
 namespace EEngine {
 	export enum class ShaderData {
@@ -30,7 +30,7 @@ namespace EEngine {
 			case ShaderData::Bool:		return 1;
 		}
 
-		EE_CORE_ERROR("Unknown shader data type.");
+		Log::CoreError("Unknown shader data type.");
 		return 0;
 	}
 
@@ -50,7 +50,7 @@ namespace EEngine {
 			case ShaderData::Bool:		return 1;
 		}
 
-		EE_CORE_ERROR("Unknown shader data type.");
+		Log::CoreError("Unknown shader data type.");
 		return 0;
 	}
 

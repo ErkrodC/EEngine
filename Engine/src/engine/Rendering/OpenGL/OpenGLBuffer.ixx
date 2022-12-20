@@ -3,7 +3,7 @@ module;
 
 export module EEngine.Rendering:OpenGLBuffer;
 import :Buffer;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class OpenGLIndexBuffer : public IIndexBuffer {

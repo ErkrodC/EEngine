@@ -1,6 +1,7 @@
 module;
 #include <GLFW/glfw3.h>
 #include "Core/Core.hpp"
+#include <functional>
 
 export module EEngine.Application:Application;
 import :IInput;
@@ -12,19 +13,20 @@ import :TBD;
 import EEngine.Core;
 import EEngine.Event;
 import EEngine.Rendering;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class Application {
 	public:
 		Application() {
-			EE_CORE_INFO("Selected Renderer API: {0}", Renderer::GetRendererAPIString(Renderer::GetSelectedAPI()));
-			EE_CORE_ASSERT(!s_Instance, "Multiple applications created.");
+			Log::CoreInfo("Selected Renderer API: {}", Renderer::GetRendererAPIString(Renderer::GetSelectedAPI()));
+			Log::CoreAssert(!s_Instance, "Multiple applications created.");
 
 			Application::s_Instance = this;
 
 			m_Window.reset(TBD::CreateWindow());
 			m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+			m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
 			Renderer::Initialize();
 			Renderer2D::Initialize();
@@ -111,7 +113,7 @@ export namespace EEngine {
 			// ER TODO do resize only on mouse up/drag end.
 			// no mouse button event for dragging window edge tho...
 			/*if (!Input::IsMouseButtonPressed(MouseButtonCode::Mouse1)) {
-				EE_CORE_TRACE("{} {} {} {} {} {} {} {}",
+				Log::CoreTrace("{} {} {} {} {} {} {} {}",
 					Input::IsMouseButtonPressed(MouseButtonCode::Mouse1),
 					Input::IsMouseButtonPressed(MouseButtonCode::Mouse2),
 					Input::IsMouseButtonPressed(MouseButtonCode::Mouse3),
@@ -121,7 +123,7 @@ export namespace EEngine {
 					Input::IsMouseButtonPressed(MouseButtonCode::Mouse7),
 					Input::IsMouseButtonPressed(MouseButtonCode::Mouse8)
 				);
-				EE_CORE_TRACE("Resized to ({}, {})", event.GetWidth(), event.GetHeight());
+				Log::CoreTrace("Resized to ({}, {})", event.GetWidth(), event.GetHeight());
 				Renderer::OnWindowResized(event.GetWidth(), event.GetHeight());
 			}*/
 

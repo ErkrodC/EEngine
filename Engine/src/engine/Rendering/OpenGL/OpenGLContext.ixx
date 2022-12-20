@@ -14,15 +14,15 @@ export namespace EEngine {
 	public:
 		explicit OpenGLContext(GLFWwindow* window)
 			: m_Window(window) {
-			EE_ASSERT(m_Window, "Window was null when creating OpenGLContext");
+			Log::Assert(m_Window, "Window was null when creating OpenGLContext");
 		}
 
 		void Initialize() override {
 			glfwMakeContextCurrent(m_Window);
 			int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-			EE_CORE_ASSERT(status, "Failed to initialize GLAD!");
+			Log::CoreAssert(status, "Failed to initialize GLAD!");
 
-			EE_CORE_INFO(
+			Log::CoreInfo(
 				"OpenGL Info:\n"
 				"\tVendor: {0}\n"
 				"\tRenderer: {1}\n"

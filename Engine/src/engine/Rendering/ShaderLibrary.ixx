@@ -5,7 +5,7 @@ export module EEngine.Rendering:ShaderLibrary;
 import :IShader;
 import :RendererAPI;
 import EEngine.Core;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class ShaderLibrary {
@@ -16,7 +16,7 @@ export namespace EEngine {
 		}
 
 		void Add(const std::string& name, const Ref<IShader>& shader)  {
-			EE_CORE_ASSERT(m_ShaderByName.find(name) == m_ShaderByName.end(), "Tried to add duplicate shader.");
+			Log::CoreAssert(m_ShaderByName.find(name) == m_ShaderByName.end(), "Tried to add duplicate shader.");
 			m_ShaderByName[name] = shader;
 		}
 
@@ -34,7 +34,7 @@ export namespace EEngine {
 
 		bool TryGet(const std::string& name, Ref<IShader>* shader) {
 			bool foundShader = m_ShaderByName.find(name) != m_ShaderByName.end();
-			EE_CORE_ASSERT(foundShader, "Shader not found.");
+			Log::CoreAssert(foundShader, "Shader not found.");
 			if (foundShader) {
 				*shader = m_ShaderByName[name];
 			}

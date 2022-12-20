@@ -7,4 +7,4 @@ export import EEngine.Event;
 export import EEngine.IMGUI;
 export import EEngine.Math;
 export import EEngine.Rendering;
-export import EEngine.std.core;
+export import EEngine.Standard;

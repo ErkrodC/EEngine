@@ -7,7 +7,7 @@ import :ITexture;
 import :OpenGLRendererAPI;
 import EEngine.Core;
 import EEngine.Math;
-import EEngine.std.core;
+import EEngine.Standard;
 
 namespace EEngine::RendererAPI {
 	static IRendererAPI* s_RendererAPI = new OpenGLRendererAPI();

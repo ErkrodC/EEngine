@@ -6,7 +6,7 @@ module;
 export module EEngine.Rendering:OpenGLTexture;
 import :ITexture;
 import EEngine.Core;
-import EEngine.std.core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class OpenGLTexture2D : public ITexture2D {
@@ -16,7 +16,7 @@ export namespace EEngine {
 
 			stbi_set_flip_vertically_on_load(true);
 			stbi_uc* data = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
-			EE_CORE_ASSERT(data, "Failed to load image.");
+			Log::CoreAssert(data, "Failed to load image.");
 			m_Width = width;
 			m_Height = height;
 
@@ -34,7 +34,7 @@ export namespace EEngine {
 				}
 			}
 
-			EE_CORE_ASSERT(storageFormat & instanceFormat, "Format not supported.");
+			Log::CoreAssert(storageFormat & instanceFormat, "Format not supported.");
 
 			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 			glTextureStorage2D(m_RendererID, 1, storageFormat, width, height);
