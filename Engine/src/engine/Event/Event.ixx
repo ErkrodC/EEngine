@@ -3,6 +3,7 @@ module;
 
 export module EEngine.Event:Event;
 import EEngine.Core;
+import EEngine.Math;
 import EEngine.Standard;
 
 export namespace EEngine {
@@ -19,11 +20,11 @@ export namespace EEngine {
 
 	enum EventCategory {
 		None = 0,
-		EventCategoryApplication = BIT(0),
-		EventCategoryInput = BIT(1),
-		EventCategoryKeyboard = BIT(2),
-		EventCategoryMouse = BIT(3),
-		EventCategoryMouseButton = BIT(4)
+		EventCategoryApplication = Math::Bit(0),
+		EventCategoryInput = Math::Bit(1),
+		EventCategoryKeyboard = Math::Bit(2),
+		EventCategoryMouse = Math::Bit(3),
+		EventCategoryMouseButton = Math::Bit(4)
 	};
 
 	class Event {

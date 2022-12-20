@@ -4,6 +4,7 @@ module;
 #include "Core/Core.hpp"
 DISABLE_WARNING_PUSH
 DISABLE_WARNING_NAMELESS_STRUCT_UNION
+#include <cstdint>
 #include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_float4x4.hpp>
@@ -38,5 +39,9 @@ export namespace EEngine::Math {
 
 	namespace Identity {
 		const ::EEngine::Math::mat4 mat4 = Math::mat4(1.0f) * Math::mat4(1.0f);
+	}
+
+	constexpr uint32_t Bit(uint32_t x) {
+		return 1 << x;
 	}
 }

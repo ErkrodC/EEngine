@@ -5,7 +5,6 @@
 // i.e. EEngine.Standard.ixx
 #include "spdlog/fmt/ostr.h"
 
-#define BIT(x) (1 << (x))
 #define BIND_EVENT_FN(x) [this](auto && placeholder0) { return x(std::forward<decltype(placeholder0)>(placeholder0)); }
 
 // cross-compiler warning disable macros
