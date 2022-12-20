@@ -24,7 +24,7 @@ export namespace EEngine {
 			Application::s_Instance = this;
 
 			m_Window.reset(TBD::CreateWindow());
-			m_Window->SetEventCallback([this](auto& event){ OnEvent(event); });
+			m_Window->SetEventCallback([this](auto& event) -> void { OnEvent(event); });
 
 			Renderer::Initialize();
 			Renderer2D::Initialize();
@@ -37,8 +37,8 @@ export namespace EEngine {
 
 		void OnEvent(Event& event) {
 			EventDispatcher dispatcher(event);
-			dispatcher.Dispatch<WindowCloseEvent>([this](auto& event){ return OnWindowClose(event); });
-			dispatcher.Dispatch<WindowResizeEvent>([this](auto& event){ return OnWindowResized(event); });
+			dispatcher.Dispatch<WindowCloseEvent>([this](auto& event) -> bool { return OnWindowClose(event); });
+			dispatcher.Dispatch<WindowResizeEvent>([this](auto& event) -> bool { return OnWindowResized(event); });
 
 			for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ) {
 				(*--it)->OnEvent(event);
