@@ -9,8 +9,7 @@ import EEngine.Standard;
 
 export namespace EEngine {
 	class IRendererAPI {
-		/*friend class RendererAPI;*/
-	/*private:*/public:
+	public:
 		virtual void InitializeImpl() = 0;
 		virtual void SetViewportImpl(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 		virtual void ClearImpl(const Math::vec4& color) = 0;
@@ -21,5 +20,6 @@ export namespace EEngine {
 		virtual Ref<IShader> CreateShaderImpl(const std::string& path) = 0;
 		virtual Ref<IVertexArray> CreateVertexArrayImpl() = 0;
 		virtual Ref<ITexture2D> CreateTexture2DImpl(const std::string& path) = 0;
+		virtual Ref<ITexture2D> CreateTexture2DImpl(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) = 0;
 	};
 } // EEngine

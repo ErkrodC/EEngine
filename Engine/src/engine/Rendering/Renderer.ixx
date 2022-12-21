@@ -20,7 +20,7 @@ namespace EEngine::Renderer {
 
 	static API s_SelectedAPI = API::OpenGL;
 	static SceneData* s_SceneData = new SceneData();
-	static Ref<ShaderLibrary> s_ShaderLibrary = std::make_shared<ShaderLibrary>();
+	static Ref<ShaderLibrary> s_ShaderLibrary = CreateRef<ShaderLibrary>();
 
 	export void Initialize() {
 		RendererAPI::Initialize();

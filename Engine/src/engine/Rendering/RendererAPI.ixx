@@ -55,4 +55,8 @@ namespace EEngine::RendererAPI {
 	export inline Ref<ITexture2D> CreateTexture2D(const std::string& path) {
 		return s_RendererAPI->CreateTexture2DImpl(path);
 	}
+
+	export inline Ref<ITexture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) {
+		return s_RendererAPI->CreateTexture2DImpl(width, height, data, size);
+	}
 } // EEngine

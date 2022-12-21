@@ -52,11 +52,13 @@ export namespace std {
 	using std::bind;
 	using std::dynamic_pointer_cast;
 	using std::find;
+	using std::forward;
 	using std::function;
 	using std::ifstream;
 	using std::initializer_list;
 	using std::ios;
 	using std::make_shared;
+	using std::make_unique;
 	using std::ostream;
 	using std::pair;
 	using std::partial_ordering;

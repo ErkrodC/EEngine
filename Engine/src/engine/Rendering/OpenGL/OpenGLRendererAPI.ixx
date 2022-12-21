@@ -43,27 +43,31 @@ export namespace EEngine {
 		}
 
 		Ref<IIndexBuffer> CreateIndexBufferImpl(uint32_t* indices, uint32_t count) override {
-			return std::make_shared<OpenGLIndexBuffer>(indices, count);
+			return CreateRef<OpenGLIndexBuffer>(indices, count);
 		}
 
 		Ref<IVertexBuffer> CreateVertexBufferImpl(float* vertices, uint32_t size) override {
-			return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+			return CreateRef<OpenGLVertexBuffer>(vertices, size);
 		}
 
 		Ref<IShader> CreateShaderImpl(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) override {
-			return std::make_shared<OpenGLShader>(name, vertexSource, fragmentSource);
+			return CreateRef<OpenGLShader>(name, vertexSource, fragmentSource);
 		}
 
 		Ref<IShader> CreateShaderImpl(const std::string& path) override {
-			return std::make_shared<OpenGLShader>(path);
+			return CreateRef<OpenGLShader>(path);
 		}
 
 		Ref<IVertexArray> CreateVertexArrayImpl() override {
-			return std::make_shared<OpenGLVertexArray>();
+			return CreateRef<OpenGLVertexArray>();
 		}
 
 		Ref<ITexture2D> CreateTexture2DImpl(const std::string& path) override {
-			return std::make_shared<OpenGLTexture2D>(path);
+			return CreateRef<OpenGLTexture2D>(path);
+		}
+
+		Ref<ITexture2D> CreateTexture2DImpl(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) override {
+			return CreateRef<OpenGLTexture2D>(width, height, data, size);
 		}
 	};
 } // EEngine
