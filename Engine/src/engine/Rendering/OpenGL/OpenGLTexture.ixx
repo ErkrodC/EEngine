@@ -1,7 +1,6 @@
 module;
 #include <glad/glad.h>
 #include <stb_image.hpp>
-#include "Core/Core.hpp"
 
 export module EEngine.Rendering:OpenGLTexture;
 import :ITexture;

@@ -1,6 +1,3 @@
-module;
-#include "Core/Core.hpp"
-
 export module EEngine.Rendering:Renderer;
 import :API;
 import :Buffer;

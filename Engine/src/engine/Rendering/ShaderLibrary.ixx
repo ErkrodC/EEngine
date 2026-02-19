@@ -1,6 +1,3 @@
-module;
-#include "Core/Core.hpp"
-
 export module EEngine.Rendering:ShaderLibrary;
 import :IShader;
 import :RendererAPI;

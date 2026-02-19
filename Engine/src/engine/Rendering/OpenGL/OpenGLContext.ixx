@@ -1,13 +1,10 @@
 module;
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
-#include "Core/Core.hpp"
 
 export module EEngine.Rendering:OpenGLContext;
 import :IGraphicsContext;
 import EEngine.Core;
-
-struct GLFWwindow;
 
 export namespace EEngine {
 	class OpenGLContext : public IGraphicsContext {

@@ -1,6 +1,3 @@
-module;
-#include "Core/Core.hpp"
-
 export module EEngine.Event:Event;
 import EEngine.Core;
 import EEngine.Math;

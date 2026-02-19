@@ -1,6 +1,5 @@
 module;
 #include <GLFW/glfw3.h>
-#include "Core/Core.hpp"
 
 export module EEngine.Application:WindowsWindow;
 import :Input;

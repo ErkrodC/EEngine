@@ -1,9 +1,6 @@
 // ER NOTE this header projection header unit is a temporary while header units
 //  (esp std lib ones) are being worked on in msvc + cmake: https://gitlab.kitware.com/cmake/cmake/-/issues/18355
 module;
-#include "Core/Core.hpp"
-DISABLE_WARNING_PUSH
-DISABLE_WARNING_NAMELESS_STRUCT_UNION
 
 #include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
@@ -16,7 +13,6 @@ DISABLE_WARNING_NAMELESS_STRUCT_UNION
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/detail/type_mat4x4.hpp>
-DISABLE_WARNING_POP
 
 export module EEngine.Math;
 
@@ -38,7 +34,7 @@ export namespace EEngine::Math {
 	using glm::vec4;
 
 	namespace Identity {
-		const ::EEngine::Math::mat4 mat4 = Math::mat4(1.0f) * Math::mat4(1.0f);
+		const mat4 mat4 = Math::mat4(1.0f) * Math::mat4(1.0f);
 	}
 
 	constexpr uint32_t Bit(uint32_t x) {
