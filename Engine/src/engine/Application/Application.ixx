@@ -1,6 +1,5 @@
 module;
 #include <GLFW/glfw3.h>
-#include "Core/Core.hpp"
 
 export module EEngine.Application:Application;
 import :IInput;
@@ -11,6 +10,7 @@ import :LayerStack;
 import :TBD;
 import EEngine.Core;
 import EEngine.Event;
+import EEngine.Profiling;
 import EEngine.Rendering;
 import EEngine.Standard;
 
@@ -21,7 +21,7 @@ export namespace EEngine {
 			Log::CoreInfo("Selected Renderer API: {}", Renderer::GetRendererAPIString(Renderer::GetSelectedAPI()));
 			Log::CoreAssert(!s_Instance, "Multiple applications created.");
 
-			Application::s_Instance = this;
+			s_Instance = this;
 
 			m_Window.reset(TBD::CreateWindow());
 			m_Window->SetEventCallback([this](auto& event) -> void { OnEvent(event); });
@@ -48,6 +48,8 @@ export namespace EEngine {
 
 		void Run() {
 			while (m_Running) {
+				Profiling::Profiler::Get().BeginFrame();
+
 				auto time = (float)glfwGetTime();
 				Timestep timestep {
 					time - m_LastFrameTime
@@ -71,6 +73,8 @@ export namespace EEngine {
 				}
 
 				m_Window->OnUpdate();
+
+				Profiling::Profiler::Get().EndFrame();
 			}
 		}
 

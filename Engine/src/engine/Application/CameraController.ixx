@@ -1,5 +1,5 @@
 module;
-#include "Core/Core.hpp"
+#include "Profiling/Profiling.hpp"
 
 export module EEngine.Application:CameraController;
 import :Input;
@@ -7,6 +7,7 @@ import EEngine.Core;
 import EEngine.Event;
 import EEngine.Math;
 import EEngine.Rendering;
+import EEngine.Profiling;
 
 export namespace EEngine {
 	class CameraController {

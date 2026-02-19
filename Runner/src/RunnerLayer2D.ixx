@@ -1,5 +1,9 @@
+module;
+#include <Profiling/Profiling.hpp>
+
 export module RunnerModule:RunnerLayer2D;
 import EEngine;
+import EEngine.Profiling;
 
 export class RunnerLayer2D : public EEngine::Layer {
 public:
@@ -15,7 +19,9 @@ public:
 
 	}
 
-	void OnUpdate(EEngine::Timestep timestep) override {
+;	void OnUpdate(EEngine::Timestep timestep) override {
+		EE_PROFILE_FUNCTION();
+
 		m_CameraController.OnUpdate(timestep);
 
 		EEngine::RendererAPI::Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
@@ -36,12 +42,28 @@ public:
 		EEngine::Editor::Begin("Settings");
 		EEngine::Editor::ColorEdit4("Square Color", EEngine::Math::value_ptr(m_SquareColor));
 
-		EEngine::Editor::Text("Profiling Results:");
 		EEngine::Editor::Separator();
-		for (auto& result : EEngine::Profiling::InstrumentationSession::Get().GetResults()) {
-			EEngine::Editor::Text("%s: %.3fms", result.Name.c_str(), result.GetDurationMs());
+		EEngine::Editor::Text("Profiler");
+		EEngine::Editor::Separator();
+
+		auto& profiler = EEngine::Profiling::Profiler::Get();
+		auto& currentFrame = profiler.GetCurrentFrame();
+
+		// FPS and frame time
+		float avgFPS = profiler.GetAverageFPS(60);
+		EEngine::Editor::Text("FPS: %.1f (%.2fms)", avgFPS, currentFrame.TotalFrameTime);
+
+		EEngine::Editor::Separator();
+
+		// Individual profile results
+		for (const auto& result : currentFrame.Results) {
+			float percentage = (result.DurationMs / currentFrame.TotalFrameTime) * 100.0f;
+			EEngine::Editor::Text("%s: %.3fms (%.1f%%) [%d calls]",
+				result.Name,
+				result.DurationMs,
+				percentage,
+				result.CallCount);
 		}
-		EEngine::Profiling::InstrumentationSession::Get().ClearResults();
 
 		EEngine::Editor::End();
 	}
