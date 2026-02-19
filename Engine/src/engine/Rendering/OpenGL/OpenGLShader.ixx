@@ -1,6 +1,6 @@
 module;
+
 #include <glad/glad.h>
-#include "Core/Core.hpp"
 
 export module EEngine.Rendering:OpenGLShader;
 import :IShader;
