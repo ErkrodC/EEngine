@@ -1,10 +1,5 @@
 #pragma once
 
-// ER NOTE still required where logging is used, spdlog says "support for user defined types"
-// can't seem to get rid of until compiler supports forwarding operator overloads from header-wrapping modules
-// i.e. EEngine.Standard.ixx
-#include "spdlog/fmt/ostr.h"
-
 // cross-compiler warning disable macros
 #if defined(_MSC_VER)
 	#define DISABLE_WARNING_PUSH           __pragma(warning( push ))
