@@ -14,7 +14,9 @@ target_sources(app
 	PUBLIC
 		FILE_SET modules TYPE CXX_MODULES FILES
 			src/RunnerLayer2D.ixx
+			src/RunnerLayer3D.ixx
 			src/RunnerApp.ixx
+			src/Runner.ixx
 
 	PRIVATE
 		# EntryPoint provides main() and calls CreateApplication()

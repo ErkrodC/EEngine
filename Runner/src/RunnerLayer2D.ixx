@@ -1,7 +1,7 @@
 module;
 #include <Profiling/Profiling.hpp>
 
-export module RunnerModule:RunnerLayer2D;
+export module Runner:RunnerLayer2D;
 import EEngine;
 import EEngine.Profiling;
 
