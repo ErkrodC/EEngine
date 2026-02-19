@@ -35,6 +35,14 @@ public:
 	void OnIMGUIRender() override {
 		EEngine::Editor::Begin("Settings");
 		EEngine::Editor::ColorEdit4("Square Color", EEngine::Math::value_ptr(m_SquareColor));
+
+		EEngine::Editor::Text("Profiling Results:");
+		EEngine::Editor::Separator();
+		for (auto& result : EEngine::Profiling::InstrumentationSession::Get().GetResults()) {
+			EEngine::Editor::Text("%s: %.3fms", result.Name.c_str(), result.GetDurationMs());
+		}
+		EEngine::Profiling::InstrumentationSession::Get().ClearResults();
+
 		EEngine::Editor::End();
 	}
 

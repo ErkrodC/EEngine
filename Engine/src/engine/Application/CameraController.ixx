@@ -24,6 +24,7 @@ export namespace EEngine {
 
 		void OnUpdate(Timestep timestep) {
 			{ // Camera movement
+				EE_PROFILE_SCOPE("Camera Movement");
 				float deltaDist = m_MoveSpeed * timestep.GetSeconds();
 
 				if (Input::IsKeyPressed(EEngine::KeyCode::Up)

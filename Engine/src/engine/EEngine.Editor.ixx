@@ -8,5 +8,6 @@ export namespace EEngine::Editor {
 	using ::ImGui::ColorEdit3;
 	using ::ImGui::ColorEdit4;
 	using ::ImGui::End;
+	using ::ImGui::Separator;
 	using ::ImGui::Text;
 };
