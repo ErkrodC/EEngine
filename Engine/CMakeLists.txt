@@ -18,11 +18,12 @@ add_subdirectory(vendor/stb_image)
 add_library(engine
 	src/engine/Core/Core.hpp
 	src/engine/Event/Event.hpp
+	src/engine/Profiling/Profiling.hpp
 )
 
 target_sources(engine
 	PUBLIC
-		FILE_SET cxx_modules TYPE CXX_MODULES FILES
+		FILE_SET CXX_MODULES TYPE CXX_MODULES FILES
 			src/engine/EEngine.ixx
 			src/engine/Core/EEngine.Core.ixx
 			src/engine/Core/Core.ixx
@@ -69,7 +70,8 @@ target_sources(engine
 			src/engine/EEngine.Math.ixx
 			src/engine/EEngine.Editor.ixx
 			src/engine/EEngine.Standard.ixx
-		FILE_SET cxx_module_HEADER_UNITS TYPE CXX_MODULE_HEADER_UNITS FILES
+			src/engine/Profiling/EEngine.Profiling.ixx
+		FILE_SET cxx_module_HEADER_UNITS TYPE HEADERS FILES
 			src/engine/EntryPoint.ixx
 			#ER TODO make these header units once importing is supported: https://gitlab.kitware.com/cmake/cmake/-/issues/18355
 			#src/engine/Core/Core.hpp
@@ -78,7 +80,12 @@ target_sources(engine
 			#src/engine/Core/Example.cpp
 )
 
-target_compile_definitions(engine PRIVATE -DEE_BUILD_DLL -DGLFW_INCLUDE_NONE)
+target_compile_definitions(engine PRIVATE
+	-DEE_BUILD_DLL
+	-DGLFW_INCLUDE_NONE
+	-D_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING
+	-D_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS
+)
 
 target_link_libraries(engine
 	PUBLIC
