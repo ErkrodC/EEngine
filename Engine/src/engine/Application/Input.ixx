@@ -4,14 +4,17 @@ import EEngine.Core;
 import EEngine.Standard;
 
 namespace EEngine::Input {
-	static IInput* s_Instance;
+	inline IInput*& GetInstance() {
+		static IInput* instance = nullptr;
+		return instance;
+	}
 
-	export inline void SetInputInstance(IInput* instance) { s_Instance = instance; }
-	export inline bool IsKeyPressed(KeyCode keyCode) { return s_Instance->IsKeyPressedImpl(keyCode); }
-	export inline bool IsMouseButtonPressed(MouseButtonCode mouseButtonCode) { return s_Instance->IsMouseButtonPressedImpl(mouseButtonCode); }
-	export inline std::pair<float, float> GetMousePosition() { return s_Instance->GetMousePositionImpl(); }
-	export inline float GetMouseX() { return s_Instance->GetMouseXImpl(); }
-	export inline float GetMouseY() { return s_Instance->GetMouseYImpl(); }
+	export inline void SetInputInstance(IInput* instance) { GetInstance() = instance; }
+	export inline bool IsKeyPressed(KeyCode keyCode) { return GetInstance()->IsKeyPressedImpl(keyCode); }
+	export inline bool IsMouseButtonPressed(MouseButtonCode mouseButtonCode) { return GetInstance()->IsMouseButtonPressedImpl(mouseButtonCode); }
+	export inline std::pair<float, float> GetMousePosition() { return GetInstance()->GetMousePositionImpl(); }
+	export inline float GetMouseX() { return GetInstance()->GetMouseXImpl(); }
+	export inline float GetMouseY() { return GetInstance()->GetMouseYImpl(); }
 
 #if WIN32
 	export inline int EngineToGLFWKeyCode(KeyCode engineKeyCode) { return (int)engineKeyCode; }

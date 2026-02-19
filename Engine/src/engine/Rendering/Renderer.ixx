@@ -18,9 +18,17 @@ namespace EEngine::Renderer {
 		Math::mat4 ProjectionView;
 	};
 
+	inline SceneData& GetSceneData() {
+		static SceneData instance;
+		return instance;
+	}
+
+	inline Ref<ShaderLibrary>& GetShaderLibraryInstance() {
+		static Ref<ShaderLibrary> instance = CreateRef<ShaderLibrary>();
+		return instance;
+	}
+
 	static API s_SelectedAPI = API::OpenGL;
-	static SceneData* s_SceneData = new SceneData();
-	static Ref<ShaderLibrary> s_ShaderLibrary = CreateRef<ShaderLibrary>();
 
 	export void Initialize() {
 		RendererAPI::Initialize();
@@ -31,7 +39,7 @@ namespace EEngine::Renderer {
 	}
 
 	export void BeginScene(const Camera& camera) {
-		s_SceneData->ProjectionView = camera.GetProjectionViewMatrix();
+		GetSceneData().ProjectionView = camera.GetProjectionViewMatrix();
 	}
 
 	export void EndScene() {
@@ -44,7 +52,7 @@ namespace EEngine::Renderer {
 		const Math::mat4& transform = Math::mat4(1.0f)
 	) {
 		shader->Bind();
-		shader->SetMat4("u_ProjectionView", s_SceneData->ProjectionView);
+		shader->SetMat4("u_ProjectionView", GetSceneData().ProjectionView);
 		shader->SetMat4("u_Transform", transform);
 		vertexArray->Bind();
 		RendererAPI::DrawIndexed(vertexArray);
@@ -63,5 +71,5 @@ namespace EEngine::Renderer {
 		return "";
 	}
 
-	export inline Ref<ShaderLibrary> GetShaderLibrary() { return s_ShaderLibrary; }
+	export inline Ref<ShaderLibrary> GetShaderLibrary() { return GetShaderLibraryInstance(); }
 }; // EEngine

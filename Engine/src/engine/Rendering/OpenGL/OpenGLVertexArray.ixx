@@ -6,6 +6,7 @@ export module EEngine.Rendering:OpenGLVertexArray;
 import :Buffer;
 import :IVertexArray;
 import EEngine.Core;
+import EEngine.Standard;
 
 export namespace EEngine {
 	class OpenGLVertexArray : public IVertexArray {
