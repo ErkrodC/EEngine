@@ -1,5 +1,5 @@
-// ER NOTE this header projection header unit is a temporary while header units
-//  (esp std lib ones) are being worked on in msvc + cmake: https://gitlab.kitware.com/cmake/cmake/-/issues/18355
+// Using global module fragment for GLM headers since GLM doesn't provide native C++20 module support yet.
+// This is the recommended approach for wrapping header-only libraries in modules.
 module;
 
 #include <glm/mat4x4.hpp>

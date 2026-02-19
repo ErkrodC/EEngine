@@ -1,5 +1,6 @@
 module;
-// ER TEMP for some reason operator overloads don't get imported by `import EEngine.Math;`...
+// Workaround: GLM operators don't get found via ADL when re-exported with 'using' declarations.
+// Need direct include in global module fragment for operator* to work on glm::mat4.
 #include <glm/detail/type_mat4x4.hpp>
 
 export module EEngine.Rendering:Renderer2D;
