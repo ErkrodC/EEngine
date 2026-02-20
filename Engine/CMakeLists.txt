@@ -25,12 +25,41 @@ target_sources(engine
 			# Root module
 			src/engine/EEngine.ixx
 
-			# Consolidated top-level modules (no more partitions!)
+			# EEngine.Core module and partitions
 			src/engine/EEngine.Core.ixx
+			src/engine/EEngine.Core-Memory.ixx
+			src/engine/EEngine.Core-Time.ixx
+			src/engine/EEngine.Core-Input.ixx
+			src/engine/EEngine.Core-Log.ixx
+
+			# EEngine.Event module and partitions
 			src/engine/EEngine.Event.ixx
-			src/engine/EEngine.Math.ixx
-			src/engine/EEngine.Rendering.ixx
+			src/engine/EEngine.Event-Base.ixx
+			src/engine/EEngine.Event-Application.ixx
+			src/engine/EEngine.Event-Keyboard.ixx
+			src/engine/EEngine.Event-Mouse.ixx
+
+			# EEngine.Application module and partitions
 			src/engine/EEngine.Application.ixx
+			src/engine/EEngine.Application-Window.ixx
+			src/engine/EEngine.Application-Input.ixx
+			src/engine/EEngine.Application-Layer.ixx
+			src/engine/EEngine.Application-IMGUILayer.ixx
+			src/engine/EEngine.Application-CameraController.ixx
+			src/engine/EEngine.Application-Application.ixx
+
+			# EEngine.Rendering module and partitions
+			src/engine/EEngine.Rendering.ixx
+			src/engine/EEngine.Rendering-API.ixx
+			src/engine/EEngine.Rendering-Buffers.ixx
+			src/engine/EEngine.Rendering-Interfaces.ixx
+			src/engine/EEngine.Rendering-Camera.ixx
+			src/engine/EEngine.Rendering-OpenGL.ixx
+			src/engine/EEngine.Rendering-Renderer.ixx
+			src/engine/EEngine.Rendering-Renderer2D.ixx
+
+			# Other modules (no partitions)
+			src/engine/EEngine.Math.ixx
 			src/engine/EEngine.Editor.ixx
 			src/engine/EEngine.Standard.ixx
 			src/engine/Profiling/EEngine.Profiling.ixx
