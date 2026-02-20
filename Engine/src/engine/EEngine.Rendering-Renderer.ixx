@@ -136,7 +136,7 @@ namespace EEngine::Renderer {
 		return instance;
 	}
 
-	static API s_SelectedAPI = API::OpenGL;
+	inline API s_SelectedAPI = API::OpenGL;
 
 	export void Initialize() {
 		RendererAPI::Initialize();

@@ -48,6 +48,11 @@ endif()
 
 # Build type definitions
 if(CMAKE_BUILD_TYPE MATCHES Debug)
+	if(MSVC)
+		add_compile_options(/Od /Zi /RTC1)
+	else()
+		add_compile_options(-O0 -g)
+	endif()
 	add_definitions(-DEE_DEBUG -DEE_ENABLE_LOGGING)
 elseif(CMAKE_BUILD_TYPE MATCHES Release)
 	add_definitions(-DEE_RELEASE)
