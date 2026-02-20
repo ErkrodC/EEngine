@@ -10,4 +10,4 @@ export namespace EEngine::Editor {
 	using ::ImGui::End;
 	using ::ImGui::Separator;
 	using ::ImGui::Text;
-};
+}

@@ -262,7 +262,7 @@ export namespace EEngine {
 		bool OnWindowResized(WindowResizeEvent& event);
 		bool OnMouseMoved(MouseMovedEvent& event);
 	};
-} // EEngine
+}
 
 // ============================================================================
 // Platform-specific Implementations (Windows)
@@ -487,7 +487,7 @@ export namespace EEngine {
 
 		WindowData m_Data;
 	};
-} // EEngine
+}
 
 // ============================================================================
 // Input Facade
@@ -519,7 +519,7 @@ namespace EEngine::Input {
 	export inline std::pair<float, float> GetMousePosition() { return GetInstance()->GetMousePositionImpl(); }
 	export inline float GetMouseX() { return GetInstance()->GetMouseXImpl(); }
 	export inline float GetMouseY() { return GetInstance()->GetMouseYImpl(); }
-} // EEngine::Input
+}
 
 // ============================================================================
 // Window Creation (TBD namespace for platform abstraction)
@@ -642,7 +642,7 @@ export namespace EEngine {
 
 	// To be defined by consumer
 	Application* CreateApplication();
-} // EEngine
+}
 
 // ============================================================================
 // CameraController Implementation

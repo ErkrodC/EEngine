@@ -185,7 +185,7 @@ export namespace EEngine {
 		Mouse7 = 6,
 		Mouse8 = 7,
 	};
-} // EEngine
+}
 
 // ============================================================================
 // Logging
@@ -272,7 +272,7 @@ namespace EEngine::Log {
 			__debugbreak();
 		}
 	}
-#else // EE_ENABLE_LOGGING
+#else
 	export template<typename... Args>
 	inline void CoreTrace(spdlog::format_string_t<Args...> fmt, Args &&... args) {}
 
@@ -308,5 +308,5 @@ namespace EEngine::Log {
 
 	export template<typename... Args>
 	inline void Assert(bool value, spdlog::format_string_t<Args...> fmt, Args &&... args) {}
-#endif // EE_ENABLE_LOGGING
-} // EEngine::Log
+#endif
+}

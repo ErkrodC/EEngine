@@ -276,7 +276,7 @@ export namespace EEngine {
 			m_ProjectionView = m_Projection * m_View;
 		}
 	};
-} // EEngine
+}
 
 // ============================================================================
 // OpenGL Implementations
@@ -893,7 +893,7 @@ export namespace EEngine {
 			return MakeShared<OpenGLTexture2D>(width, height, data, size);
 		}
 	};
-} // EEngine
+}
 
 // ============================================================================
 // Renderer API Facade & Shader Library
@@ -983,7 +983,7 @@ namespace EEngine::RendererAPI {
 	export inline Shared<ITexture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) {
 		return GetRendererAPI().CreateTexture2DImpl(width, height, data, size);
 	}
-} // EEngine::RendererAPI
+}
 
 namespace EEngine {
 	Shared<IShader> ShaderLibrary::Load(const std::string& path) {
@@ -1062,7 +1062,7 @@ namespace EEngine::Renderer {
 	}
 
 	export inline Shared<ShaderLibrary> GetShaderLibrary() { return GetShaderLibraryInstance(); }
-} // EEngine::Renderer
+}
 
 // ============================================================================
 // 2D Renderer
@@ -1154,4 +1154,4 @@ namespace EEngine::Renderer2D {
 	export void DrawQuad(const Math::vec2& position, const Math::vec2& size, const Shared<ITexture2D>& texture) {
 		DrawQuad({position.x, position.y, 0.0f }, size, texture);
 	}
-} // EEngine::Renderer2D
+}

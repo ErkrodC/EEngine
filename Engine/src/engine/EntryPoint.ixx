@@ -1,7 +1,7 @@
 import EEngine.Core;
 import EEngine.Application;
 
-int main(int argc, char** argv) {
+int main() {
 	EEngine::Log::Initialize();
 	EEngine::Log::CoreTrace("Initialized Logging.");
 	EEngine::Log::Trace("Initialized Logging.");

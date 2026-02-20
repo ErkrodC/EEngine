@@ -303,4 +303,4 @@ export namespace EEngine {
 
 		EVENT_CLASS_TYPE(MouseButtonReleased)
 	};
-} // EEngine
+}

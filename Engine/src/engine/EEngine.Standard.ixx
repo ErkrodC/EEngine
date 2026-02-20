@@ -1,6 +1,5 @@
 export module EEngine.Standard;
 export import std;
-#include <cstdint>
 
 // Re-export common standard types for convenience (global namespace)
 export {
