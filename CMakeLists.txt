@@ -48,7 +48,7 @@ endif()
 
 # Build type definitions
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-	add_definitions(-DEE_DEBUG)
+	add_definitions(-DEE_DEBUG -DEE_ENABLE_LOGGING)
 elseif(CMAKE_BUILD_TYPE MATCHES Release)
 	add_definitions(-DEE_RELEASE)
 elseif(CMAKE_BUILD_TYPE MATCHES MinSizeRel)
