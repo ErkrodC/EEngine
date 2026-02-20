@@ -1,6 +1,8 @@
 export module EEngine.Profiling;
 import EEngine.Standard;
 
+using namespace std::chrono;
+
 export namespace EEngine::Profiling {
 	struct ProfileResult {
 		const char* Name;
@@ -22,17 +24,17 @@ export namespace EEngine::Profiling {
 		}
 
 		void BeginFrame() {
-			std::lock_guard<std::mutex> lock(m_Mutex);
+			std::lock_guard lock(m_Mutex);
 			m_CurrentFrame.Results.clear();
 			m_CurrentFrame.TotalFrameTime = 0.0f;
-			m_FrameStartTime = std::chrono::high_resolution_clock::now();
+			m_FrameStartTime = high_resolution_clock::now();
 		}
 
 		void EndFrame() {
-			std::lock_guard<std::mutex> lock(m_Mutex);
+			std::lock_guard lock(m_Mutex);
 
-			auto frameEnd = std::chrono::high_resolution_clock::now();
-			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(frameEnd - m_FrameStartTime);
+			auto frameEnd = high_resolution_clock::now();
+			auto duration = duration_cast<microseconds>(frameEnd - m_FrameStartTime);
 			m_CurrentFrame.TotalFrameTime = duration.count() * 0.001f;
 
 			// Store frame in history (circular buffer)
@@ -45,7 +47,7 @@ export namespace EEngine::Profiling {
 		}
 
 		void RecordProfile(const char* name, float durationMs) {
-			std::lock_guard<std::mutex> lock(m_Mutex);
+			std::lock_guard lock(m_Mutex);
 
 			// Find existing entry or create new one
 			for (auto& result : m_CurrentFrame.Results) {
@@ -82,7 +84,7 @@ export namespace EEngine::Profiling {
 
 		// Calculate averages over last N frames
 		ProfileResult GetAverageResult(const char* name, uint32_t frameCount = 60) const {
-			std::lock_guard<std::mutex> lock(m_Mutex);
+			std::lock_guard lock(m_Mutex);
 
 			float totalDuration = 0.0f;
 			uint32_t totalCalls = 0;
@@ -105,7 +107,7 @@ export namespace EEngine::Profiling {
 		}
 
 		float GetAverageFPS(uint32_t frameCount = 60) const {
-			std::lock_guard<std::mutex> lock(m_Mutex);
+			std::lock_guard lock(m_Mutex);
 
 			float totalFrameTime = 0.0f;
 			uint32_t framesChecked = std::min(frameCount, m_FrameCount);
@@ -133,7 +135,7 @@ export namespace EEngine::Profiling {
 		uint32_t m_FrameHistorySize = 120; // Store last 2 seconds at 60fps
 		uint32_t m_FrameHistoryIndex = 0;
 		uint32_t m_FrameCount = 0;
-		std::chrono::time_point<std::chrono::high_resolution_clock> m_FrameStartTime;
+		time_point<high_resolution_clock> m_FrameStartTime;
 		mutable std::mutex m_Mutex;
 	};
 
@@ -143,7 +145,7 @@ export namespace EEngine::Profiling {
 		Timer(const char* name)
 			: m_Name(name)
 			, m_Stopped(false)
-			, m_StartTimepoint(std::chrono::high_resolution_clock::now()) {
+			, m_StartTimepoint(high_resolution_clock::now()) {
 		}
 
 		~Timer() {
@@ -153,8 +155,8 @@ export namespace EEngine::Profiling {
 		}
 
 		void Stop() {
-			auto endTimepoint = std::chrono::high_resolution_clock::now();
-			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTimepoint - m_StartTimepoint);
+			auto endTimepoint = high_resolution_clock::now();
+			auto duration = duration_cast<microseconds>(endTimepoint - m_StartTimepoint);
 
 			m_Stopped = true;
 
@@ -164,7 +166,7 @@ export namespace EEngine::Profiling {
 
 	private:
 		const char* m_Name;
-		std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimepoint;
+		time_point<high_resolution_clock> m_StartTimepoint;
 		bool m_Stopped;
 	};
 
