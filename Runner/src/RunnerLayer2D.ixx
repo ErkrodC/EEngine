@@ -97,5 +97,5 @@ private:
 	// ER TEMP
 	EEngine::Math::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 	EEngine::Math::vec3 m_TriPos{};
-	EEngine::Ref<EEngine::ITexture2D> m_Texture;
+	EEngine::Shared<EEngine::ITexture2D> m_Texture;
 };

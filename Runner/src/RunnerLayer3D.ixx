@@ -19,7 +19,7 @@ public:
 			-0.5f, 0.5f, 0.0f,		0.8f, 0.8f, 0.8f, 1.0f,		0.0f, 1.0f,
 		};
 
-		EEngine::Ref<EEngine::IVertexBuffer> vertexBuffer;
+		EEngine::Shared<EEngine::IVertexBuffer> vertexBuffer;
 		vertexBuffer = EEngine::RendererAPI::CreateVertexBuffer(vertices, sizeof(vertices));
 
 		vertexBuffer->SetLayout({
@@ -30,7 +30,7 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[6] = { 0, 1, 2, 2, 3, 0 };
-		EEngine::Ref<EEngine::IIndexBuffer> indexBuffer;
+		EEngine::Shared<EEngine::IIndexBuffer> indexBuffer;
 		indexBuffer = EEngine::RendererAPI::CreateIndexBuffer(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -51,7 +51,7 @@ public:
 
 		EEngine::Renderer::BeginScene(m_CameraController.GetCamera()); {
 			m_Texture->Bind();
-			EEngine::Ref<EEngine::IShader> textureShader;
+			EEngine::Shared<EEngine::IShader> textureShader;
 			if (EEngine::Renderer::GetShaderLibrary()->TryGet("Texture", &textureShader)) {
 				EEngine::Renderer::Submit(textureShader, m_VertexArray, EEngine::Math::translate(EEngine::Math::mat4(1.0f), m_TriPos));
 			}
@@ -87,8 +87,8 @@ public:
 	}
 
 private:
-	EEngine::Ref<EEngine::IVertexArray> m_VertexArray;
-	EEngine::Ref<EEngine::ITexture2D> m_Texture;
+	EEngine::Shared<EEngine::IVertexArray> m_VertexArray;
+	EEngine::Shared<EEngine::ITexture2D> m_Texture;
 	EEngine::CameraController m_CameraController;
 	EEngine::Math::vec3 m_TriPos{};
 };

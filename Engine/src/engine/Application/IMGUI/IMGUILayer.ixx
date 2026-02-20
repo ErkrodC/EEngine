@@ -12,7 +12,7 @@ import EEngine.Standard;
 export namespace EEngine {
 	class IMGUILayer : public Layer {
 	public:
-		IMGUILayer(std::shared_ptr<IWindow> window) : Layer("IMGUILayer"), m_Window(window) {}
+		IMGUILayer(Shared<IWindow> window) : Layer("IMGUILayer"), m_Window(window) {}
 		~IMGUILayer() = default;
 
 		void OnAttach() override {
@@ -118,6 +118,6 @@ export namespace EEngine {
 		}
 	private:
 		float m_Time = 0.0f;
-		std::shared_ptr<IWindow> m_Window;
+		Shared<IWindow> m_Window;
 	};
 } // EEngine

@@ -34,7 +34,7 @@ export namespace EEngine {
 			glClear(GL_COLOR_BUFFER_BIT/* | GL_DEPTH_BUFFER_BIT*/);
 		}
 
-		void DrawIndexedImpl(const Ref<IVertexArray>& vertexArray) override {
+		void DrawIndexedImpl(const Shared<IVertexArray>& vertexArray) override {
 			glDrawElements(GL_TRIANGLES,
 				(GLsizei)vertexArray->GetIndexBuffer()->GetCount(),
 				GL_UNSIGNED_INT,
@@ -42,32 +42,32 @@ export namespace EEngine {
 			);
 		}
 
-		Ref<IIndexBuffer> CreateIndexBufferImpl(uint32_t* indices, uint32_t count) override {
-			return CreateRef<OpenGLIndexBuffer>(indices, count);
+		Shared<IIndexBuffer> CreateIndexBufferImpl(uint32_t* indices, uint32_t count) override {
+			return MakeShared<OpenGLIndexBuffer>(indices, count);
 		}
 
-		Ref<IVertexBuffer> CreateVertexBufferImpl(float* vertices, uint32_t size) override {
-			return CreateRef<OpenGLVertexBuffer>(vertices, size);
+		Shared<IVertexBuffer> CreateVertexBufferImpl(float* vertices, uint32_t size) override {
+			return MakeShared<OpenGLVertexBuffer>(vertices, size);
 		}
 
-		Ref<IShader> CreateShaderImpl(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) override {
-			return CreateRef<OpenGLShader>(name, vertexSource, fragmentSource);
+		Shared<IShader> CreateShaderImpl(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) override {
+			return MakeShared<OpenGLShader>(name, vertexSource, fragmentSource);
 		}
 
-		Ref<IShader> CreateShaderImpl(const std::string& path) override {
-			return CreateRef<OpenGLShader>(path);
+		Shared<IShader> CreateShaderImpl(const std::string& path) override {
+			return MakeShared<OpenGLShader>(path);
 		}
 
-		Ref<IVertexArray> CreateVertexArrayImpl() override {
-			return CreateRef<OpenGLVertexArray>();
+		Shared<IVertexArray> CreateVertexArrayImpl() override {
+			return MakeShared<OpenGLVertexArray>();
 		}
 
-		Ref<ITexture2D> CreateTexture2DImpl(const std::string& path) override {
-			return CreateRef<OpenGLTexture2D>(path);
+		Shared<ITexture2D> CreateTexture2DImpl(const std::string& path) override {
+			return MakeShared<OpenGLTexture2D>(path);
 		}
 
-		Ref<ITexture2D> CreateTexture2DImpl(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) override {
-			return CreateRef<OpenGLTexture2D>(width, height, data, size);
+		Shared<ITexture2D> CreateTexture2DImpl(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) override {
+			return MakeShared<OpenGLTexture2D>(width, height, data, size);
 		}
 	};
 } // EEngine

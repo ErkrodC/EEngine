@@ -27,14 +27,14 @@ export namespace EEngine {
 			glBindVertexArray(0);
 		}
 
-		void SetIndexBuffer(const Ref<IIndexBuffer>& indexBuffer) override {
+		void SetIndexBuffer(const Shared<IIndexBuffer>& indexBuffer) override {
 			glBindVertexArray(m_RendererID);
 			indexBuffer->Bind();
 
 			m_IndexBuffer = indexBuffer;
 		}
 
-		void AddVertexBuffer(const Ref<IVertexBuffer>& vertexBuffer) override {
+		void AddVertexBuffer(const Shared<IVertexBuffer>& vertexBuffer) override {
 			Log::CoreAssert(vertexBuffer->GetLayout().GetElements().size(), "Vertex buffer has no layout.");
 
 			glBindVertexArray(m_RendererID);
@@ -57,12 +57,12 @@ export namespace EEngine {
 			m_VertexBuffers.push_back(vertexBuffer);
 		}
 
-		const Ref<IIndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; }
-		const std::vector<Ref<IVertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; }
+		const Shared<IIndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; }
+		const std::vector<Shared<IVertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; }
 	private:
 		uint32_t m_RendererID;
-		Ref<IIndexBuffer> m_IndexBuffer;
-		std::vector<Ref<IVertexBuffer>> m_VertexBuffers;
+		Shared<IIndexBuffer> m_IndexBuffer;
+		std::vector<Shared<IVertexBuffer>> m_VertexBuffers;
 
 		static GLenum ShaderDataToOpenGLBaseType(ShaderData type) {
 			switch (type) {

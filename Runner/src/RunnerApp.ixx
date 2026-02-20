@@ -6,8 +6,8 @@ import EEngine;
 class RunnerApp : public EEngine::Application {
 public:
 	RunnerApp() {
-		//PushLayer(new RunnerLayer3D());
-		PushLayer(new RunnerLayer2D());
+		//PushLayer(EEngine::MakeRef<RunnerLayer3D>());
+		PushLayer(EEngine::MakeRef<RunnerLayer2D>());
 	}
 
 	~RunnerApp() override = default;

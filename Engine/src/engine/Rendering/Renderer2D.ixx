@@ -18,9 +18,9 @@ import EEngine.Standard;
 
 namespace EEngine::Renderer2D {
 	struct Renderer2DData {
-		Ref<IVertexArray> QuadVertexArray{};
-		Ref<IShader> TextureShader{};
-		Ref<ITexture2D> WhiteTexture{};
+		Shared<IVertexArray> QuadVertexArray{};
+		Shared<IShader> TextureShader{};
+		Shared<ITexture2D> WhiteTexture{};
 	} *s_Data ;
 
 	export void Initialize() {
@@ -35,7 +35,7 @@ namespace EEngine::Renderer2D {
 			-0.5f, 0.5f, 0.0f,		0.0f, 1.0f,
 		};
 
-		Ref<IVertexBuffer> vertexBuffer = RendererAPI::CreateVertexBuffer(vertices, sizeof(vertices));
+		Shared<IVertexBuffer> vertexBuffer = RendererAPI::CreateVertexBuffer(vertices, sizeof(vertices));
 		vertexBuffer->SetLayout({
 			{ ShaderData::Float3, "a_Position" },
 			{ ShaderData::Float2, "v_TexCoord" }
@@ -43,7 +43,7 @@ namespace EEngine::Renderer2D {
 		s_Data->QuadVertexArray->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[6] = { 0, 1, 2, 2, 3, 0 };
-		Ref<IIndexBuffer> indexBuffer = RendererAPI::CreateIndexBuffer(indices, sizeof(indices)/sizeof(uint32_t));
+		Shared<IIndexBuffer> indexBuffer = RendererAPI::CreateIndexBuffer(indices, sizeof(indices)/sizeof(uint32_t));
 		s_Data->QuadVertexArray->SetIndexBuffer(indexBuffer);
 
 		s_Data->TextureShader = Renderer::GetShaderLibrary()->Load("assets/shaders/Texture.glsl");
@@ -84,7 +84,7 @@ namespace EEngine::Renderer2D {
 		DrawQuad({position.x, position.y, 0.0f }, size, color);
 	}
 
-	export void DrawQuad(const Math::vec3& position, const Math::vec2& size, const Ref<ITexture2D>& texture) {
+	export void DrawQuad(const Math::vec3& position, const Math::vec2& size, const Shared<ITexture2D>& texture) {
 		auto shader = s_Data->TextureShader;
 		shader->SetFloat4("u_Color", Math::vec4(1.0f));
 		texture->Bind();
@@ -99,7 +99,7 @@ namespace EEngine::Renderer2D {
 		RendererAPI::DrawIndexed(s_Data->QuadVertexArray);
 	}
 
-	export void DrawQuad(const Math::vec2& position, const Math::vec2& size, const Ref<ITexture2D>& texture) {
+	export void DrawQuad(const Math::vec2& position, const Math::vec2& size, const Shared<ITexture2D>& texture) {
 		DrawQuad({position.x, position.y, 0.0f }, size, texture);
 	}
 }

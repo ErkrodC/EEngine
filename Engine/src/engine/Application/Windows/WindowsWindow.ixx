@@ -2,12 +2,18 @@ module;
 #include <GLFW/glfw3.h>
 
 export module EEngine.Application:WindowsWindow;
-import :Input;
 import :IWindow;
 import EEngine.Core;
 import EEngine.Event;
 import EEngine.Rendering;
 import EEngine.Standard;
+
+namespace EEngine {
+#if WIN32
+	inline KeyCode GLFWToEngineKeyCode(int glfwKeyCode) { return (KeyCode)glfwKeyCode; }
+	inline MouseButtonCode GLFWToEngineMouseButtonCode(int glfwMouseButtonCode) { return (MouseButtonCode)glfwMouseButtonCode; }
+#endif
+}
 
 export namespace EEngine {
 	class WindowsWindow : public IWindow {
@@ -104,7 +110,7 @@ export namespace EEngine {
 			glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int glfwKeyCode, int, int action, int) {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-				KeyCode engineKeyCode = Input::GLFWToEngineKeyCode(glfwKeyCode);
+				KeyCode engineKeyCode = GLFWToEngineKeyCode(glfwKeyCode);
 				switch (action) {
 					case GLFW_PRESS: {
 						KeyPressedEvent event(engineKeyCode, 0);
@@ -127,14 +133,14 @@ export namespace EEngine {
 
 			glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int glfwKeyCode) {
 				WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
-				KeyTypedEvent event(Input::GLFWToEngineKeyCode((int)glfwKeyCode));
+				KeyTypedEvent event(GLFWToEngineKeyCode((int)glfwKeyCode));
 				data.EventCallback(event);
 			});
 
 			glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int glfwMouseButtonCode, int action, int ) {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-				MouseButtonCode engineMouseButtonCode = Input::GLFWToEngineMouseButtonCode(glfwMouseButtonCode);
+				MouseButtonCode engineMouseButtonCode = GLFWToEngineMouseButtonCode(glfwMouseButtonCode);
 				switch (action) {
 					case GLFW_PRESS: {
 						MouseButtonPressedEvent event(engineMouseButtonCode);

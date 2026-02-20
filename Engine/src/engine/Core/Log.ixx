@@ -3,10 +3,12 @@ module;
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 export module EEngine.Core:Log;
+import :Core;
+import EEngine.Standard;
 
 namespace EEngine::Log {
-	static std::shared_ptr<spdlog::logger> s_CoreLogger = nullptr;
-	static std::shared_ptr<spdlog::logger> s_ClientLogger = nullptr;
+	static Shared<spdlog::logger> s_CoreLogger = nullptr;
+	static Shared<spdlog::logger> s_ClientLogger = nullptr;
 
 	export void Initialize() {
 		spdlog::set_pattern("%^[%T] %n: %v%$");
@@ -17,8 +19,8 @@ namespace EEngine::Log {
 		s_ClientLogger->set_level(spdlog::level::trace);
 	}
 
-	export inline std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-	export inline std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+	export inline Shared<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
+	export inline Shared<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
 
 #if EE_ENABLE_LOGGING
 	export template<typename... Args>

@@ -4,6 +4,7 @@ module;
 export module EEngine.Application:Application;
 import :IInput;
 import :IMGUILayer;
+import :Input;
 import :IWindow;
 import :Layer;
 import :LayerStack;
@@ -26,11 +27,14 @@ export namespace EEngine {
 			m_Window.reset(TBD::CreateWindow());
 			m_Window->SetEventCallback([this](auto& event) -> void { OnEvent(event); });
 
+			Input::SetWindow(static_cast<void*>(m_Window.get()));
+
 			Renderer::Initialize();
 			Renderer2D::Initialize();
 
-			m_IMGUILayer = new IMGUILayer(m_Window);
-			PushOverlay(m_IMGUILayer);
+			auto imguiLayer = MakeRef<IMGUILayer>(m_Window);
+			m_IMGUILayer = imguiLayer.get();  // Non-owning pointer
+			PushOverlay(std::move(imguiLayer));
 		}
 
 		virtual ~Application() = default;
@@ -78,14 +82,14 @@ export namespace EEngine {
 			}
 		}
 
-		void PushLayer(Layer* layer) {
-			m_LayerStack.PushLayer(layer);
+		void PushLayer(Ref<Layer> layer) {
 			layer->OnAttach();
+			m_LayerStack.PushLayer(std::move(layer));
 		}
 
-		void PushOverlay(Layer* overlay) {
-			m_LayerStack.PushOverlay(overlay);
+		void PushOverlay(Ref<Layer> overlay) {
 			overlay->OnAttach();
+			m_LayerStack.PushOverlay(std::move(overlay));
 		}
 
 		static inline Application& Get() { return *s_Instance; }
@@ -93,7 +97,7 @@ export namespace EEngine {
 	private:
 		static inline Application* s_Instance = nullptr;
 
-		std::shared_ptr<IWindow> m_Window;
+		Shared<IWindow> m_Window;
 		IMGUILayer* m_IMGUILayer;
 		bool m_Running = true;
 		bool m_Minimized = false;

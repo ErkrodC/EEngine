@@ -27,19 +27,19 @@ namespace EEngine::RendererAPI {
 		GetRendererAPI().ClearImpl(color);
 	}
 
-	export inline void DrawIndexed(const Ref<IVertexArray>& vertexArray) {
+	export inline void DrawIndexed(const Shared<IVertexArray>& vertexArray) {
 		GetRendererAPI().DrawIndexedImpl(vertexArray);
 	}
 
-	export inline Ref<IIndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t count) {
+	export inline Shared<IIndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t count) {
 		return GetRendererAPI().CreateIndexBufferImpl(indices, count);
 	}
 
-	export inline Ref<IVertexBuffer> CreateVertexBuffer(float* vertices, uint32_t size) {
+	export inline Shared<IVertexBuffer> CreateVertexBuffer(float* vertices, uint32_t size) {
 		return GetRendererAPI().CreateVertexBufferImpl(vertices, size);
 	}
 
-	export inline Ref<IShader> CreateShader(
+	export inline Shared<IShader> CreateShader(
 		const std::string& name,
 		const std::string& vertexSource,
 		const std::string& fragmentSource
@@ -47,19 +47,19 @@ namespace EEngine::RendererAPI {
 		return GetRendererAPI().CreateShaderImpl(name, vertexSource, fragmentSource);
 	}
 
-	export inline Ref<IShader> CreateShader(const std::string& path) {
+	export inline Shared<IShader> CreateShader(const std::string& path) {
 		return GetRendererAPI().CreateShaderImpl(path);
 	}
 
-	export inline Ref<IVertexArray> CreateVertexArray() {
+	export inline Shared<IVertexArray> CreateVertexArray() {
 		return GetRendererAPI().CreateVertexArrayImpl();
 	}
 
-	export inline Ref<ITexture2D> CreateTexture2D(const std::string& path) {
+	export inline Shared<ITexture2D> CreateTexture2D(const std::string& path) {
 		return GetRendererAPI().CreateTexture2DImpl(path);
 	}
 
-	export inline Ref<ITexture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) {
+	export inline Shared<ITexture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) {
 		return GetRendererAPI().CreateTexture2DImpl(width, height, data, size);
 	}
 } // EEngine

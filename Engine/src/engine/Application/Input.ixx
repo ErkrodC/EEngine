@@ -1,15 +1,30 @@
 export module EEngine.Application:Input;
 import :IInput;
+import :WindowsInput;
 import EEngine.Core;
 import EEngine.Standard;
 
 namespace EEngine::Input {
-	inline IInput*& GetInstance() {
-		static IInput* instance = nullptr;
+	inline std::unique_ptr<IInput>& GetInstance() {
+		static std::unique_ptr<IInput> instance = nullptr;
+
+		if (!instance) {
+#ifdef EE_PLATFORM_WINDOWS
+			instance = std::make_unique<WindowsInput>();
+#endif
+		}
+
 		return instance;
 	}
 
-	export inline void SetInputInstance(IInput* instance) { GetInstance() = instance; }
+	export inline void SetInputInstance(std::unique_ptr<IInput> instance) { GetInstance() = std::move(instance); }
+	export inline void SetWindow(void* window) {
+#ifdef EE_PLATFORM_WINDOWS
+		if (auto* windowsInput = dynamic_cast<WindowsInput*>(GetInstance().get())) {
+			windowsInput->SetWindow(window);
+		}
+#endif
+	}
 	export inline bool IsKeyPressed(KeyCode keyCode) { return GetInstance()->IsKeyPressedImpl(keyCode); }
 	export inline bool IsMouseButtonPressed(MouseButtonCode mouseButtonCode) { return GetInstance()->IsMouseButtonPressedImpl(mouseButtonCode); }
 	export inline std::pair<float, float> GetMousePosition() { return GetInstance()->GetMousePositionImpl(); }

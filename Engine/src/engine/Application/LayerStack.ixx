@@ -1,28 +1,37 @@
 export module EEngine.Application:LayerStack;
 import :Layer;
+import EEngine.Core;
 import EEngine.Standard;
 
 export namespace EEngine {
 	class LayerStack {
 	public:
 		LayerStack() = default;
-		~LayerStack() {
-			for (Layer* layer : m_Layers) {
-				delete layer;
-			}
-		}
+		~LayerStack() = default;
 
-		void PushLayer(Layer* layer) {
-			m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
+		// Disable copy (owns Ref's)
+		LayerStack(const LayerStack&) = delete;
+		LayerStack& operator=(const LayerStack&) = delete;
+
+		// Allow move
+		LayerStack(LayerStack&&) noexcept = default;
+		LayerStack& operator=(LayerStack&&) noexcept = default;
+
+		void PushLayer(Ref<Layer> layer) {
+			m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, std::move(layer));
 			++m_LayerInsertIndex;
 		}
 
-		void PushOverlay(Layer* overlay) {
-			m_Layers.emplace_back(overlay);
+		void PushOverlay(Ref<Layer> overlay) {
+			m_Layers.emplace_back(std::move(overlay));
 		}
 
 		void PopLayer(Layer* layer) {
-			auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
+			const auto it = std::ranges::find_if(
+				m_Layers,
+				[layer](const Ref<Layer>& ptr) { return ptr.get() == layer; }
+			);
+
 			if (it != m_Layers.end()) {
 				m_Layers.erase(it);
 				--m_LayerInsertIndex;
@@ -30,16 +39,45 @@ export namespace EEngine {
 		}
 
 		void PopOverlay(Layer* overlay) {
-			auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
+			const auto it = std::ranges::find_if(
+				m_Layers,
+				[overlay](const Ref<Layer>& ptr) { return ptr.get() == overlay; }
+			);
+
 			if (it != m_Layers.end()) {
 				m_Layers.erase(it);
 			}
 		}
 
-		std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
-		std::vector<Layer*>::iterator end() { return m_Layers.end(); }
+		// Iterator support - return raw pointers for iteration
+		class Iterator {
+		public:
+			using iterator_category = std::bidirectional_iterator_tag;
+			using value_type = Layer*;
+			using difference_type = std::ptrdiff_t;
+			using pointer = Layer**;
+			using reference = Layer*&;
+
+			explicit Iterator(std::vector<Ref<Layer>>::iterator it) : m_It(it) {}
+
+			Layer* operator*() const { return m_It->get(); }
+			Layer* operator->() const { return m_It->get(); }
+			Iterator& operator++() { ++m_It; return *this; }
+			Iterator operator++(int) { Iterator tmp = *this; ++m_It; return tmp; }
+			Iterator& operator--() { --m_It; return *this; }
+			Iterator operator--(int) { Iterator tmp = *this; --m_It; return tmp; }
+			bool operator==(const Iterator& other) const { return m_It == other.m_It; }
+			bool operator!=(const Iterator& other) const { return m_It != other.m_It; }
+
+		private:
+			std::vector<Ref<Layer>>::iterator m_It;
+		};
+
+		Iterator begin() { return Iterator(m_Layers.begin()); }
+		Iterator end() { return Iterator(m_Layers.end()); }
+
 	private:
-		std::vector<Layer*> m_Layers;
-		unsigned int m_LayerInsertIndex = 0;
+		std::vector<Ref<Layer>> m_Layers;
+		uint32_t m_LayerInsertIndex = 0;
 	};
 } // EEngine

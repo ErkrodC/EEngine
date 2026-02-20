@@ -20,8 +20,8 @@ namespace EEngine::Renderer {
 		return instance;
 	}
 
-	inline Ref<ShaderLibrary>& GetShaderLibraryInstance() {
-		static Ref<ShaderLibrary> instance = CreateRef<ShaderLibrary>();
+	inline Shared<ShaderLibrary>& GetShaderLibraryInstance() {
+		static Shared<ShaderLibrary> instance = MakeShared<ShaderLibrary>();
 		return instance;
 	}
 
@@ -44,8 +44,8 @@ namespace EEngine::Renderer {
 	}
 
 	export void Submit(
-		const Ref<IShader>& shader,
-		const Ref<IVertexArray>& vertexArray,
+		const Shared<IShader>& shader,
+		const Shared<IVertexArray>& vertexArray,
 		const Math::mat4& transform = Math::mat4(1.0f)
 	) {
 		shader->Bind();
@@ -68,5 +68,5 @@ namespace EEngine::Renderer {
 		return "";
 	}
 
-	export inline Ref<ShaderLibrary> GetShaderLibrary() { return GetShaderLibraryInstance(); }
+	export inline Shared<ShaderLibrary> GetShaderLibrary() { return GetShaderLibraryInstance(); }
 }; // EEngine
