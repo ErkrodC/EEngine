@@ -1,14 +1,14 @@
 import EEngine.Core;
 import EEngine.Application;
 
-int main() {
-	EEngine::Log::Initialize();
-	EEngine::Log::CoreTrace("Initialized Logging.");
-	EEngine::Log::Trace("Initialized Logging.");
+using namespace EEngine;
 
-	auto app = EEngine::CreateApplication();
-	app->Run();
-	delete app;
+int main() {
+	Log::Initialize();
+	Log::CoreTrace("Initialized Logging.");
+	Log::Trace("Initialized Logging.");
+
+	CreateApplication()->Run();
 
 	return 0;
 }

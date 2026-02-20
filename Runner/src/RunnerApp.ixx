@@ -11,12 +11,8 @@ public:
 		//PushLayer(MakeRef<RunnerLayer3D>());
 		PushLayer(MakeRef<RunnerLayer2D>());
 	}
-
-	~RunnerApp() override = default;
 };
 
 namespace EEngine {
-	Application* CreateApplication() {
-		return new RunnerApp();
-	}
+	Ref<Application> CreateApplication() { return MakeRef<RunnerApp>(); }
 }

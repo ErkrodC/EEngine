@@ -36,7 +36,7 @@ export namespace EEngine {
 			Renderer::Initialize();
 			Renderer2D::Initialize();
 
-			auto imguiLayer = MakeRef<IMGUILayer>(m_Window);
+			Ref<IMGUILayer> imguiLayer = MakeRef<IMGUILayer>(m_Window);
 			m_IMGUILayer = imguiLayer.get();
 			PushOverlay(std::move(imguiLayer));
 		}
@@ -125,5 +125,5 @@ export namespace EEngine {
 	};
 
 	// To be defined by consumer
-	Application* CreateApplication();
+	Ref<Application> CreateApplication();
 }
