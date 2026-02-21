@@ -28,7 +28,7 @@ export namespace EEngine {
 
 			s_Instance = this;
 
-			m_Window.reset(TBD::CreateWindow());
+			m_Window = CreateWindow();
 			m_Window->SetEventCallback([this](auto& event) -> void { OnEvent(event); });
 
 			Input::SetWindow(static_cast<void*>(m_Window.get()));

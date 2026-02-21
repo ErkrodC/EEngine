@@ -60,6 +60,15 @@ namespace EEngine {
 }
 
 export namespace EEngine {
+	// Custom deleter for GLFWwindow (opaque type)
+	struct GLFWWindowDeleter {
+		void operator()(GLFWwindow* window) const {
+			if (window) {
+				glfwDestroyWindow(window);
+			}
+		}
+	};
+
 	class WindowsWindow : public IWindow {
 	public:
 		explicit WindowsWindow(const WindowProps& props) {
@@ -79,7 +88,7 @@ export namespace EEngine {
 		inline unsigned int GetHeight() const override { return m_Data.Height; }
 
 		void* GetNativeWindow() const override {
-			return m_Window;
+			return m_Window.get();
 		}
 
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
@@ -100,8 +109,8 @@ export namespace EEngine {
 	private:
 		inline static bool s_GLFWInitialized = false;
 
-		GLFWwindow* m_Window{};
-		IGraphicsContext* m_Context{};
+		RefD<GLFWwindow, GLFWWindowDeleter> m_Window;
+		Ref<IGraphicsContext> m_Context;
 
 		virtual void Initialize(const WindowProps& props) {
 			m_Data.Title = props.Title;
@@ -118,22 +127,22 @@ export namespace EEngine {
 				s_GLFWInitialized = true;
 			}
 
-			m_Window = glfwCreateWindow(
+			m_Window = WrapRef(glfwCreateWindow(
 				(int)props.Width,
 				(int)props.Height,
 				m_Data.Title.c_str(),
 				nullptr,
 				nullptr
-			);
+			), GLFWWindowDeleter{});
 
-			m_Context = new OpenGLContext(m_Window);
+			m_Context = MakeRef<OpenGLContext>(m_Window.get());
 			m_Context->Initialize();
 			Log::CoreInfo("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
-			glfwSetWindowUserPointer(m_Window, &m_Data);
+			glfwSetWindowUserPointer(m_Window.get(), &m_Data);
 			SetVSync(true);
 
-			glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
+			glfwSetWindowSizeCallback(m_Window.get(), [](GLFWwindow* window, int width, int height) {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				data.Width = width;
 				data.Height = height;
@@ -141,13 +150,13 @@ export namespace EEngine {
 				data.EventCallback(event);
 			});
 
-			glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
+			glfwSetWindowCloseCallback(m_Window.get(), [](GLFWwindow* window) {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				WindowCloseEvent event;
 				data.EventCallback(event);
 			});
 
-			glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int glfwKeyCode, int, int action, int) {
+			glfwSetKeyCallback(m_Window.get(), [](GLFWwindow* window, int glfwKeyCode, int, int action, int) {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				KeyCode engineKeyCode = GLFWToEngineKeyCode(glfwKeyCode);
@@ -171,13 +180,13 @@ export namespace EEngine {
 				}
 			});
 
-			glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int glfwKeyCode) {
+			glfwSetCharCallback(m_Window.get(), [](GLFWwindow* window, unsigned int glfwKeyCode) {
 				WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 				KeyTypedEvent event(GLFWToEngineKeyCode((int)glfwKeyCode));
 				data.EventCallback(event);
 			});
 
-			glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int glfwMouseButtonCode, int action, int ) {
+			glfwSetMouseButtonCallback(m_Window.get(), [](GLFWwindow* window, int glfwMouseButtonCode, int action, int ) {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				MouseButtonCode engineMouseButtonCode = GLFWToEngineMouseButtonCode(glfwMouseButtonCode);
@@ -196,13 +205,13 @@ export namespace EEngine {
 				}
 			});
 
-			glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset) {
+			glfwSetScrollCallback(m_Window.get(), [](GLFWwindow* window, double xOffset, double yOffset) {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				MouseScrolledEvent event((float)xOffset, (float)yOffset);
 				data.EventCallback(event);
 			});
 
-			glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) {
+			glfwSetCursorPosCallback(m_Window.get(), [](GLFWwindow* window, double xPos, double yPos) {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				MouseMovedEvent event((float)xPos, (float)yPos);
 				data.EventCallback(event);
@@ -210,7 +219,7 @@ export namespace EEngine {
 		}
 
 		virtual void Shutdown() {
-			glfwDestroyWindow(m_Window);
+			m_Window.reset(); // Explicitly release window (optional, destructor does this)
 		}
 
 		struct WindowData {
@@ -223,14 +232,8 @@ export namespace EEngine {
 
 		WindowData m_Data;
 	};
-}
 
-// ============================================================================
-// Window Creation (TBD namespace for platform abstraction)
-// ============================================================================
-
-export namespace EEngine::TBD {
-	IWindow* CreateWindow(const WindowProps& props = WindowProps()) {
-		return new WindowsWindow(props);
+	Shared<IWindow> CreateWindow(const WindowProps& props = WindowProps()) {
+		return MakeShared<WindowsWindow>(props);
 	}
 }
