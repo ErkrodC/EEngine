@@ -1,4 +1,5 @@
 module;
+#include "Core/Core.hpp"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
@@ -66,7 +67,7 @@ export namespace EEngine::Log {
 	void CoreAssert(bool value, format_string_t<Args...> fmt, Args &&... args) {
 		if (!value) {
 			CoreError(fmt, std::forward<Args>(args)...);
-			__debugbreak();
+			DEBUGBREAK();
 		}
 	}
 
@@ -99,7 +100,7 @@ export namespace EEngine::Log {
 	void Assert(bool value, format_string_t<Args...> fmt, Args &&... args) {
 		if (!value) {
 			Error(fmt, std::forward<Args>(args)...);
-			__debugbreak();
+			DEBUGBREAK();
 		}
 	}
 #else

@@ -11,6 +11,8 @@
 	#define DISABLE_WARNING_NAMELESS_STRUCT_UNION            DISABLE_WARNING(4201)
 // other warnings you want to deactivate...
 
+	#define DEBUGBREAK() __debugbreak()
+
 #elif defined(__GNUC__) || defined(__clang__)
 #define DO_PRAGMA(X) _Pragma(#X)
     #define DISABLE_WARNING_PUSH           DO_PRAGMA(GCC diagnostic push)
@@ -28,11 +30,15 @@
 	#endif
    // other warnings you want to deactivate...
 
+	#define DEBUGBREAK() __builtin_debugtrap()
+
 #else
     #define DISABLE_WARNING_PUSH
     #define DISABLE_WARNING_POP
     #define DISABLE_WARNING_UNREFERENCED_FORMAL_PARAMETER
     #define DISABLE_WARNING_UNREFERENCED_FUNCTION
     // other warnings you want to deactivate...
+
+	#define DEBUGBREAK()
 
 #endif
