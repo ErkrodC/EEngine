@@ -124,5 +124,5 @@ export namespace EEngine {
 	};
 
 	// To be defined by consumer
-	Ref<Application> CreateApplication();
+	Unique<Application> CreateApplication();
 }

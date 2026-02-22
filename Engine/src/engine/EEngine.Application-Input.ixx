@@ -87,19 +87,19 @@ export namespace EEngine {
 // ============================================================================
 
 namespace EEngine::Input {
-	inline Ref<IInput>& GetInstance() {
-		static Ref<IInput> instance = nullptr;
+	inline Unique<IInput>& GetInstance() {
+		static Unique<IInput> instance = nullptr;
 
 		if (!instance) {
 #ifdef EE_PLATFORM_WINDOWS
-			instance = MakeRef<WindowsInput>();
+			instance = MakeUnique<WindowsInput>();
 #endif
 		}
 
 		return instance;
 	}
 
-	export inline void SetInputInstance(Ref<IInput> instance) { GetInstance() = std::move(instance); }
+	export inline void SetInputInstance(Unique<IInput> instance) { GetInstance() = std::move(instance); }
 	export inline void SetWindow(Shared<IWindow> window) {
 #ifdef EE_PLATFORM_WINDOWS
 		if (auto* windowsInput = dynamic_cast<WindowsInput*>(GetInstance().get())) {

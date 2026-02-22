@@ -109,8 +109,8 @@ export namespace EEngine {
 	private:
 		inline static bool s_GLFWInitialized = false;
 
-		RefD<GLFWwindow, GLFWWindowDeleter> m_Window;
-		Ref<IGraphicsContext> m_Context;
+		UniqueD<GLFWwindow, GLFWWindowDeleter> m_Window;
+		Unique<IGraphicsContext> m_Context;
 
 		virtual void Initialize(const WindowProps& props) {
 			m_Data.Title = props.Title;
@@ -127,7 +127,7 @@ export namespace EEngine {
 				s_GLFWInitialized = true;
 			}
 
-			m_Window = MakeRefFromRaw(glfwCreateWindow(
+			m_Window = MakeUniqueFromRaw(glfwCreateWindow(
 				(int)props.Width,
 				(int)props.Height,
 				m_Data.Title.c_str(),
@@ -135,7 +135,7 @@ export namespace EEngine {
 				nullptr
 			), GLFWWindowDeleter{});
 
-			m_Context = MakeRef<OpenGLContext>(m_Window.get());
+			m_Context = MakeUnique<OpenGLContext>(m_Window.get());
 			m_Context->Initialize();
 			Log::CoreInfo("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 

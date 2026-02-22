@@ -9,10 +9,10 @@ class RunnerApp : public Application {
 public:
 	RunnerApp() {
 		//PushLayer(MakeRef<RunnerLayer3D>());
-		PushLayer(MakeRef<RunnerLayer2D>());
+		PushLayer(MakeUnique<RunnerLayer2D>());
 	}
 };
 
 namespace EEngine {
-	Ref<Application> CreateApplication() { return MakeRef<RunnerApp>(); }
+	Unique<Application> CreateApplication() { return MakeUnique<RunnerApp>(); }
 }
