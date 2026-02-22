@@ -31,14 +31,13 @@ export namespace EEngine {
 			m_Window = CreateWindow();
 			m_Window->SetEventCallback([this](auto& event) -> void { OnEvent(event); });
 
-			Input::SetWindow(static_cast<void*>(m_Window.get()));
+			Input::SetWindow(m_Window);
 
 			Renderer::Initialize();
 			Renderer2D::Initialize();
 
-			Ref<IMGUILayer> imguiLayer = MakeRef<IMGUILayer>(m_Window);
-			m_IMGUILayer = imguiLayer.get();
-			PushOverlay(std::move(imguiLayer));
+			m_IMGUILayer = MakeShared<IMGUILayer>(m_Window);
+			PushOverlay(m_IMGUILayer);
 		}
 
 		virtual ~Application() = default;
@@ -84,12 +83,12 @@ export namespace EEngine {
 			}
 		}
 
-		void PushLayer(Ref<Layer> layer) {
+		void PushLayer(Shared<Layer> layer) {
 			layer->OnAttach();
 			m_LayerStack.PushLayer(std::move(layer));
 		}
 
-		void PushOverlay(Ref<Layer> overlay) {
+		void PushOverlay(Shared<Layer> overlay) {
 			overlay->OnAttach();
 			m_LayerStack.PushOverlay(std::move(overlay));
 		}
@@ -100,7 +99,7 @@ export namespace EEngine {
 		static inline Application* s_Instance = nullptr;
 
 		Shared<IWindow> m_Window;
-		IMGUILayer* m_IMGUILayer;
+		Shared<IMGUILayer> m_IMGUILayer;
 		bool m_Running = true;
 		bool m_Minimized = false;
 		LayerStack m_LayerStack;

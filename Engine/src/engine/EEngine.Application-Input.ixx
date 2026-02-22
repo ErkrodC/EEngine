@@ -37,8 +37,8 @@ namespace EEngine {
 export namespace EEngine {
 	class WindowsInput : public IInput {
 	public:
-		void SetWindow(void* window) {
-			m_Window = static_cast<IWindow*>(window);
+		void SetWindow(Shared<IWindow> window) {
+			m_Window = std::move(window);
 		}
 
 	protected:
@@ -78,7 +78,7 @@ export namespace EEngine {
 		}
 
 	private:
-		IWindow* m_Window = nullptr;
+		Shared<IWindow> m_Window;
 	};
 }
 
@@ -100,10 +100,10 @@ namespace EEngine::Input {
 	}
 
 	export inline void SetInputInstance(Ref<IInput> instance) { GetInstance() = std::move(instance); }
-	export inline void SetWindow(void* window) {
+	export inline void SetWindow(Shared<IWindow> window) {
 #ifdef EE_PLATFORM_WINDOWS
 		if (auto* windowsInput = dynamic_cast<WindowsInput*>(GetInstance().get())) {
-			windowsInput->SetWindow(window);
+			windowsInput->SetWindow(std::move(window));
 		}
 #endif
 	}

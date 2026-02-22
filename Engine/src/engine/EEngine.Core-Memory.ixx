@@ -27,7 +27,7 @@ export namespace EEngine {
 
 	// wrap an existing raw pointer
 	template<typename T, typename Deleter>
-	constexpr RefD<T, Deleter> WrapRef(T* ptr, Deleter deleter) {
+	constexpr RefD<T, Deleter> MakeRefFromRaw(T* ptr, Deleter deleter) {
 		return std::unique_ptr<T, Deleter>(ptr, deleter);
 	}
 
@@ -39,7 +39,7 @@ export namespace EEngine {
 
 	// wrap an existing raw pointer
 	template<typename T, typename Deleter>
-	constexpr Shared<T> WrapShared(T* ptr, Deleter deleter) {
+	constexpr Shared<T> MakeSharedFromRaw(T* ptr, Deleter deleter) {
 		return std::shared_ptr<T>(ptr, deleter);
 	}
 }

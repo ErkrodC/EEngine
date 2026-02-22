@@ -127,7 +127,7 @@ export namespace EEngine {
 				s_GLFWInitialized = true;
 			}
 
-			m_Window = WrapRef(glfwCreateWindow(
+			m_Window = MakeRefFromRaw(glfwCreateWindow(
 				(int)props.Width,
 				(int)props.Height,
 				m_Data.Title.c_str(),

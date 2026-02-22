@@ -36,19 +36,19 @@ export namespace EEngine {
 		LayerStack(LayerStack&&) noexcept = default;
 		LayerStack& operator=(LayerStack&&) noexcept = default;
 
-		void PushLayer(Ref<Layer> layer) {
+		void PushLayer(Shared<Layer> layer) {
 			m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, std::move(layer));
 			++m_LayerInsertIndex;
 		}
 
-		void PushOverlay(Ref<Layer> overlay) {
+		void PushOverlay(Shared<Layer> overlay) {
 			m_Layers.emplace_back(std::move(overlay));
 		}
 
 		void PopLayer(Layer* layer) {
 			const auto it = std::ranges::find_if(
 				m_Layers,
-				[layer](const Ref<Layer>& ptr) { return ptr.get() == layer; }
+				[layer](const Shared<Layer>& ptr) { return ptr.get() == layer; }
 			);
 
 			if (it != m_Layers.end()) {
@@ -60,7 +60,7 @@ export namespace EEngine {
 		void PopOverlay(Layer* overlay) {
 			const auto it = std::ranges::find_if(
 				m_Layers,
-				[overlay](const Ref<Layer>& ptr) { return ptr.get() == overlay; }
+				[overlay](const Shared<Layer>& ptr) { return ptr.get() == overlay; }
 			);
 
 			if (it != m_Layers.end()) {
@@ -76,7 +76,7 @@ export namespace EEngine {
 			using pointer = Layer**;
 			using reference = Layer*&;
 
-			explicit Iterator(std::vector<Ref<Layer>>::iterator it) : m_It(it) {}
+			explicit Iterator(std::vector<Shared<Layer>>::iterator it) : m_It(it) {}
 
 			Layer* operator*() const { return m_It->get(); }
 			Layer* operator->() const { return m_It->get(); }
@@ -88,14 +88,14 @@ export namespace EEngine {
 			bool operator!=(const Iterator& other) const { return m_It != other.m_It; }
 
 		private:
-			std::vector<Ref<Layer>>::iterator m_It;
+			std::vector<Shared<Layer>>::iterator m_It;
 		};
 
 		Iterator begin() { return Iterator(m_Layers.begin()); }
 		Iterator end() { return Iterator(m_Layers.end()); }
 
 	private:
-		std::vector<Ref<Layer>> m_Layers;
+		std::vector<Shared<Layer>> m_Layers;
 		uint32_t m_LayerInsertIndex = 0;
 	};
 }
