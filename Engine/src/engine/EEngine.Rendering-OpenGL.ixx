@@ -19,14 +19,32 @@ export namespace EEngine {
 	class OpenGLIndexBuffer : public IIndexBuffer {
 	public:
 		OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
-			: m_Count(count) {
+			: m_Count(count)
+		{
 			glCreateBuffers(1, &m_RendererID);
 			Bind();
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 		}
 
-		~OpenGLIndexBuffer() override {
+		~OpenGLIndexBuffer() override { glDeleteBuffers(1, &m_RendererID); }
+		OpenGLIndexBuffer(const OpenGLIndexBuffer& other) = delete;
+		OpenGLIndexBuffer& operator=(const OpenGLIndexBuffer& other) = delete;
+
+		OpenGLIndexBuffer(OpenGLIndexBuffer&& other) noexcept
+			: m_RendererID(std::exchange(other.m_RendererID, 0)),
+			  m_Count(std::move(other.m_Count)) { }
+
+		OpenGLIndexBuffer& operator=(OpenGLIndexBuffer&& other) noexcept {
 			glDeleteBuffers(1, &m_RendererID);
+			// ER NOTE: `m_RendererID = 0` protects against double-delete due to self-assignment
+			// i.e. enables std::exchange(other.m_RendererID, 0) to return 0, thus leaving this/other in a moved-from
+			// state, and that calls glDeleteBuffers(1, &0) (no-op) when destructed.
+			m_RendererID = 0;
+
+			m_RendererID = std::exchange(other.m_RendererID, 0);
+			m_Count = std::move(other.m_Count);
+
+			return *this;
 		}
 
 		void Bind() const override {
@@ -51,8 +69,22 @@ export namespace EEngine {
 			glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 		}
 
-		~OpenGLVertexBuffer() override {
+		~OpenGLVertexBuffer() override { glDeleteBuffers(1, &m_RendererID); }
+		OpenGLVertexBuffer(const OpenGLVertexBuffer& other) = delete;
+		OpenGLVertexBuffer& operator=(const OpenGLVertexBuffer& other) = delete;
+
+		OpenGLVertexBuffer(OpenGLVertexBuffer&& other) noexcept
+			: m_RendererID(std::exchange(other.m_RendererID, 0)),
+			m_Layout(std::move(other.m_Layout)) {}
+
+		OpenGLVertexBuffer& operator=(OpenGLVertexBuffer&& other) noexcept {
 			glDeleteBuffers(1, &m_RendererID);
+			m_RendererID = 0;
+
+			m_RendererID = std::exchange(other.m_RendererID, 0);
+			m_Layout = std::move(other.m_Layout);
+
+			return *this;
 		}
 
 		void Bind() const override {
@@ -80,12 +112,24 @@ export namespace EEngine {
 	// ============================================================================
 	class OpenGLVertexArray : public IVertexArray {
 	public:
-		OpenGLVertexArray() {
-			glCreateVertexArrays(1, &m_RendererID);
-		}
+		OpenGLVertexArray() { glCreateVertexArrays(1, &m_RendererID); }
+		~OpenGLVertexArray() override { glDeleteVertexArrays(1, &m_RendererID); }
+		OpenGLVertexArray(const OpenGLVertexArray& other) = delete;
+		OpenGLVertexArray& operator=(const OpenGLVertexArray& other) = delete;
 
-		~OpenGLVertexArray() override {
+		OpenGLVertexArray(OpenGLVertexArray&& other) noexcept
+			: m_RendererID(std::exchange(other.m_RendererID, 0)),
+			  m_IndexBuffer(std::move(other.m_IndexBuffer)),
+			  m_VertexBuffers(std::move(other.m_VertexBuffers)) {}
+
+		OpenGLVertexArray& operator=(OpenGLVertexArray&& other) noexcept {
 			glDeleteVertexArrays(1, &m_RendererID);
+			m_RendererID = 0;
+
+			m_RendererID = std::exchange(other.m_RendererID, 0);
+			m_IndexBuffer = std::move(other.m_IndexBuffer);
+			m_VertexBuffers = std::move(other.m_VertexBuffers);
+			return *this;
 		}
 
 		void Bind() const override {
@@ -193,8 +237,22 @@ export namespace EEngine {
 			}
 		}
 
-		~OpenGLShader() override {
+		~OpenGLShader() override { glDeleteProgram(m_RendererID); }
+		OpenGLShader(const OpenGLShader& other) = delete;
+		OpenGLShader& operator=(const OpenGLShader& other) = delete;
+
+		OpenGLShader(OpenGLShader&& other) noexcept
+			: m_RendererID(std::exchange(other.m_RendererID, 0)),
+			  m_Name(std::move(other.m_Name)) {}
+
+		OpenGLShader& operator=(OpenGLShader&& other) noexcept {
 			glDeleteProgram(m_RendererID);
+			m_RendererID = 0;
+
+			m_RendererID = std::exchange(other.m_RendererID, 0);
+			m_Name = std::move(other.m_Name);
+
+			return *this;
 		}
 
 		void Bind() const override {
@@ -206,34 +264,41 @@ export namespace EEngine {
 		}
 
 		void SetInt(const std::string& name, int32_t value) override {
-			UploadUniformInt(name, value);
+			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+			glUniform1i(location, value);
 		}
 
 		void SetFloat(const std::string& name, float value) override {
-			UploadUniformFloat(name, value);
+			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+			glUniform1f(location, value);
 		}
 
 		void SetFloat2(const std::string& name, const Math::vec2& values) override {
-			UploadUniformFloat2(name, values);
+			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+			glUniform2f(location, values.x, values.y);
 		}
 
 		void SetFloat3(const std::string& name, const Math::vec3& values) override {
-			UploadUniformFloat3(name, values);
+			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+			glUniform3f(location, values.x, values.y, values.z);
 		}
 
 		void SetFloat4(const std::string& name, const Math::vec4& values) override {
-			UploadUniformFloat4(name, values);
+			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+			glUniform4f(location, values.x, values.y, values.z, values.w);
 		}
 
 		void SetMat3(const std::string& name, const Math::mat3& matrix) override {
-			UploadUniformMat3(name, matrix);
+			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+			glUniformMatrix3fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 		}
 
 		void SetMat4(const std::string& name, const Math::mat4& matrix) override {
-			UploadUniformMat4(name, matrix);
+			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+			glUniformMatrix4fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 		}
 
-		const std::string& GetName() const override { return m_Name; };
+		const std::string& GetName() const override { return m_Name; }
 	private:
 		uint32_t m_RendererID;
 		std::string m_Name;
@@ -388,41 +453,6 @@ export namespace EEngine {
 				glDetachShader(m_RendererID, shaderID);
 			}
 		}
-
-		void UploadUniformInt(const std::string& name, int32_t value) {
-			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-			glUniform1i(location, value);
-		}
-
-		void UploadUniformFloat(const std::string& name, float value) {
-			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-			glUniform1f(location, value);
-		}
-
-		void UploadUniformFloat2(const std::string& name, const Math::vec2& values) {
-			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-			glUniform2f(location, values.x, values.y);
-		}
-
-		void UploadUniformFloat3(const std::string& name, const Math::vec3& values) {
-			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-			glUniform3f(location, values.x, values.y, values.z);
-		}
-
-		void UploadUniformFloat4(const std::string& name, const Math::vec4& values) {
-			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-			glUniform4f(location, values.x, values.y, values.z, values.w);
-		}
-
-		void UploadUniformMat3(const std::string& name, const Math::mat3& matrix) {
-			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-			glUniformMatrix3fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
-		}
-
-		void UploadUniformMat4(const std::string& name, const Math::mat4& matrix) {
-			GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-			glUniformMatrix4fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
-		}
 	};
 
 	// ============================================================================
@@ -497,8 +527,28 @@ export namespace EEngine {
 			stbi_image_free(data);
 		}
 
-		~OpenGLTexture2D() override {
+		~OpenGLTexture2D() override { glDeleteTextures(1, &m_RendererID); }
+		OpenGLTexture2D(const OpenGLTexture2D& other) = delete;
+		OpenGLTexture2D& operator=(const OpenGLTexture2D& other) = delete;
+
+		OpenGLTexture2D(OpenGLTexture2D&& other) noexcept
+			: m_Path(std::move(other.m_Path)),
+			  m_Width(std::move(other.m_Width)),
+			  m_Height(std::move(other.m_Height)),
+			  m_RendererID(std::exchange(other.m_RendererID, 0)),
+			  m_InstanceFormat(std::move(other.m_InstanceFormat)) {}
+
+		OpenGLTexture2D& operator=(OpenGLTexture2D&& other) noexcept {
 			glDeleteTextures(1, &m_RendererID);
+			m_RendererID = 0;
+
+			m_Path = std::move(other.m_Path);
+			m_Width = std::move(other.m_Width);
+			m_Height = std::move(other.m_Height);
+			m_RendererID = std::exchange(other.m_RendererID, 0);
+			m_InstanceFormat = std::move(other.m_InstanceFormat);
+
+			return *this;
 		}
 
 		uint32_t GetWidth() const override { return m_Width; }

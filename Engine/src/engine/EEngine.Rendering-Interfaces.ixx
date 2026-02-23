@@ -33,7 +33,6 @@ export namespace EEngine {
 	// ============================================================================
 	// Texture (API-agnostic interface)
 	// ============================================================================
-
 	class ITexture {
 	public:
 		virtual ~ITexture() = default;
@@ -51,7 +50,6 @@ export namespace EEngine {
 	// ============================================================================
 	// Vertex Array (API-agnostic interface)
 	// ============================================================================
-
 	class IVertexArray {
 	public:
 		virtual ~IVertexArray() {}
@@ -69,7 +67,6 @@ export namespace EEngine {
 	// ============================================================================
 	// Graphics Context (API-agnostic interface)
 	// ============================================================================
-
 	class IGraphicsContext {
 	public:
 		virtual void SwapBuffers() = 0;
@@ -78,7 +75,6 @@ export namespace EEngine {
 	// ============================================================================
 	// Renderer API (API-agnostic interface)
 	// ============================================================================
-
 	class IRendererAPI {
 	public:
 		virtual void InitializeImpl() = 0;
