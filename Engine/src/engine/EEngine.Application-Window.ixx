@@ -72,47 +72,6 @@ export namespace EEngine {
 	class WindowsWindow : public IWindow {
 	public:
 		explicit WindowsWindow(const WindowProps& props) {
-			Initialize(props);
-		}
-
-		~WindowsWindow() override {
-			Shutdown();
-		}
-
-		void OnUpdate() override {
-			glfwPollEvents();
-			if (m_Context) { m_Context->SwapBuffers(); }
-		}
-
-		inline unsigned int GetWidth() const override { return m_Data.Width; }
-		inline unsigned int GetHeight() const override { return m_Data.Height; }
-
-		void* GetNativeWindow() const override {
-			return m_Window.get();
-		}
-
-		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-
-		void SetVSync(bool enabled) override {
-			if (enabled) {
-				glfwSwapInterval(1);
-			} else {
-				glfwSwapInterval(0);
-			}
-
-			m_Data.VSync = enabled;
-		}
-
-		bool IsVSync() const override {
-			return m_Data.VSync;
-		}
-	private:
-		inline static bool s_GLFWInitialized = false;
-
-		UniqueD<GLFWwindow, GLFWWindowDeleter> m_Window;
-		Unique<IGraphicsContext> m_Context;
-
-		virtual void Initialize(const WindowProps& props) {
 			m_Data.Title = props.Title;
 			m_Data.Width = props.Width;
 			m_Data.Height = props.Height;
@@ -136,7 +95,6 @@ export namespace EEngine {
 			), GLFWWindowDeleter{});
 
 			m_Context = MakeUnique<OpenGLContext>(m_Window.get());
-			m_Context->Initialize();
 			Log::CoreInfo("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 			glfwSetWindowUserPointer(m_Window.get(), &m_Data);
@@ -218,9 +176,42 @@ export namespace EEngine {
 			});
 		}
 
-		virtual void Shutdown() {
-			m_Window.reset(); // Explicitly release window (optional, destructor does this)
+		~WindowsWindow() override {
+			m_Window.reset();
 		}
+
+		void OnUpdate() override {
+			glfwPollEvents();
+			if (m_Context) { m_Context->SwapBuffers(); }
+		}
+
+		inline unsigned int GetWidth() const override { return m_Data.Width; }
+		inline unsigned int GetHeight() const override { return m_Data.Height; }
+
+		void* GetNativeWindow() const override {
+			return m_Window.get();
+		}
+
+		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+
+		void SetVSync(bool enabled) override {
+			if (enabled) {
+				glfwSwapInterval(1);
+			} else {
+				glfwSwapInterval(0);
+			}
+
+			m_Data.VSync = enabled;
+		}
+
+		bool IsVSync() const override {
+			return m_Data.VSync;
+		}
+	private:
+		inline static bool s_GLFWInitialized = false;
+
+		UniqueD<GLFWwindow, GLFWWindowDeleter> m_Window;
+		Unique<IGraphicsContext> m_Context;
 
 		struct WindowData {
 			std::string Title;

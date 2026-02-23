@@ -16,7 +16,6 @@ export namespace EEngine {
 	// ============================================================================
 	// OpenGL Buffer Implementations
 	// ============================================================================
-
 	class OpenGLIndexBuffer : public IIndexBuffer {
 	public:
 		OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
@@ -79,7 +78,6 @@ export namespace EEngine {
 	// ============================================================================
 	// OpenGL Vertex Array Implementation
 	// ============================================================================
-
 	class OpenGLVertexArray : public IVertexArray {
 	public:
 		OpenGLVertexArray() {
@@ -162,7 +160,6 @@ export namespace EEngine {
 	// ============================================================================
 	// OpenGL Shader Implementation
 	// ============================================================================
-
 	class OpenGLShader : public IShader {
 	public:
 		OpenGLShader(
@@ -312,7 +309,7 @@ export namespace EEngine {
 			std::unordered_map<GLenum, std::string> result;
 
 			const char* typeToken = "#type";
-			size_t typeTokenLength = strlen(typeToken);
+			size_t typeTokenLength = std::strlen(typeToken);
 			size_t pos = source.find(typeToken, 0);
 			while (pos != std::string::npos) {
 				size_t eol = source.find_first_of("\r\n", pos);
@@ -431,7 +428,6 @@ export namespace EEngine {
 	// ============================================================================
 	// OpenGL Texture Implementation
 	// ============================================================================
-
 	class OpenGLTexture2D : public ITexture2D {
 	public:
 		explicit OpenGLTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0)
@@ -554,15 +550,13 @@ export namespace EEngine {
 	// ============================================================================
 	// OpenGL Graphics Context
 	// ============================================================================
-
 	class OpenGLContext : public IGraphicsContext {
 	public:
 		explicit OpenGLContext(GLFWwindow* window)
-			: m_Window(window) {
+			: m_Window(window)
+		{
 			Log::Assert(m_Window, "Window was null when creating OpenGLContext");
-		}
 
-		void Initialize() override {
 			glfwMakeContextCurrent(m_Window);
 			int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 			Log::CoreAssert(status, "Failed to initialize GLAD!");
@@ -582,13 +576,14 @@ export namespace EEngine {
 			glfwSwapBuffers(m_Window);
 		}
 	private:
+		// non-owning, window guaranteed to outlive context because it is declared before
+		// (thus destroyed after) the IGraphicsContext member of class WindowsWindow
 		GLFWwindow* m_Window;
 	};
 
 	// ============================================================================
 	// OpenGL Renderer API
 	// ============================================================================
-
 	class OpenGLRendererAPI : public IRendererAPI {
 	public:
 		void InitializeImpl() override {

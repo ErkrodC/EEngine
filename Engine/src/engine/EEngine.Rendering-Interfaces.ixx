@@ -10,7 +10,6 @@ export namespace EEngine {
 	// ============================================================================
 	// Shader (API-agnostic interface)
 	// ============================================================================
-
 	class IShader {
 	public:
 		virtual ~IShader() = default;
@@ -73,7 +72,6 @@ export namespace EEngine {
 
 	class IGraphicsContext {
 	public:
-		virtual void Initialize() = 0;
 		virtual void SwapBuffers() = 0;
 	};
 
