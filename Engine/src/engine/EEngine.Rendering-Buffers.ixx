@@ -19,12 +19,12 @@ export namespace EEngine {
 		switch (type) {
 			case ShaderData::None:		break;
 			case ShaderData::Float:		return 4;
-			case ShaderData::Float2:		return 4 * 2;
-			case ShaderData::Float3:		return 4 * 3;
-			case ShaderData::Float4:		return 4 * 4;
+			case ShaderData::Float2:	return 4 * 2;
+			case ShaderData::Float3:	return 4 * 3;
+			case ShaderData::Float4:	return 4 * 4;
 			case ShaderData::Mat3:		return 4 * 3 * 3;
 			case ShaderData::Mat4:		return 4 * 4 * 4;
-			case ShaderData::Int:			return 4;
+			case ShaderData::Int:		return 4;
 			case ShaderData::Int2:		return 4 * 2;
 			case ShaderData::Int3:		return 4 * 3;
 			case ShaderData::Int4:		return 4 * 4;
@@ -39,12 +39,12 @@ export namespace EEngine {
 		switch (type) {
 			case ShaderData::None:		break;
 			case ShaderData::Float:		return 1;
-			case ShaderData::Float2:		return 2;
-			case ShaderData::Float3:		return 3;
-			case ShaderData::Float4:		return 4;
+			case ShaderData::Float2:	return 2;
+			case ShaderData::Float3:	return 3;
+			case ShaderData::Float4:	return 4;
 			case ShaderData::Mat3:		return 3 * 3;
 			case ShaderData::Mat4:		return 4 * 4;
-			case ShaderData::Int:			return 1;
+			case ShaderData::Int:		return 1;
 			case ShaderData::Int2:		return 2;
 			case ShaderData::Int3:		return 3;
 			case ShaderData::Int4:		return 4;
