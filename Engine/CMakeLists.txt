@@ -27,36 +27,36 @@ target_sources(engine
 
 			# EEngine.Core module and partitions
 			src/engine/EEngine.Core.ixx
-			src/engine/EEngine.Core-Memory.ixx
-			src/engine/EEngine.Core-Time.ixx
-			src/engine/EEngine.Core-Input.ixx
-			src/engine/EEngine.Core-Log.ixx
+			src/engine/EEngine.Core_Memory.ixx
+			src/engine/EEngine.Core_Time.ixx
+			src/engine/EEngine.Core_Input.ixx
+			src/engine/EEngine.Core_Log.ixx
 
 			# EEngine.Event module and partitions
 			src/engine/EEngine.Event.ixx
-			src/engine/EEngine.Event-Base.ixx
-			src/engine/EEngine.Event-Application.ixx
-			src/engine/EEngine.Event-Keyboard.ixx
-			src/engine/EEngine.Event-Mouse.ixx
+			src/engine/EEngine.Event_Base.ixx
+			src/engine/EEngine.Event_Application.ixx
+			src/engine/EEngine.Event_Keyboard.ixx
+			src/engine/EEngine.Event_Mouse.ixx
 
 			# EEngine.Application module and partitions
 			src/engine/EEngine.Application.ixx
-			src/engine/EEngine.Application-Window.ixx
-			src/engine/EEngine.Application-Input.ixx
-			src/engine/EEngine.Application-Layer.ixx
-			src/engine/EEngine.Application-IMGUILayer.ixx
-			src/engine/EEngine.Application-CameraController.ixx
-			src/engine/EEngine.Application-Application.ixx
+			src/engine/EEngine.Application_Window.ixx
+			src/engine/EEngine.Application_Input.ixx
+			src/engine/EEngine.Application_Layer.ixx
+			src/engine/EEngine.Application_IMGUILayer.ixx
+			src/engine/EEngine.Application_CameraController.ixx
+			src/engine/EEngine.Application_Application.ixx
 
 			# EEngine.Rendering module and partitions
 			src/engine/EEngine.Rendering.ixx
-			src/engine/EEngine.Rendering-API.ixx
-			src/engine/EEngine.Rendering-Buffers.ixx
-			src/engine/EEngine.Rendering-Interfaces.ixx
-			src/engine/EEngine.Rendering-Camera.ixx
-			src/engine/EEngine.Rendering-OpenGL.ixx
-			src/engine/EEngine.Rendering-Renderer.ixx
-			src/engine/EEngine.Rendering-Renderer2D.ixx
+			src/engine/EEngine.Rendering_API.ixx
+			src/engine/EEngine.Rendering_Buffers.ixx
+			src/engine/EEngine.Rendering_Interfaces.ixx
+			src/engine/EEngine.Rendering_Camera.ixx
+			src/engine/EEngine.Rendering_OpenGL.ixx
+			src/engine/EEngine.Rendering_Renderer.ixx
+			src/engine/EEngine.Rendering_Renderer2D.ixx
 
 			# Other modules (no partitions)
 			src/engine/EEngine.Math.ixx
