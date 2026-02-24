@@ -99,5 +99,5 @@ private:
 	// ER TEMP
 	Math::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 	Math::vec3 m_TriPos{};
-	Shared<ITexture2D> m_Texture;
+	Shared<Texture2D> m_Texture;
 };

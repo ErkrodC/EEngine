@@ -23,7 +23,7 @@ export namespace EEngine {
 	class Application {
 	public:
 		Application() {
-			Log::CoreInfo("Selected Renderer API: {}", Renderer::GetRendererAPIString(Renderer::GetSelectedAPI()));
+			Log::CoreInfo("Selected Renderer API: {}", RendererAPI::GetRendererAPIString());
 			Log::CoreAssert(!s_Instance, "Multiple applications created.");
 
 			s_Instance = this;

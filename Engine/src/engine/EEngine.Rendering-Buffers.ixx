@@ -6,7 +6,6 @@ export namespace EEngine {
 	// ============================================================================
 	// Buffer & Layout (API-agnostic interfaces)
 	// ============================================================================
-
 	enum class ShaderData {
 		None,
 		Float, Float2, Float3, Float4,
@@ -101,25 +100,5 @@ export namespace EEngine {
 				m_Stride += element.Size;
 			}
 		}
-	};
-
-	class IIndexBuffer {
-	public:
-		virtual ~IIndexBuffer() = default;
-
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
-		virtual uint32_t GetCount() const = 0;
-	};
-
-	class IVertexBuffer {
-	public:
-		virtual ~IVertexBuffer() = default;
-
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
-
-		virtual const BufferLayout& GetLayout() const = 0;
-		virtual void SetLayout(const BufferLayout& layout) = 0;
 	};
 }

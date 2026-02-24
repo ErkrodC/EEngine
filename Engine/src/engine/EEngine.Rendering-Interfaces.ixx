@@ -7,62 +7,31 @@ import :Buffers;
 using namespace EEngine;
 
 export namespace EEngine {
-	// ============================================================================
-	// Shader (API-agnostic interface)
-	// ============================================================================
-	class IShader {
-	public:
-		virtual ~IShader() = default;
-
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
-
-		virtual void SetInt(const std::string& name, int32_t value) = 0;
-
-		virtual void SetFloat(const std::string& name, float value) = 0;
-		virtual void SetFloat2(const std::string& name, const Math::vec2& value) = 0;
-		virtual void SetFloat3(const std::string& name, const Math::vec3& value) = 0;
-		virtual void SetFloat4(const std::string& name, const Math::vec4& value) = 0;
-
-		virtual void SetMat3(const std::string& name, const Math::mat3& value) = 0;
-		virtual void SetMat4(const std::string& name, const Math::mat4& value) = 0;
-
-		virtual const std::string& GetName() const = 0;
+	enum class API {
+		DirectX,
+		OpenGL,
+		Vulkan
 	};
 
-	// ============================================================================
-	// Texture (API-agnostic interface)
-	// ============================================================================
-	class ITexture {
-	public:
-		virtual ~ITexture() = default;
+	constexpr API g_API = API::OpenGL;
 
-		virtual uint32_t GetWidth() const = 0;
-		virtual uint32_t GetHeight() const = 0;
+	#define DECLARE_API_TYPE(BaseName) \
+		class DirectX##BaseName; class OpenGL##BaseName; class Vulkan##BaseName; \
+		using BaseName = std::conditional_t<g_API == API::DirectX, \
+			DirectX##BaseName, \
+			std::conditional_t<g_API == API::OpenGL, \
+				OpenGL##BaseName, \
+				Vulkan##BaseName \
+			> \
+		>
 
-		virtual void SetData(void* data, uint32_t size) = 0;
+	DECLARE_API_TYPE(Shader);
+	DECLARE_API_TYPE(VertexArray);
+	DECLARE_API_TYPE(Texture2D);
+	DECLARE_API_TYPE(IndexBuffer);
+	DECLARE_API_TYPE(VertexBuffer);
 
-		virtual void Bind() const = 0;
-	};
-
-	class ITexture2D : public ITexture { };
-
-	// ============================================================================
-	// Vertex Array (API-agnostic interface)
-	// ============================================================================
-	class IVertexArray {
-	public:
-		virtual ~IVertexArray() {}
-
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
-
-		virtual void SetIndexBuffer(const Shared<IIndexBuffer>& indexBuffer) = 0;
-		virtual void AddVertexBuffer(const Shared<IVertexBuffer>& vertexBuffer) = 0;
-
-		virtual const Shared<IIndexBuffer>& GetIndexBuffer() const = 0;
-		virtual const std::vector<Shared<IVertexBuffer>>& GetVertexBuffers() const = 0;
-	};
+	#undef DECLARE_API_TYPE
 
 	// ============================================================================
 	// Graphics Context (API-agnostic interface)
@@ -80,13 +49,13 @@ export namespace EEngine {
 		virtual void InitializeImpl() = 0;
 		virtual void SetViewportImpl(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 		virtual void ClearImpl(const Math::vec4& color) = 0;
-		virtual void DrawIndexedImpl(const Shared<IVertexArray>& vertexArray) = 0;
-		virtual Shared<IIndexBuffer> CreateIndexBufferImpl(uint32_t* indices, uint32_t count) = 0;
-		virtual Shared<IVertexBuffer> CreateVertexBufferImpl(float* vertices, uint32_t size) = 0;
-		virtual Shared<IShader> CreateShaderImpl(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) = 0;
-		virtual Shared<IShader> CreateShaderImpl(const std::string& path) = 0;
-		virtual Shared<IVertexArray> CreateVertexArrayImpl() = 0;
-		virtual Shared<ITexture2D> CreateTexture2DImpl(const std::string& path) = 0;
-		virtual Shared<ITexture2D> CreateTexture2DImpl(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) = 0;
+		virtual void DrawIndexedImpl(const Shared<VertexArray>& vertexArray) = 0;
+		virtual Shared<IndexBuffer> CreateIndexBufferImpl(uint32_t* indices, uint32_t count) = 0;
+		virtual Shared<VertexBuffer> CreateVertexBufferImpl(float* vertices, uint32_t size) = 0;
+		virtual Shared<Shader> CreateShaderImpl(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) = 0;
+		virtual Shared<Shader> CreateShaderImpl(const std::string& path) = 0;
+		virtual Shared<VertexArray> CreateVertexArrayImpl() = 0;
+		virtual Shared<Texture2D> CreateTexture2DImpl(const std::string& path) = 0;
+		virtual Shared<Texture2D> CreateTexture2DImpl(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) = 0;
 	};
 }

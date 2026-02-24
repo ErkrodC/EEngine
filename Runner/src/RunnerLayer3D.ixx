@@ -21,7 +21,7 @@ public:
 			-0.5f, 0.5f, 0.0f,		0.8f, 0.8f, 0.8f, 1.0f,		0.0f, 1.0f,
 		};
 
-		Shared<IVertexBuffer> vertexBuffer;
+		Shared<VertexBuffer> vertexBuffer;
 		vertexBuffer = RendererAPI::CreateVertexBuffer(vertices, sizeof(vertices));
 
 		vertexBuffer->SetLayout({
@@ -32,7 +32,7 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[6] = { 0, 1, 2, 2, 3, 0 };
-		Shared<IIndexBuffer> indexBuffer;
+		Shared<IndexBuffer> indexBuffer;
 		indexBuffer = RendererAPI::CreateIndexBuffer(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -53,12 +53,11 @@ public:
 
 		Renderer::BeginScene(m_CameraController.GetCamera()); {
 			m_Texture->Bind();
-			Shared<IShader> textureShader;
-			if (Renderer::GetShaderLibrary()->TryGet("Texture", &textureShader)) {
+			if (Shared<Shader> textureShader; Renderer::GetShaderLibrary()->TryGet("Texture", textureShader)) {
 				Renderer::Submit(textureShader, m_VertexArray, Math::translate(Math::mat4(1.0f), m_TriPos));
 			}
 		} Renderer::EndScene();
-	}
+	};
 
 	void OnIMGUIRender() override {
 
@@ -89,8 +88,8 @@ public:
 	}
 
 private:
-	Shared<IVertexArray> m_VertexArray;
-	Shared<ITexture2D> m_Texture;
+	Shared<VertexArray> m_VertexArray;
+	Shared<Texture2D> m_Texture;
 	CameraController m_CameraController;
 	Math::vec3 m_TriPos{};
 };

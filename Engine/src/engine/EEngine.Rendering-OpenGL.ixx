@@ -16,7 +16,7 @@ export namespace EEngine {
 	// ============================================================================
 	// OpenGL Buffer Implementations
 	// ============================================================================
-	class OpenGLIndexBuffer : public IIndexBuffer {
+	class OpenGLIndexBuffer {
 	public:
 		OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
 			: m_Count(count)
@@ -26,7 +26,7 @@ export namespace EEngine {
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 		}
 
-		~OpenGLIndexBuffer() override { glDeleteBuffers(1, &m_RendererID); }
+		~OpenGLIndexBuffer() { glDeleteBuffers(1, &m_RendererID); }
 		OpenGLIndexBuffer(const OpenGLIndexBuffer& other) = delete;
 		OpenGLIndexBuffer& operator=(const OpenGLIndexBuffer& other) = delete;
 
@@ -47,21 +47,21 @@ export namespace EEngine {
 			return *this;
 		}
 
-		void Bind() const override {
+		void Bind() const  {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		}
 
-		void Unbind() const override {
+		void Unbind() const {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 
-		uint32_t GetCount() const override { return m_Count; }
+		uint32_t GetCount() const { return m_Count; }
 	private:
 		uint32_t m_RendererID;
 		uint32_t m_Count;
 	};
 
-	class OpenGLVertexBuffer : public IVertexBuffer {
+	class OpenGLVertexBuffer {
 	public:
 		OpenGLVertexBuffer(float* vertices, uint32_t size) {
 			glCreateBuffers(1, &m_RendererID);
@@ -69,7 +69,7 @@ export namespace EEngine {
 			glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 		}
 
-		~OpenGLVertexBuffer() override { glDeleteBuffers(1, &m_RendererID); }
+		~OpenGLVertexBuffer() { glDeleteBuffers(1, &m_RendererID); }
 		OpenGLVertexBuffer(const OpenGLVertexBuffer& other) = delete;
 		OpenGLVertexBuffer& operator=(const OpenGLVertexBuffer& other) = delete;
 
@@ -87,19 +87,19 @@ export namespace EEngine {
 			return *this;
 		}
 
-		void Bind() const override {
+		void Bind() const  {
 			glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		}
 
-		void Unbind() const override {
+		void Unbind() const {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
 
-		const BufferLayout& GetLayout() const override {
+		const BufferLayout& GetLayout() const  {
 			return m_Layout;
 		}
 
-		void SetLayout(const BufferLayout& layout) override {
+		void SetLayout(const BufferLayout& layout) {
 			m_Layout = layout;
 		}
 	private:
@@ -110,10 +110,10 @@ export namespace EEngine {
 	// ============================================================================
 	// OpenGL Vertex Array Implementation
 	// ============================================================================
-	class OpenGLVertexArray : public IVertexArray {
+	class OpenGLVertexArray {
 	public:
 		OpenGLVertexArray() { glCreateVertexArrays(1, &m_RendererID); }
-		~OpenGLVertexArray() override { glDeleteVertexArrays(1, &m_RendererID); }
+		~OpenGLVertexArray() { glDeleteVertexArrays(1, &m_RendererID); }
 		OpenGLVertexArray(const OpenGLVertexArray& other) = delete;
 		OpenGLVertexArray& operator=(const OpenGLVertexArray& other) = delete;
 
@@ -132,22 +132,22 @@ export namespace EEngine {
 			return *this;
 		}
 
-		void Bind() const override {
+		void Bind() const {
 			glBindVertexArray(m_RendererID);
 		}
 
-		void Unbind() const override {
+		void Unbind() const {
 			glBindVertexArray(0);
 		}
 
-		void SetIndexBuffer(const Shared<IIndexBuffer>& indexBuffer) override {
+		void SetIndexBuffer(const Shared<IndexBuffer>& indexBuffer) {
 			glBindVertexArray(m_RendererID);
 			indexBuffer->Bind();
 
 			m_IndexBuffer = indexBuffer;
 		}
 
-		void AddVertexBuffer(const Shared<IVertexBuffer>& vertexBuffer) override {
+		void AddVertexBuffer(const Shared<VertexBuffer>& vertexBuffer) {
 			Log::CoreAssert(vertexBuffer->GetLayout().GetElements().size(), "Vertex buffer has no layout.");
 
 			glBindVertexArray(m_RendererID);
@@ -170,12 +170,12 @@ export namespace EEngine {
 			m_VertexBuffers.push_back(vertexBuffer);
 		}
 
-		const Shared<IIndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; }
-		const std::vector<Shared<IVertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; }
+		const Shared<IndexBuffer>& GetIndexBuffer() const { return m_IndexBuffer; }
+		const std::vector<Shared<VertexBuffer>>& GetVertexBuffers() const { return m_VertexBuffers; }
 	private:
 		uint32_t m_RendererID;
-		Shared<IIndexBuffer> m_IndexBuffer;
-		std::vector<Shared<IVertexBuffer>> m_VertexBuffers;
+		Shared<IndexBuffer> m_IndexBuffer;
+		std::vector<Shared<VertexBuffer>> m_VertexBuffers;
 
 		static GLenum ShaderDataToOpenGLBaseType(ShaderData type) {
 			switch (type) {
@@ -204,7 +204,7 @@ export namespace EEngine {
 	// ============================================================================
 	// OpenGL Shader Implementation
 	// ============================================================================
-	class OpenGLShader : public IShader {
+	class OpenGLShader {
 	public:
 		OpenGLShader(
 			const std::string& name,
@@ -237,7 +237,7 @@ export namespace EEngine {
 			}
 		}
 
-		~OpenGLShader() override { glDeleteProgram(m_RendererID); }
+		~OpenGLShader() { glDeleteProgram(m_RendererID); }
 		OpenGLShader(const OpenGLShader& other) = delete;
 		OpenGLShader& operator=(const OpenGLShader& other) = delete;
 
@@ -255,50 +255,50 @@ export namespace EEngine {
 			return *this;
 		}
 
-		void Bind() const override {
+		void Bind() const {
 			glUseProgram(m_RendererID);
 		}
 
-		void Unbind() const override {
+		void Unbind() const {
 			glUseProgram(0);
 		}
 
-		void SetInt(const std::string& name, int32_t value) override {
+		void SetInt(const std::string& name, int32_t value) {
 			GLint location = GetUniformLocation(name);
 			glUniform1i(location, value);
 		}
 
-		void SetFloat(const std::string& name, float value) override {
+		void SetFloat(const std::string& name, float value) {
 			GLint location = GetUniformLocation(name);
 			glUniform1f(location, value);
 		}
 
-		void SetFloat2(const std::string& name, const Math::vec2& values) override {
+		void SetFloat2(const std::string& name, const Math::vec2& values) {
 			GLint location = GetUniformLocation(name);
 			glUniform2f(location, values.x, values.y);
 		}
 
-		void SetFloat3(const std::string& name, const Math::vec3& values) override {
+		void SetFloat3(const std::string& name, const Math::vec3& values) {
 			GLint location = GetUniformLocation(name);
 			glUniform3f(location, values.x, values.y, values.z);
 		}
 
-		void SetFloat4(const std::string& name, const Math::vec4& values) override {
+		void SetFloat4(const std::string& name, const Math::vec4& values) {
 			GLint location = GetUniformLocation(name);
 			glUniform4f(location, values.x, values.y, values.z, values.w);
 		}
 
-		void SetMat3(const std::string& name, const Math::mat3& matrix) override {
+		void SetMat3(const std::string& name, const Math::mat3& matrix) {
 			GLint location = GetUniformLocation(name);
 			glUniformMatrix3fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 		}
 
-		void SetMat4(const std::string& name, const Math::mat4& matrix) override {
+		void SetMat4(const std::string& name, const Math::mat4& matrix) {
 			GLint location = GetUniformLocation(name);
 			glUniformMatrix4fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 		}
 
-		const std::string& GetName() const override { return m_Name; }
+		const std::string& GetName() const { return m_Name; }
 	private:
 		uint32_t m_RendererID;
 		std::string m_Name;
@@ -470,7 +470,7 @@ export namespace EEngine {
 	// ============================================================================
 	// OpenGL Texture Implementation
 	// ============================================================================
-	class OpenGLTexture2D : public ITexture2D {
+	class OpenGLTexture2D {
 	public:
 		explicit OpenGLTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0)
 			: m_Width(width)
@@ -539,7 +539,7 @@ export namespace EEngine {
 			stbi_image_free(data);
 		}
 
-		~OpenGLTexture2D() override { glDeleteTextures(1, &m_RendererID); }
+		~OpenGLTexture2D() { glDeleteTextures(1, &m_RendererID); }
 		OpenGLTexture2D(const OpenGLTexture2D& other) = delete;
 		OpenGLTexture2D& operator=(const OpenGLTexture2D& other) = delete;
 
@@ -563,10 +563,10 @@ export namespace EEngine {
 			return *this;
 		}
 
-		uint32_t GetWidth() const override { return m_Width; }
-		uint32_t GetHeight() const override { return m_Height; }
+		uint32_t GetWidth() const { return m_Width; }
+		uint32_t GetHeight() const { return m_Height; }
 
-		void SetData(void* data, uint32_t size) override {
+		void SetData(void* data, uint32_t size) {
 			uint32_t expectedSize = m_Width * m_Height * GetBytesPerPixel();
 			Log::CoreAssert(
 				size == expectedSize,
@@ -588,7 +588,7 @@ export namespace EEngine {
 			);
 		}
 
-		void Bind() const override {
+		void Bind() const {
 			glBindTextureUnit(0, m_RendererID);
 		}
 	private:
@@ -662,7 +662,7 @@ export namespace EEngine {
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
 
-		void DrawIndexedImpl(const Shared<IVertexArray>& vertexArray) override {
+		void DrawIndexedImpl(const Shared<VertexArray>& vertexArray) override {
 			glDrawElements(GL_TRIANGLES,
 				(GLsizei)vertexArray->GetIndexBuffer()->GetCount(),
 				GL_UNSIGNED_INT,
@@ -670,31 +670,31 @@ export namespace EEngine {
 			);
 		}
 
-		Shared<IIndexBuffer> CreateIndexBufferImpl(uint32_t* indices, uint32_t count) override {
+		Shared<IndexBuffer> CreateIndexBufferImpl(uint32_t* indices, uint32_t count) override {
 			return MakeShared<OpenGLIndexBuffer>(indices, count);
 		}
 
-		Shared<IVertexBuffer> CreateVertexBufferImpl(float* vertices, uint32_t size) override {
+		Shared<VertexBuffer> CreateVertexBufferImpl(float* vertices, uint32_t size) override {
 			return MakeShared<OpenGLVertexBuffer>(vertices, size);
 		}
 
-		Shared<IShader> CreateShaderImpl(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) override {
+		Shared<Shader> CreateShaderImpl(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) override {
 			return MakeShared<OpenGLShader>(name, vertexSource, fragmentSource);
 		}
 
-		Shared<IShader> CreateShaderImpl(const std::string& path) override {
+		Shared<Shader> CreateShaderImpl(const std::string& path) override {
 			return MakeShared<OpenGLShader>(path);
 		}
 
-		Shared<IVertexArray> CreateVertexArrayImpl() override {
+		Shared<VertexArray> CreateVertexArrayImpl() override {
 			return MakeShared<OpenGLVertexArray>();
 		}
 
-		Shared<ITexture2D> CreateTexture2DImpl(const std::string& path) override {
+		Shared<Texture2D> CreateTexture2DImpl(const std::string& path) override {
 			return MakeShared<OpenGLTexture2D>(path);
 		}
 
-		Shared<ITexture2D> CreateTexture2DImpl(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) override {
+		Shared<Texture2D> CreateTexture2DImpl(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) override {
 			return MakeShared<OpenGLTexture2D>(width, height, data, size);
 		}
 	};
