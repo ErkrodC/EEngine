@@ -8,13 +8,14 @@ import EEngine.Math;
 import :Camera;
 import :Interfaces;
 import :OpenGL;
+import :RendererAPI;
 
 using namespace EEngine;
 
 namespace EEngine::Rendering {
 	export class Renderer {
 	public:
-		explicit Renderer(IRendererAPI& rendererAPI) : m_RendererAPI(rendererAPI) {
+		explicit Renderer(RendererAPI& rendererAPI) : m_RendererAPI(rendererAPI) {
 			if constexpr (g_API == API::DirectX) {
 				Log::CoreCritical("DirectX Renderer not implemented yet.");
 				throw std::runtime_error("DirectX Renderer not implemented yet.");
@@ -139,7 +140,7 @@ namespace EEngine::Rendering {
 		}
 
 	private:
-		IRendererAPI& m_RendererAPI;
+		RendererAPI& m_RendererAPI;
 		struct RendererData {
 			Shared<Shader> TextureShader;
 			Shared<Texture2D> WhiteTexture;

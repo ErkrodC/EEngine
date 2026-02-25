@@ -612,7 +612,7 @@ export namespace EEngine::Rendering {
 	// ============================================================================
 	// OpenGL Graphics Context
 	// ============================================================================
-	class OpenGLContext : public IGraphicsContext {
+	class OpenGLContext {
 	public:
 		explicit OpenGLContext(GLFWwindow* window)
 			: m_Window(window)
@@ -634,7 +634,7 @@ export namespace EEngine::Rendering {
 			);
 		}
 
-		void SwapBuffers() override {
+		void SwapBuffers() const {
 			glfwSwapBuffers(m_Window);
 		}
 	private:
@@ -646,23 +646,23 @@ export namespace EEngine::Rendering {
 	// ============================================================================
 	// OpenGL Renderer API
 	// ============================================================================
-	class OpenGLRendererAPI : public IRendererAPI {
+	class OpenGLRendererAPI {
 	public:
-		void Initialize() override {
+		void Initialize() {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
-		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override {
+		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
 			glViewport(x, y, width, height);
 		}
 
-		void Clear(const Math::vec4& color) override {
+		void Clear(const Math::vec4& color) {
 			glClearColor(color.r, color.g, color.b, color.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
 
-		void DrawIndexed(const Shared<VertexArray>& vertexArray) override {
+		void DrawIndexed(const Shared<VertexArray>& vertexArray) {
 			glDrawElements(GL_TRIANGLES,
 				(GLsizei)vertexArray->GetIndexBuffer()->GetCount(),
 				GL_UNSIGNED_INT,
@@ -670,35 +670,35 @@ export namespace EEngine::Rendering {
 			);
 		}
 
-		Shared<IndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t count) override {
+		Shared<IndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t count) {
 			return MakeShared<OpenGLIndexBuffer>(indices, count);
 		}
 
-		Shared<VertexBuffer> CreateVertexBuffer(float* vertices, uint32_t size) override {
+		Shared<VertexBuffer> CreateVertexBuffer(float* vertices, uint32_t size) {
 			return MakeShared<OpenGLVertexBuffer>(vertices, size);
 		}
 
-		Shared<Shader> CreateShader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) override {
+		Shared<Shader> CreateShader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) {
 			return MakeShared<OpenGLShader>(name, vertexSource, fragmentSource);
 		}
 
-		Shared<Shader> CreateShader(const std::string& path) override {
+		Shared<Shader> CreateShader(const std::string& path) {
 			return MakeShared<OpenGLShader>(path);
 		}
 
-		Shared<VertexArray> CreateVertexArray() override {
+		Shared<VertexArray> CreateVertexArray() {
 			return MakeShared<OpenGLVertexArray>();
 		}
 
-		Shared<Texture2D> CreateTexture2D(const std::string& path) override {
+		Shared<Texture2D> CreateTexture2D(const std::string& path) {
 			return MakeShared<OpenGLTexture2D>(path);
 		}
 
-		Shared<Texture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) override {
+		Shared<Texture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) {
 			return MakeShared<OpenGLTexture2D>(width, height, data, size);
 		}
 
-		bool TryGetOrLoadShader(const std::string& name, Shared<Shader>& outShader) override {
+		bool TryGetOrLoadShader(const std::string& name, Shared<Shader>& outShader) {
 			outShader = m_ShaderByName.contains(name)
 				? m_ShaderByName[name]
 				: CreateAndCacheShader(name);
