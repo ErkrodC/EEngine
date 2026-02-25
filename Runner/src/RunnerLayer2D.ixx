@@ -6,15 +6,18 @@ import EEngine;
 import EEngine.Profiling;
 
 using namespace EEngine;
+using namespace Rendering;
 
 export class RunnerLayer2D : public Layer {
 public:
-	RunnerLayer2D() : Layer("RunnerLayer2D"), m_CameraController(16.0f / 9.0f) {
-
-	}
+	RunnerLayer2D(RendererAPI& context, Renderer& renderer)
+		: Layer("RunnerLayer2D")
+		, m_CameraController(16.0f / 9.0f)
+		, m_RendererAPI(context)
+		, m_Renderer(renderer) {}
 
 	void OnAttach() override {
-		m_Texture = RendererAPI::CreateTexture2D("assets/textures/test.png");
+		m_Texture = m_RendererAPI.CreateTexture2D("assets/textures/test.png");
 	}
 
 	void OnDetach() override {
@@ -26,18 +29,18 @@ public:
 
 		m_CameraController.OnUpdate(timestep);
 
-		RendererAPI::Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
+		m_RendererAPI.Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
 		HandleTriMovement(timestep);
 
-		Renderer2D::BeginScene(m_CameraController.GetCamera()); {
-			Renderer2D::DrawQuad({ -1.0f, 0.0f }, {0.8f, 0.8f}, m_SquareColor);
-			//EEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, {0.5f, 0.75f}, m_SquareColor);
-			Renderer2D::DrawQuad({ 0.5f, -0.5f }, {0.5f, 0.75f}, m_Texture);
-		} Renderer2D::EndScene();
+		m_Renderer.BeginScene(m_CameraController.GetCamera().GetProjectionViewMatrix());
+		m_Renderer.DrawQuad({ -1.0f, 0.0f }, {0.8f, 0.8f}, m_SquareColor);
+		//m_Renderer.DrawQuad({ 0.5f, -0.5f }, {0.5f, 0.75f}, m_SquareColor);
+		m_Renderer.DrawQuad({ 0.5f, -0.5f }, {0.5f, 0.75f}, m_Texture);
+		m_Renderer.EndScene();
 
 		// ER TODO usually executed on a separate thread
-		//EEngine::Renderer::Flush();
+		//EEngine::Rendering::Flush();
 	}
 
 	void OnIMGUIRender() override {
@@ -95,6 +98,8 @@ public:
 	}
 private:
 	CameraController m_CameraController;
+	RendererAPI& m_RendererAPI;
+	Renderer& m_Renderer;
 
 	// ER TEMP
 	Math::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };

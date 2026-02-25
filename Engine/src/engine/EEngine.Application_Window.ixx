@@ -8,6 +8,7 @@ import EEngine.Rendering;
 import EEngine.Standard;
 
 using namespace EEngine;
+using namespace Rendering;
 
 export namespace EEngine {
 	// ============================================================================
@@ -94,7 +95,7 @@ export namespace EEngine {
 				nullptr
 			), GLFWWindowDeleter{});
 
-			m_Context = MakeUnique<OpenGLContext>(m_Window.get());
+			m_Context = MakeUnique<GraphicsContext>(m_Window.get());
 			Log::CoreInfo("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 			glfwSetWindowUserPointer(m_Window.get(), &m_Data);
@@ -176,10 +177,6 @@ export namespace EEngine {
 			});
 		}
 
-		~WindowsWindow() override {
-			m_Window.reset();
-		}
-
 		void OnUpdate() override {
 			glfwPollEvents();
 			if (m_Context) { m_Context->SwapBuffers(); }
@@ -211,7 +208,7 @@ export namespace EEngine {
 		inline static bool s_GLFWInitialized = false;
 
 		UniqueD<GLFWwindow, GLFWWindowDeleter> m_Window;
-		Unique<IGraphicsContext> m_Context;
+		Unique<GraphicsContext> m_Context;
 
 		struct WindowData {
 			std::string Title;

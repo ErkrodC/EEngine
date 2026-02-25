@@ -6,13 +6,17 @@ import EEngine;
 import EEngine.Profiling;
 
 using namespace EEngine;
+using namespace Rendering;
 
 export class RunnerLayer3D : public Layer {
 public:
-	RunnerLayer3D()
+	RunnerLayer3D(RendererAPI& rendererAPI, Renderer& renderer)
 		: Layer("RunnerLayer3D")
-		, m_CameraController(16.0f / 9.0f) {
-		m_VertexArray = RendererAPI::CreateVertexArray();
+		, m_CameraController(16.0f / 9.0f)
+		, m_RendererAPI(rendererAPI)
+		, m_Renderer(renderer)
+	{
+		m_VertexArray = m_RendererAPI.CreateVertexArray();
 
 		float vertices[4 * 9] = {
 			-0.5f, -0.5f, 0.0f,	0.8f, 0.2f, 0.8f, 1.0f,		0.0f, 0.0f,
@@ -22,7 +26,7 @@ public:
 		};
 
 		Shared<VertexBuffer> vertexBuffer;
-		vertexBuffer = RendererAPI::CreateVertexBuffer(vertices, sizeof(vertices));
+		vertexBuffer = m_RendererAPI.CreateVertexBuffer(vertices, sizeof(vertices));
 
 		vertexBuffer->SetLayout({
 			{ ShaderData::Float3, "a_Position" },
@@ -33,31 +37,47 @@ public:
 
 		uint32_t indices[6] = { 0, 1, 2, 2, 3, 0 };
 		Shared<IndexBuffer> indexBuffer;
-		indexBuffer = RendererAPI::CreateIndexBuffer(indices, sizeof(indices) / sizeof(uint32_t));
+		indexBuffer = m_RendererAPI.CreateIndexBuffer(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
-		auto textureShader = Renderer::GetShaderLibrary()->Load("assets/shaders/Texture.glsl");
-		m_Texture = RendererAPI::CreateTexture2D("assets/textures/test.png");
+		Shared<Shader> textureShader;
+		if (m_RendererAPI.TryGetOrLoadShader("assets/shaders/Texture.glsl", textureShader)) {
+			m_Texture = m_RendererAPI.CreateTexture2D("assets/textures/test.png");
 
-		textureShader->Bind();
-		textureShader->SetInt("u_Texture", 0);
+			textureShader->Bind();
+			textureShader->SetInt("u_Texture", 0);
+		} else {
+			Log::CoreCritical("Failed to load texture shader.");
+			throw std::runtime_error("Failed to load texture shader.");
+		}
 	}
 
 	void OnUpdate(Timestep timestep) override {
 		EE_PROFILE_FUNCTION();
 
-		RendererAPI::Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
+		m_RendererAPI.Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
 		m_CameraController.OnUpdate(timestep);
 		HandleTriMovement(timestep);
 
-		Renderer::BeginScene(m_CameraController.GetCamera()); {
-			m_Texture->Bind();
-			if (Shared<Shader> textureShader; Renderer::GetShaderLibrary()->TryGet("Texture", textureShader)) {
-				Renderer::Submit(textureShader, m_VertexArray, Math::translate(Math::mat4(1.0f), m_TriPos));
-			}
-		} Renderer::EndScene();
-	};
+		Math::mat4 projectionView = m_CameraController.GetCamera().GetProjectionViewMatrix();
+		m_Renderer.BeginScene(projectionView);
+		m_Texture->Bind();
+
+		Shared<Shader> textureShader;
+		if (m_RendererAPI.TryGetOrLoadShader("Texture", textureShader)) {
+			m_Renderer.Submit(
+				textureShader,
+				m_VertexArray,
+				Math::translate(Math::mat4(1.0f), m_TriPos),
+				projectionView
+			);
+		} else {
+			Log::CoreCritical("Failed to load texture shader.");
+			throw std::runtime_error("Failed to load texture shader.");
+		}
+		m_Renderer.EndScene();
+	}
 
 	void OnIMGUIRender() override {
 
@@ -88,8 +108,10 @@ public:
 	}
 
 private:
+	CameraController m_CameraController;
+	RendererAPI& m_RendererAPI;
+	Renderer& m_Renderer;
 	Shared<VertexArray> m_VertexArray;
 	Shared<Texture2D> m_Texture;
-	CameraController m_CameraController;
 	Math::vec3 m_TriPos{};
 };

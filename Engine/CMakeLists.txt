@@ -50,13 +50,12 @@ target_sources(engine
 
 			# EEngine.Rendering module and partitions
 			src/engine/EEngine.Rendering.ixx
-			src/engine/EEngine.Rendering_API.ixx
 			src/engine/EEngine.Rendering_Buffers.ixx
 			src/engine/EEngine.Rendering_Interfaces.ixx
 			src/engine/EEngine.Rendering_Camera.ixx
 			src/engine/EEngine.Rendering_OpenGL.ixx
 			src/engine/EEngine.Rendering_Renderer.ixx
-			src/engine/EEngine.Rendering_Renderer2D.ixx
+			src/engine/EEngine.Rendering_RendererAPI.ixx
 
 			# Other modules (no partitions)
 			src/engine/EEngine.Math.ixx

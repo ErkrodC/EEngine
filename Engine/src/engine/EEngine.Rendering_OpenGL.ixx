@@ -12,7 +12,7 @@ import :Interfaces;
 
 using namespace EEngine;
 
-export namespace EEngine {
+export namespace EEngine::Rendering {
 	// ============================================================================
 	// OpenGL Buffer Implementations
 	// ============================================================================
@@ -648,21 +648,21 @@ export namespace EEngine {
 	// ============================================================================
 	class OpenGLRendererAPI : public IRendererAPI {
 	public:
-		void InitializeImpl() override {
+		void Initialize() override {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
-		void SetViewportImpl(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override {
+		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override {
 			glViewport(x, y, width, height);
 		}
 
-		void ClearImpl(const Math::vec4& color) override {
+		void Clear(const Math::vec4& color) override {
 			glClearColor(color.r, color.g, color.b, color.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
 
-		void DrawIndexedImpl(const Shared<VertexArray>& vertexArray) override {
+		void DrawIndexed(const Shared<VertexArray>& vertexArray) override {
 			glDrawElements(GL_TRIANGLES,
 				(GLsizei)vertexArray->GetIndexBuffer()->GetCount(),
 				GL_UNSIGNED_INT,
@@ -670,32 +670,50 @@ export namespace EEngine {
 			);
 		}
 
-		Shared<IndexBuffer> CreateIndexBufferImpl(uint32_t* indices, uint32_t count) override {
+		Shared<IndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t count) override {
 			return MakeShared<OpenGLIndexBuffer>(indices, count);
 		}
 
-		Shared<VertexBuffer> CreateVertexBufferImpl(float* vertices, uint32_t size) override {
+		Shared<VertexBuffer> CreateVertexBuffer(float* vertices, uint32_t size) override {
 			return MakeShared<OpenGLVertexBuffer>(vertices, size);
 		}
 
-		Shared<Shader> CreateShaderImpl(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) override {
+		Shared<Shader> CreateShader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource) override {
 			return MakeShared<OpenGLShader>(name, vertexSource, fragmentSource);
 		}
 
-		Shared<Shader> CreateShaderImpl(const std::string& path) override {
+		Shared<Shader> CreateShader(const std::string& path) override {
 			return MakeShared<OpenGLShader>(path);
 		}
 
-		Shared<VertexArray> CreateVertexArrayImpl() override {
+		Shared<VertexArray> CreateVertexArray() override {
 			return MakeShared<OpenGLVertexArray>();
 		}
 
-		Shared<Texture2D> CreateTexture2DImpl(const std::string& path) override {
+		Shared<Texture2D> CreateTexture2D(const std::string& path) override {
 			return MakeShared<OpenGLTexture2D>(path);
 		}
 
-		Shared<Texture2D> CreateTexture2DImpl(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) override {
+		Shared<Texture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0) override {
 			return MakeShared<OpenGLTexture2D>(width, height, data, size);
+		}
+
+		bool TryGetOrLoadShader(const std::string& name, Shared<Shader>& outShader) override {
+			outShader = m_ShaderByName.contains(name)
+				? m_ShaderByName[name]
+				: CreateAndCacheShader(name);
+			return outShader != nullptr;
+		}
+
+	private:
+		std::unordered_map<std::string, Shared<Shader>> m_ShaderByName;
+
+		Shared<Shader> CreateAndCacheShader(const std::string& path) {
+			Shared<Shader> shader = CreateShader(path);
+			auto& name = shader->GetName();
+			Log::CoreAssert(!m_ShaderByName.contains(name), "Tried to add duplicate shader.");
+			m_ShaderByName[name] = shader;
+			return shader;
 		}
 	};
 }

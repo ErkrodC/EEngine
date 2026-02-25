@@ -14,16 +14,16 @@ import :Input;
 import :Window;
 
 using namespace EEngine;
+using namespace Rendering;
 
 export namespace EEngine {
 	// ============================================================================
 	// Application
 	// ============================================================================
-
 	class Application {
 	public:
 		Application() {
-			Log::CoreInfo("Selected Renderer API: {}", RendererAPI::GetRendererAPIString());
+			Log::CoreInfo("Selected Renderer API: {}", GetRendererAPIString());
 			Log::CoreAssert(!s_Instance, "Multiple applications created.");
 
 			s_Instance = this;
@@ -33,8 +33,9 @@ export namespace EEngine {
 
 			Input::SetWindow(m_Window);
 
-			Renderer::Initialize();
-			Renderer2D::Initialize();
+			m_RendererAPI = MakeUnique<RendererAPI>();
+			m_RendererAPI->Initialize();
+			m_Renderer = MakeUnique<Renderer>(*m_RendererAPI);
 
 			m_IMGUILayer = MakeShared<IMGUILayer>(m_Window);
 			PushOverlay(m_IMGUILayer);
@@ -95,6 +96,10 @@ export namespace EEngine {
 
 		static inline Application& Get() { return *s_Instance; }
 		inline IWindow& GetWindow() const { return *m_Window; }
+
+	protected:
+		Unique<RendererAPI> m_RendererAPI;
+		Unique<Renderer> m_Renderer;
 	private:
 		static inline Application* s_Instance = nullptr;
 
@@ -117,7 +122,7 @@ export namespace EEngine {
 			}
 
 			m_Minimized = false;
-			Renderer::OnWindowResized(event.GetWidth(), event.GetHeight());
+			m_RendererAPI->SetViewport(0, 0, event.GetWidth(), event.GetHeight());
 
 			return true;
 		}
