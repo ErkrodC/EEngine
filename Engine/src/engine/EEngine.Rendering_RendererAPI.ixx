@@ -4,22 +4,22 @@ import :Interfaces;
 import :OpenGL;
 
 export namespace EEngine::Rendering {
-	// ============================================================================
-	// RendererAPI Type Alias (compile-time API selection),
-	// Use IRendererAPI to avoid needing to import implementations, where used
-	// ============================================================================
-
 	// ER TODO: remove forward declarations of RendererAPI implementation and import their partition (e.g. import :Vulkan)
 	// if/when those are written
-	class DirectXRendererAPI; class VulkanRendererAPI;
-	using RendererAPI = std::conditional_t<g_API == API::DirectX,
-		DirectXRendererAPI,
-		std::conditional_t<g_API == API::OpenGL,
-			OpenGLRendererAPI,
-			VulkanRendererAPI
+	#define DECLARE_API_TYPE(BaseName) \
+		class DirectX##BaseName; class Vulkan##BaseName; \
+		using BaseName = std::conditional_t<g_API == API::DirectX, \
+			DirectX##BaseName, \
+			std::conditional_t<g_API == API::OpenGL, \
+				OpenGL##BaseName, \
+				Vulkan##BaseName \
+			> \
 		>
-	>;
 
+	// ============================================================================
+	// RendererAPI Type Alias, Concept, and Static Assert
+	// ============================================================================
+	DECLARE_API_TYPE(RendererAPI);
 	template<typename T>
 	concept RendererAPIConcept = requires(
 		T api,
@@ -49,20 +49,15 @@ export namespace EEngine::Rendering {
 	};
 	static_assert(RendererAPIConcept<RendererAPI>);
 
-
-	class DirectXContext; class VulkanContext;
-	using GraphicsContext = std::conditional_t<g_API == API::DirectX,
-		DirectXContext,
-		std::conditional_t<g_API == API::OpenGL,
-			OpenGLContext,
-			VulkanContext
-		>
-	>;
-
+	// ============================================================================
+	// GraphicsContext Type Alias, Concept, and Static Assert
+	// ============================================================================
+	DECLARE_API_TYPE(GraphicsContext);
 	template<typename T>
 	concept GraphicsContextConcept = requires(T context) {
 		{ context.SwapBuffers() } -> std::same_as<void>;
 	};
-
 	static_assert(GraphicsContextConcept<GraphicsContext>);
+
+	#undef DECLARE_API_TYPE
 }

@@ -60,6 +60,7 @@ export namespace EEngine::Rendering {
 		uint32_t m_RendererID;
 		uint32_t m_Count;
 	};
+	static_assert(IndexBufferConcept<IndexBuffer>);
 
 	class OpenGLVertexBuffer {
 	public:
@@ -106,6 +107,7 @@ export namespace EEngine::Rendering {
 		uint32_t m_RendererID;
 		BufferLayout m_Layout{};
 	};
+	static_assert(VertexBufferConcept<OpenGLVertexBuffer>);
 
 	// ============================================================================
 	// OpenGL Vertex Array Implementation
@@ -200,6 +202,7 @@ export namespace EEngine::Rendering {
 			return GL_NONE;
 		}
 	};
+	static_assert(VertexArrayConcept<OpenGLVertexArray>);
 
 	// ============================================================================
 	// OpenGL Shader Implementation
@@ -466,6 +469,7 @@ export namespace EEngine::Rendering {
 			return location;
 		}
 	};
+	static_assert(ShaderConcept<Shader>);
 
 	// ============================================================================
 	// OpenGL Texture Implementation
@@ -608,16 +612,17 @@ export namespace EEngine::Rendering {
 			}
 		}
 	};
+	static_assert(Texture2DConcept<OpenGLTexture2D>);
 
 	// ============================================================================
 	// OpenGL Graphics Context
 	// ============================================================================
-	class OpenGLContext {
+	class OpenGLGraphicsContext {
 	public:
-		explicit OpenGLContext(GLFWwindow* window)
+		explicit OpenGLGraphicsContext(GLFWwindow* window)
 			: m_Window(window)
 		{
-			Log::Assert(m_Window, "Window was null when creating OpenGLContext");
+			Log::Assert(m_Window, "Window was null when creating OpenGLGraphicsContext");
 
 			glfwMakeContextCurrent(m_Window);
 			int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
