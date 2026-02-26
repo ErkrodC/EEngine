@@ -6,8 +6,12 @@ export module EEngine.Rendering:Renderer;
 import EEngine.Core;
 import EEngine.Math;
 import :Camera;
-import :Interfaces;
-import :OpenGL;
+import :API;
+import :IndexBuffer;
+import :VertexBuffer;
+import :VertexArray;
+import :Shader;
+import :Texture;
 import :RendererAPI;
 
 using namespace EEngine;

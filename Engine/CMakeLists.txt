@@ -50,12 +50,17 @@ target_sources(engine
 
 			# EEngine.Rendering module and partitions
 			src/engine/EEngine.Rendering.ixx
+			src/engine/EEngine.Rendering_API.ixx
 			src/engine/EEngine.Rendering_Buffers.ixx
-			src/engine/EEngine.Rendering_Interfaces.ixx
 			src/engine/EEngine.Rendering_Camera.ixx
-			src/engine/EEngine.Rendering_OpenGL.ixx
+			src/engine/EEngine.Rendering_GraphicsContext.ixx
+			src/engine/EEngine.Rendering_IndexBuffer.ixx
 			src/engine/EEngine.Rendering_Renderer.ixx
 			src/engine/EEngine.Rendering_RendererAPI.ixx
+			src/engine/EEngine.Rendering_Shader.ixx
+			src/engine/EEngine.Rendering_Texture.ixx
+			src/engine/EEngine.Rendering_VertexArray.ixx
+			src/engine/EEngine.Rendering_VertexBuffer.ixx
 
 			# Other modules (no partitions)
 			src/engine/EEngine.Math.ixx
