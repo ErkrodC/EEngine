@@ -17,6 +17,19 @@ add_library(engine
 	src/engine/Core/Core.hpp
 	src/engine/Event/Event.hpp
 	src/engine/Profiling/Profiling.hpp
+	src/engine/GLFW_fwd.hpp
+)
+
+target_sources(engine
+	PRIVATE
+		src/engine/EEngine.Rendering_GraphicsContext.cpp
+		src/engine/EEngine.Rendering_IndexBuffer.cpp
+		src/engine/EEngine.Rendering_Renderer.cpp
+		src/engine/EEngine.Rendering_RendererAPI.cpp
+		src/engine/EEngine.Rendering_Shader.cpp
+		src/engine/EEngine.Rendering_Texture.cpp
+		src/engine/EEngine.Rendering_VertexArray.cpp
+		src/engine/EEngine.Rendering_VertexBuffer.cpp
 )
 
 target_sources(engine

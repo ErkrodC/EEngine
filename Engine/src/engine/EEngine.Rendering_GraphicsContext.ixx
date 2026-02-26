@@ -1,6 +1,5 @@
 module;
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "GLFW_fwd.hpp"
 
 export module EEngine.Rendering:GraphicsContext;
 import EEngine.Core;
@@ -12,29 +11,9 @@ export namespace EEngine::Rendering {
 	// ============================================================================
 	class OpenGLGraphicsContext {
 	public:
-		explicit OpenGLGraphicsContext(GLFWwindow* window)
-			: m_Window(window)
-		{
-			Log::Assert(m_Window, "Window was null when creating OpenGLGraphicsContext");
+		explicit OpenGLGraphicsContext(GLFWwindow* window);
 
-			glfwMakeContextCurrent(m_Window);
-			int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-			Log::CoreAssert(status, "Failed to initialize GLAD!");
-
-			Log::CoreInfo(
-				"OpenGL Info:\n"
-				"\tVendor: {0}\n"
-				"\tRenderer: {1}\n"
-				"\tVersion: {2}",
-				(char*)glGetString(GL_VENDOR),
-				(char*)glGetString(GL_RENDERER),
-				(char*)glGetString(GL_VERSION)
-			);
-		}
-
-		void SwapBuffers() const {
-			glfwSwapBuffers(m_Window);
-		}
+		void SwapBuffers() const;
 	private:
 		// non-owning, window guaranteed to outlive context because it is declared before
 		// (thus destroyed after) the IGraphicsContext member of class WindowsWindow
