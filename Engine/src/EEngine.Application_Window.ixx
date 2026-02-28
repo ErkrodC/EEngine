@@ -50,7 +50,6 @@ export namespace EEngine {
 // ============================================================================
 // Platform-specific Implementations (Windows)
 // ============================================================================
-
 namespace EEngine {
 #if WIN32
 	inline int EngineToGLFWKeyCode(KeyCode engineKeyCode) { return (int)engineKeyCode; }

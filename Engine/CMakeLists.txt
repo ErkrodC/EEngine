@@ -14,75 +14,75 @@ add_subdirectory(vendor/stb_image)
 
 # Engine library (static for now)
 add_library(engine
-	src/engine/Core/Core.hpp
-	src/engine/Event/Event.hpp
-	src/engine/Profiling/Profiling.hpp
-	src/engine/GLFW_fwd.hpp
+        src/Core/Core.hpp
+        src/Event/Event.hpp
+        src/Profiling/Profiling.hpp
+        src/GLFW_fwd.hpp
 )
 
 target_sources(engine
 	PRIVATE
-		src/engine/EEngine.Rendering_GraphicsContext.cpp
-		src/engine/EEngine.Rendering_IndexBuffer.cpp
-		src/engine/EEngine.Rendering_Renderer.cpp
-		src/engine/EEngine.Rendering_RendererAPI.cpp
-		src/engine/EEngine.Rendering_Shader.cpp
-		src/engine/EEngine.Rendering_Texture.cpp
-		src/engine/EEngine.Rendering_VertexArray.cpp
-		src/engine/EEngine.Rendering_VertexBuffer.cpp
+        src/EEngine.Rendering_GraphicsContext.cpp
+        src/EEngine.Rendering_IndexBuffer.cpp
+        src/EEngine.Rendering_Renderer.cpp
+        src/EEngine.Rendering_RendererAPI.cpp
+        src/EEngine.Rendering_Shader.cpp
+        src/EEngine.Rendering_Texture.cpp
+        src/EEngine.Rendering_VertexArray.cpp
+        src/EEngine.Rendering_VertexBuffer.cpp
 )
 
 target_sources(engine
 	PUBLIC
 		FILE_SET modules TYPE CXX_MODULES FILES
 			# Root module
-			src/engine/EEngine.ixx
+        src/EEngine.ixx
 
 			# EEngine.Core module and partitions
-			src/engine/EEngine.Core.ixx
-			src/engine/EEngine.Core_Memory.ixx
-			src/engine/EEngine.Core_Time.ixx
-			src/engine/EEngine.Core_Input.ixx
-			src/engine/EEngine.Core_Log.ixx
+        src/EEngine.Core.ixx
+        src/EEngine.Core_Memory.ixx
+        src/EEngine.Core_Time.ixx
+        src/EEngine.Core_Input.ixx
+        src/EEngine.Core_Log.ixx
 
 			# EEngine.Event module and partitions
-			src/engine/EEngine.Event.ixx
-			src/engine/EEngine.Event_Base.ixx
-			src/engine/EEngine.Event_Application.ixx
-			src/engine/EEngine.Event_Keyboard.ixx
-			src/engine/EEngine.Event_Mouse.ixx
+        src/EEngine.Event.ixx
+        src/EEngine.Event_Base.ixx
+        src/EEngine.Event_Application.ixx
+        src/EEngine.Event_Keyboard.ixx
+        src/EEngine.Event_Mouse.ixx
 
 			# EEngine.Application module and partitions
-			src/engine/EEngine.Application.ixx
-			src/engine/EEngine.Application_Window.ixx
-			src/engine/EEngine.Application_Input.ixx
-			src/engine/EEngine.Application_Layer.ixx
-			src/engine/EEngine.Application_IMGUILayer.ixx
-			src/engine/EEngine.Application_CameraController.ixx
-			src/engine/EEngine.Application_Application.ixx
+        src/EEngine.Application.ixx
+        src/EEngine.Application_Window.ixx
+        src/EEngine.Application_Input.ixx
+        src/EEngine.Application_Layer.ixx
+        src/EEngine.Application_IMGUILayer.ixx
+        src/EEngine.Application_CameraController.ixx
+        src/EEngine.Application_Application.ixx
 
 			# EEngine.Rendering module and partitions
-			src/engine/EEngine.Rendering.ixx
-			src/engine/EEngine.Rendering_API.ixx
-			src/engine/EEngine.Rendering_Buffers.ixx
-			src/engine/EEngine.Rendering_Camera.ixx
-			src/engine/EEngine.Rendering_GraphicsContext.ixx
-			src/engine/EEngine.Rendering_IndexBuffer.ixx
-			src/engine/EEngine.Rendering_Renderer.ixx
-			src/engine/EEngine.Rendering_RendererAPI.ixx
-			src/engine/EEngine.Rendering_Shader.ixx
-			src/engine/EEngine.Rendering_Texture.ixx
-			src/engine/EEngine.Rendering_VertexArray.ixx
-			src/engine/EEngine.Rendering_VertexBuffer.ixx
+        src/EEngine.Rendering.ixx
+        src/EEngine.Rendering_API.ixx
+        src/EEngine.Rendering_Buffers.ixx
+        src/EEngine.Rendering_Camera.ixx
+        src/EEngine.Rendering_GraphicsContext.ixx
+        src/EEngine.Rendering_IndexBuffer.ixx
+        src/EEngine.Rendering_Renderer.ixx
+        src/EEngine.Rendering_RendererAPI.ixx
+        src/EEngine.Rendering_Shader.ixx
+        src/EEngine.Rendering_Texture.ixx
+        src/EEngine.Rendering_VertexArray.ixx
+        src/EEngine.Rendering_VertexBuffer.ixx
 
 			# Other modules (no partitions)
-			src/engine/EEngine.Math.ixx
-			src/engine/EEngine.Editor.ixx
-			src/engine/EEngine.Standard.ixx
-			src/engine/Profiling/EEngine.Profiling.ixx
+        src/EEngine.Math.ixx
+        src/EEngine.Editor.ixx
+        src/EEngine.Standard.ixx
+        src/Profiling/EEngine.Profiling.ixx
 
 		FILE_SET headers TYPE HEADERS FILES
-			src/engine/EntryPoint.ixx
+        src/EntryPoint.ixx
 )
 
 # Compile definitions

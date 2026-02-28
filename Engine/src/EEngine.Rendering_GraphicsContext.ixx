@@ -1,5 +1,5 @@
 module;
-#include "GLFW_fwd.hpp"
+#include "engine/GLFW_fwd.hpp"
 
 export module EEngine.Rendering:GraphicsContext;
 import EEngine.Core;
