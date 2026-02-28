@@ -15,27 +15,22 @@ export namespace EEngine::Rendering {
 	// ============================================================================
 	class OpenGLRendererAPI {
 	public:
-		void Initialize();
+		void Initialize() const;
+		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) const;
+		void Clear(const Math::vec4& color) const;
+		void DrawIndexed(const Shared<VertexArray>& vertexArray, uint32_t indexCountOverride = 0) const;
 
-		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
-
-		void Clear(const Math::vec4& color);
-
-		void DrawIndexed(const Shared<VertexArray>& vertexArray);
-
-		Shared<IndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t count);
-
-		Shared<VertexBuffer> CreateVertexBuffer(float* vertices, uint32_t size);
-
-		Shared<Shader> CreateShader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
-
-		Shared<Shader> CreateShader(const std::string& path);
-
-		Shared<VertexArray> CreateVertexArray();
-
-		Shared<Texture2D> CreateTexture2D(const std::string& path);
-
-		Shared<Texture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0);
+		Shared<IndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t count) const;
+		Shared<VertexBuffer> CreateVertexBuffer(void* vertices, uint32_t size) const;
+		Shared<Shader> CreateShader(const std::string& path) const;
+		Shared<Shader> CreateShader(
+			const std::string& name,
+			const std::string& vertexSource,
+			const std::string& fragmentSource
+		) const;
+		Shared<VertexArray> CreateVertexArray() const;
+		Shared<Texture2D> CreateTexture2D(const std::string& path) const;
+		Shared<Texture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data, uint32_t size) const;
 
 		bool TryGetOrLoadShader(const std::string& name, Shared<Shader>& outShader);
 
@@ -64,8 +59,9 @@ export namespace EEngine::Rendering {
 	template<typename T>
 	concept RendererAPIConcept = requires(
 		T api,
-		uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t count, uint32_t size, uint32_t* indices,
-		float* vertices,
+		uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t size, uint32_t count,
+		uint32_t* indices,
+		QuadVertex* vertices,
 		Math::vec4 color,
 		std::string path, std::string name, std::string vertexSource, std::string fragmentSource,
 		Shared<Shader> shader

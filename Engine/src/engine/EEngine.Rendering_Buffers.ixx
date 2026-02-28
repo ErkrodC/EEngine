@@ -57,28 +57,30 @@ export namespace EEngine {
 	struct BufferElement {
 		std::string Name;
 		ShaderData Type;
-		uint32_t Offset;
+		bool Normalized;
+		uint32_t Offset{};
 		uint32_t Size;
 		uint32_t ComponentCount;
-		bool Normalized;
 
+		// ER NOTE implicit for use with initializer_list of BufferLayout ctor
 		BufferElement(
-			ShaderData type,
 			const std::string& name,
+			ShaderData type,
 			bool normalized = false
 		) : Name(name),
 			Type(type),
+			Normalized(normalized),
 			Size(ShaderDataSize(type)),
-			Offset(0),
-			ComponentCount(ShaderDataComponentCount(type)),
-			Normalized(normalized) {}
+			ComponentCount(ShaderDataComponentCount(type)) {}
 	};
 
 	class BufferLayout {
 	public:
 		BufferLayout() = default;
+
 		BufferLayout(const std::initializer_list<BufferElement>& elements)
-			: m_Elements(elements) {
+			: m_Elements(elements)
+		{
 			CalculateOffsetsAndStride();
 		}
 

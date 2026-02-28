@@ -5,10 +5,10 @@ module EEngine.Rendering;
 import :VertexBuffer;
 
 namespace EEngine::Rendering {
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size) {
+	OpenGLVertexBuffer::OpenGLVertexBuffer(void* vertices, uint32_t size) {
 		glCreateBuffers(1, &m_RendererID);
 		Bind();
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_DYNAMIC_DRAW);
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer() { glDeleteBuffers(1, &m_RendererID); }
@@ -36,5 +36,9 @@ namespace EEngine::Rendering {
 
 	void OpenGLVertexBuffer::Unbind() const {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
+	void OpenGLVertexBuffer::SetData(const void* data, uint32_t size) {
+		glNamedBufferSubData(m_RendererID, 0, size, data);
 	}
 }

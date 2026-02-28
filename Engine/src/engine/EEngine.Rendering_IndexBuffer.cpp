@@ -10,14 +10,13 @@ namespace EEngine::Rendering {
 	{
 		glCreateBuffers(1, &m_RendererID);
 		Bind();
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 	}
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer() { glDeleteBuffers(1, &m_RendererID); }
 
 	OpenGLIndexBuffer::OpenGLIndexBuffer(OpenGLIndexBuffer&& other) noexcept
-		: m_RendererID(std::exchange(other.m_RendererID, 0)),
-		  m_Count(std::move(other.m_Count)) { }
+		: m_RendererID(std::exchange(other.m_RendererID, 0)) { }
 
 	OpenGLIndexBuffer& OpenGLIndexBuffer::operator=(OpenGLIndexBuffer&& other) noexcept {
 		glDeleteBuffers(1, &m_RendererID);
@@ -27,7 +26,6 @@ namespace EEngine::Rendering {
 		m_RendererID = 0;
 
 		m_RendererID = std::exchange(other.m_RendererID, 0);
-		m_Count = std::move(other.m_Count);
 
 		return *this;
 	}

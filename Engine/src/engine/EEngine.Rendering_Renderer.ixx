@@ -10,25 +10,24 @@ import :Shader;
 import :Texture;
 import :RendererAPI;
 
-export namespace EEngine::Rendering {
-	class Renderer {
+namespace EEngine::Rendering {
+	constexpr uint32_t MAX_QUAD_VERTEX_BUFFER_COUNT = MAX_QUADS * 4;
+	constexpr uint32_t MAX_QUAD_VERTEX_BUFFER_SIZE = MAX_QUAD_VERTEX_BUFFER_COUNT * sizeof(QuadVertex);
+	constexpr uint32_t MAX_QUAD_INDEX_BUFFER_COUNT = MAX_QUADS * 6;
+
+	export class Renderer {
 	public:
 		explicit Renderer(RendererAPI& rendererAPI);
 
-		void BeginScene(const Math::mat4& projectionView = Math::mat4(1.0f)) const;
-		void EndScene() const;
+		void BeginScene(const Math::mat4& projectionView = Math::mat4(1.0f));
+		void EndScene();
 
-		void DrawQuad(const Math::vec3& position, const Math::vec2& size, const Math::vec4& color) const;
-		void DrawQuad(const Math::vec2& position, const Math::vec2& size, const Math::vec4& color) const;
-		void DrawQuad(const Math::vec3& position, const Math::vec2& size, const Shared<Texture2D>& texture) const;
-		void DrawQuad(const Math::vec2& position, const Math::vec2& size, const Shared<Texture2D>& texture) const;
+		void DrawQuad(const Math::vec3& position, const Math::vec2& size, const Math::vec4& color);
+		void DrawQuad(const Math::vec3& position, const Math::vec2& size, const Shared<Texture2D>& texture, const Math::vec4& tint = Math::vec4(1.0f));
+		void DrawQuad(const Math::vec2& position, const Math::vec2& size, const Math::vec4& color);
+		void DrawQuad(const Math::vec2& position, const Math::vec2& size, const Shared<Texture2D>& texture);
 
-		void Submit(
-			const Shared<Shader>& shader,
-			const Shared<VertexArray>& vertexArray,
-			const Math::mat4& transform = Math::mat4(1.0f),
-			const Math::mat4& projectionView = Math::mat4(1.0f)
-		) const;
+		void Flush();
 
 	private:
 		RendererAPI& m_RendererAPI;
@@ -36,6 +35,14 @@ export namespace EEngine::Rendering {
 			Shared<Shader> TextureShader;
 			Shared<Texture2D> WhiteTexture;
 			Shared<VertexArray> QuadVertexArray;
+			Shared<Texture2D> CurrentTexture;
 		} m_Data;
+		QuadVertex m_QuadVertexBufferBase[MAX_QUAD_VERTEX_BUFFER_COUNT]{};
+		QuadVertex* m_QuadVertexBufferPtr;
+		uint32_t m_QuadIndexBufferPtr[MAX_QUAD_INDEX_BUFFER_COUNT];
+
+		void CreateQuadVertices(const Math::vec3& position, const Math::vec2& size, const Math::vec4& color);
+		uint32_t GetQuadVertexCount() const { return m_QuadVertexBufferPtr - m_QuadVertexBufferBase; }
+		uint32_t GetQuadIndexCount() const { return GetQuadVertexCount() / 4 * 6; }
 	};
 }

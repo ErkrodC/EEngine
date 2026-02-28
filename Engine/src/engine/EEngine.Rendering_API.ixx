@@ -10,6 +10,7 @@ export namespace EEngine::Rendering {
 	};
 
 	constexpr API g_API = API::OpenGL;
+	constexpr uint32_t MAX_QUADS = 10000;
 
 	constexpr std::string GetRendererAPIString() {
 		if constexpr (g_API == API::OpenGL) {

@@ -1,16 +1,23 @@
 export module EEngine.Rendering:VertexBuffer;
 import EEngine.Core;
 import EEngine.Standard;
+import EEngine.Math;
 import :API;
 import :Buffers;
 
 export namespace EEngine::Rendering {
+	struct QuadVertex {
+		Math::vec3 Position;
+		Math::vec4 Color;
+		Math::vec2 TexCoord;
+	};
+
 	// ============================================================================
 	// OpenGLVertexBuffer Implementation
 	// ============================================================================
 	class OpenGLVertexBuffer {
 	public:
-		OpenGLVertexBuffer(float* vertices, uint32_t size);
+		OpenGLVertexBuffer(void* vertices, uint32_t size);
 		~OpenGLVertexBuffer();
 		OpenGLVertexBuffer(const OpenGLVertexBuffer& other) = delete;
 		OpenGLVertexBuffer& operator=(const OpenGLVertexBuffer& other) = delete;
@@ -23,6 +30,8 @@ export namespace EEngine::Rendering {
 
 		const BufferLayout& GetLayout() const { return m_Layout; }
 		void SetLayout(const BufferLayout& layout) { m_Layout = layout; }
+
+		void SetData(const void* data, uint32_t size);
 	private:
 		uint32_t m_RendererID;
 		BufferLayout m_Layout{};
@@ -45,11 +54,12 @@ export namespace EEngine::Rendering {
 	// VertexBuffer Concept and Static Assert
 	// ============================================================================
 	template<typename T>
-	concept VertexBufferConcept = requires(T buffer, BufferLayout layout) {
+	concept VertexBufferConcept = requires(T buffer, BufferLayout layout, const void* data, uint32_t size) {
 		{ buffer.Bind() } -> std::same_as<void>;
 		{ buffer.Unbind() } -> std::same_as<void>;
 		{ buffer.GetLayout() } -> std::same_as<const BufferLayout&>;
 		{ buffer.SetLayout(layout) } -> std::same_as<void>;
+		{ buffer.SetData(data, size) } -> std::same_as<void>;
 	};
 	static_assert(VertexBufferConcept<VertexBuffer>);
 }

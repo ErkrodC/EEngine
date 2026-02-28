@@ -52,6 +52,7 @@ namespace EEngine::Rendering {
 
 	void OpenGLVertexArray::Bind() const {
 		glBindVertexArray(m_RendererID);
+		m_IndexBuffer->Bind();
 	}
 
 	void OpenGLVertexArray::Unbind() const {

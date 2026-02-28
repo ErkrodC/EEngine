@@ -14,21 +14,13 @@ namespace EEngine::Rendering {
 		m_InstanceFormat = GL_RGBA;
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, storageFormat, width, height);
+		glTextureStorage2D(m_RendererID, 1, storageFormat, m_Width, m_Height);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-		if (!data) {
-			m_Width = 1;
-			m_Height = 1;
-			uint8_t fallback[4] = { 255, 255, 255, 255 };
-			data = fallback;
-			size = sizeof(fallback);
-		}
 
 		SetData(data, size);
 	}
@@ -96,13 +88,15 @@ namespace EEngine::Rendering {
 	}
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size) {
-		uint32_t expectedSize = m_Width * m_Height * GetBytesPerPixel();
-		Log::CoreAssert(
-			size == expectedSize,
-			"Incorrect size when setting texture data. Expected {}, got {}",
-			expectedSize,
-			size
-		);
+		if (size) {
+			uint32_t expectedSize = m_Width * m_Height * GetBytesPerPixel();
+			Log::CoreAssert(
+				size == expectedSize,
+				"Incorrect size when setting texture data. Expected {}, got {}",
+				expectedSize,
+				size
+			);
+		}
 
 		glTextureSubImage2D(
 			m_RendererID,

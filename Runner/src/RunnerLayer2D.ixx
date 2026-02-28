@@ -24,7 +24,7 @@ public:
 
 	}
 
-;	void OnUpdate(Timestep timestep) override {
+	void OnUpdate(Timestep timestep) override {
 		EE_PROFILE_FUNCTION();
 
 		m_CameraController.OnUpdate(timestep);

@@ -9,7 +9,7 @@ export namespace EEngine::Rendering {
 	// ============================================================================
 	class OpenGLTexture2D {
 	public:
-		explicit OpenGLTexture2D(uint32_t width, uint32_t height, void* data = nullptr, uint32_t size = 0);
+		explicit OpenGLTexture2D(uint32_t width, uint32_t height, void* data, uint32_t size);
 		explicit OpenGLTexture2D(const std::string& path);
 
 		~OpenGLTexture2D();
@@ -19,11 +19,6 @@ export namespace EEngine::Rendering {
 		OpenGLTexture2D(OpenGLTexture2D&& other) noexcept;
 		OpenGLTexture2D& operator=(OpenGLTexture2D&& other) noexcept;
 
-		uint32_t GetWidth() const { return m_Width; }
-		uint32_t GetHeight() const { return m_Height; }
-
-		void SetData(void* data, uint32_t size);
-
 		void Bind() const;
 	private:
 		std::string m_Path;
@@ -32,6 +27,7 @@ export namespace EEngine::Rendering {
 		uint32_t m_InstanceFormat;
 
 		uint32_t GetBytesPerPixel() const;
+		void SetData(void* data, uint32_t size);
 	};
 
 	// ============================================================================
@@ -52,9 +48,6 @@ export namespace EEngine::Rendering {
 	// ============================================================================
 	template<typename T>
 	concept Texture2DConcept = requires(T texture, void* data, uint32_t size) {
-		{ texture.GetWidth() } -> std::same_as<uint32_t>;
-		{ texture.GetHeight() } -> std::same_as<uint32_t>;
-		{ texture.SetData(data, size) } -> std::same_as<void>;
 		{ texture.Bind() } -> std::same_as<void>;
 	};
 	static_assert(Texture2DConcept<Texture2D>);

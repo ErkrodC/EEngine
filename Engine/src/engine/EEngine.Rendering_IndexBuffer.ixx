@@ -42,8 +42,9 @@ export namespace EEngine::Rendering {
 	// ============================================================================
 	// IndexBuffer Concept and Static Assert
 	// ============================================================================
-	template<typename T>
-	concept IndexBufferConcept = requires(T buffer) {
+	template<typename TIndexBuffer>
+	concept IndexBufferConcept = requires(TIndexBuffer buffer, uint32_t* indices, uint32_t count) {
+		{ TIndexBuffer(indices, count) } -> std::same_as<TIndexBuffer>;
 		{ buffer.Bind() } -> std::same_as<void>;
 		{ buffer.Unbind() } -> std::same_as<void>;
 		{ buffer.GetCount() } -> std::same_as<uint32_t>;
