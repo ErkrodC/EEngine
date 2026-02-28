@@ -14,10 +14,10 @@ add_subdirectory(vendor/stb_image)
 
 # Engine library (static for now)
 add_library(engine
-        src/Core/Core.hpp
-        src/Event/Event.hpp
-        src/Profiling/Profiling.hpp
-        src/GLFW_fwd.hpp
+	src/Core/Core.hpp
+	src/Event/Event.hpp
+	src/Profiling/Profiling.hpp
+	src/GLFW_fwd.hpp
 )
 
 target_sources(engine
@@ -35,24 +35,24 @@ target_sources(engine
 target_sources(engine
 	PUBLIC
 		FILE_SET modules TYPE CXX_MODULES FILES
-			# Root module
+		# Root module
         src/EEngine.ixx
 
-			# EEngine.Core module and partitions
+		# EEngine.Core module and partitions
         src/EEngine.Core.ixx
         src/EEngine.Core_Memory.ixx
         src/EEngine.Core_Time.ixx
         src/EEngine.Core_Input.ixx
         src/EEngine.Core_Log.ixx
 
-			# EEngine.Event module and partitions
+		# EEngine.Event module and partitions
         src/EEngine.Event.ixx
         src/EEngine.Event_Base.ixx
         src/EEngine.Event_Application.ixx
         src/EEngine.Event_Keyboard.ixx
         src/EEngine.Event_Mouse.ixx
 
-			# EEngine.Application module and partitions
+		# EEngine.Application module and partitions
         src/EEngine.Application.ixx
         src/EEngine.Application_Window.ixx
         src/EEngine.Application_Input.ixx
@@ -61,7 +61,7 @@ target_sources(engine
         src/EEngine.Application_CameraController.ixx
         src/EEngine.Application_Application.ixx
 
-			# EEngine.Rendering module and partitions
+		# EEngine.Rendering module and partitions
         src/EEngine.Rendering.ixx
         src/EEngine.Rendering_API.ixx
         src/EEngine.Rendering_Buffers.ixx
@@ -75,7 +75,7 @@ target_sources(engine
         src/EEngine.Rendering_VertexArray.ixx
         src/EEngine.Rendering_VertexBuffer.ixx
 
-			# Other modules (no partitions)
+		# Other modules (no partitions)
         src/EEngine.Math.ixx
         src/EEngine.Editor.ixx
         src/EEngine.Standard.ixx
