@@ -22,4 +22,3 @@ export namespace EEngine {
 		inline int32_t EngineToGLFWMouseButtonCode(MouseButtonCode engineMouseButtonCode) { return static_cast<int32_t>(engineMouseButtonCode); }
 	}
 }
-
