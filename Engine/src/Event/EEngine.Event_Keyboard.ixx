@@ -25,10 +25,10 @@ export namespace EEngine {
 
 	class KeyPressedEvent : public KeyEvent {
 	public:
-		KeyPressedEvent(KeyCode keyCode, int repeatCount)
+		KeyPressedEvent(KeyCode keyCode, int32_t repeatCount)
 			: KeyEvent(keyCode), m_RepeatCount(repeatCount) {}
 
-		inline int GetRepeatCount() const { return m_RepeatCount; }
+		inline int32_t GetRepeatCount() const { return m_RepeatCount; }
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -38,7 +38,7 @@ export namespace EEngine {
 
 		EVENT_CLASS_TYPE(KeyPressed)
 	private:
-		int m_RepeatCount;
+		int32_t m_RepeatCount;
 	};
 
 	class KeyReleasedEvent : public KeyEvent {

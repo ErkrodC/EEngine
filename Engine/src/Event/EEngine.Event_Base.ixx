@@ -10,7 +10,7 @@ using namespace EEngine;
 													  EventType GetEventType() const override { return GetStaticType(); } \
 													  const char* GetName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) int GetCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category) uint32_t GetCategoryFlags() const override { return category; }
 
 export namespace EEngine {
 	// ============================================================================
@@ -43,7 +43,7 @@ export namespace EEngine {
 	public:
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
-		virtual int GetCategoryFlags() const = 0;
+		virtual uint32_t GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 
 		inline bool IsInCategory(EventCategory category) const {

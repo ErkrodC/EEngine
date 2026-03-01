@@ -28,13 +28,13 @@ export namespace EEngine::Rendering {
 		void Bind() const;
 		void Unbind() const;
 
-		void SetInt(const std::string& name, int32_t value);
-		void SetFloat(const std::string& name, float value);
-		void SetFloat2(const std::string& name, const Math::vec2& values);
-		void SetFloat3(const std::string& name, const Math::vec3& values);
-		void SetFloat4(const std::string& name, const Math::vec4& values);
-		void SetMat3(const std::string& name, const Math::mat3& matrix);
-		void SetMat4(const std::string& name, const Math::mat4& matrix);
+		void SetInt(const std::string& name, int32_t value) const;
+		void SetFloat(const std::string& name, float_t value) const;
+		void SetFloat2(const std::string& name, const Math::vec2& values) const;
+		void SetFloat3(const std::string& name, const Math::vec3& values) const;
+		void SetFloat4(const std::string& name, const Math::vec4& values) const;
+		void SetMat3(const std::string& name, const Math::mat3& matrix) const;
+		void SetMat4(const std::string& name, const Math::mat4& matrix) const;
 
 		const std::string& GetName() const { return m_Name; }
 	private:
@@ -68,11 +68,21 @@ export namespace EEngine::Rendering {
 	// Shader Concept and Static Assert
 	// ============================================================================
 	template<typename T>
-	concept ShaderConcept = requires(T shader, std::string name, int32_t i, float f, Math::vec2 v2, Math::vec3 v3, Math::vec4 v4, Math::mat3 m3, Math::mat4 m4) {
+	concept ShaderConcept = requires(
+		T shader,
+		std::string name,
+		int32_t intValue,
+		float_t floatValue,
+		Math::vec2 v2,
+		Math::vec3 v3,
+		Math::vec4 v4,
+		Math::mat3 m3,
+		Math::mat4 m4
+	) {
 		{ shader.Bind() } -> std::same_as<void>;
 		{ shader.Unbind() } -> std::same_as<void>;
-		{ shader.SetInt(name, i) } -> std::same_as<void>;
-		{ shader.SetFloat(name, f) } -> std::same_as<void>;
+		{ shader.SetInt(name, intValue) } -> std::same_as<void>;
+		{ shader.SetFloat(name, floatValue) } -> std::same_as<void>;
 		{ shader.SetFloat2(name, v2) } -> std::same_as<void>;
 		{ shader.SetFloat3(name, v3) } -> std::same_as<void>;
 		{ shader.SetFloat4(name, v4) } -> std::same_as<void>;

@@ -10,9 +10,10 @@ using namespace Rendering;
 
 export class RunnerLayer2D : public Layer {
 public:
-	RunnerLayer2D(RendererAPI& context, Renderer& renderer)
+	RunnerLayer2D(RendererAPI& context, Renderer& renderer, Input& input)
 		: Layer("RunnerLayer2D")
-		, m_CameraController(16.0f / 9.0f)
+		, m_Input(input)
+		, m_CameraController(16.0f / 9.0f, m_Input)
 		, m_RendererAPI(context)
 		, m_Renderer(renderer) {}
 
@@ -55,14 +56,14 @@ public:
 		auto& currentFrame = profiler.GetCurrentFrame();
 
 		// FPS and frame time
-		float avgFPS = profiler.GetAverageFPS(60);
+		float_t avgFPS = profiler.GetAverageFPS(60);
 		Editor::Text("FPS: %.1f (%.2fms)", avgFPS, currentFrame.TotalFrameTime);
 
 		Editor::Separator();
 
 		// Individual profile results
 		for (const auto& result : currentFrame.Results) {
-			float percentage = (result.DurationMs / currentFrame.TotalFrameTime) * 100.0f;
+			float_t percentage = (result.DurationMs / currentFrame.TotalFrameTime) * 100.0f;
 			Editor::Text("%s: %.3fms (%.1f%%) [%d calls]",
 				result.Name,
 				result.DurationMs,
@@ -78,25 +79,26 @@ public:
 	}
 
 	void HandleTriMovement(Timestep timestep) {
-		float deltaDist = 1.0f * timestep.GetSeconds();
+		float_t deltaDist = 1.0f * timestep.GetSeconds();
 
-		if (Input::IsKeyPressed(KeyCode::I)) {
+		if (m_Input.IsKeyPressed(KeyCode::I)) {
 			m_TriPos.y += deltaDist;
 		}
 
-		if (Input::IsKeyPressed(KeyCode::J)) {
+		if (m_Input.IsKeyPressed(KeyCode::J)) {
 			m_TriPos.x -= deltaDist;
 		}
 
-		if (Input::IsKeyPressed(KeyCode::K)) {
+		if (m_Input.IsKeyPressed(KeyCode::K)) {
 			m_TriPos.y -= deltaDist;
 		}
 
-		if (Input::IsKeyPressed(KeyCode::L)) {
+		if (m_Input.IsKeyPressed(KeyCode::L)) {
 			m_TriPos.x += deltaDist;
 		}
 	}
 private:
+	Input& m_Input;
 	CameraController m_CameraController;
 	RendererAPI& m_RendererAPI;
 	Renderer& m_Renderer;

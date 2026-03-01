@@ -1,6 +1,3 @@
-module;
-#include <GLFW/glfw3.h>
-
 export module EEngine.Application:Input;
 import EEngine.Core;
 import EEngine.Standard;
@@ -8,108 +5,60 @@ import :Window;
 
 using namespace EEngine;
 
-export namespace EEngine {
-	// ============================================================================
-	// Input Interface
-	// ============================================================================
-
-	class IInput {
-	public:
-		virtual bool IsKeyPressedImpl(KeyCode keyCode) = 0;
-		virtual bool IsMouseButtonPressedImpl(MouseButtonCode button) = 0;
-		virtual std::pair<float, float> GetMousePositionImpl() = 0;
-		virtual float GetMouseXImpl() = 0;
-		virtual float GetMouseYImpl() = 0;
-	};
-}
-
-// ============================================================================
-// Platform-specific Implementations (Windows)
-// ============================================================================
-
 namespace EEngine {
-#if WIN32
-	inline int EngineToGLFWKeyCode(KeyCode engineKeyCode) { return (int)engineKeyCode; }
-	inline int EngineToGLFWMouseButtonCode(MouseButtonCode engineMouseButtonCode) { return (int)engineMouseButtonCode; }
-#endif
-}
-
-export namespace EEngine {
-	class WindowsInput : public IInput {
+	// ============================================================================
+	// Windows Input Implementation
+	// ============================================================================
+	export class WindowsInput {
 	public:
-		void SetWindow(Shared<IWindow> window) {
-			m_Window = std::move(window);
-		}
+		WindowsInput(Shared<Window> window) : m_Window(std::move(window)) { }
 
-	protected:
-		bool IsKeyPressedImpl(KeyCode keyCode) override  {
-			if (!m_Window) { return false; }
-			auto glfwWindow = static_cast<GLFWwindow*>(m_Window->GetNativeWindow());
-			auto state = glfwGetKey(glfwWindow, EngineToGLFWKeyCode(keyCode));
+		bool IsKeyPressed(KeyCode keyCode) const;
 
-			return state == GLFW_PRESS || state == GLFW_REPEAT;
-		}
+		bool IsMouseButtonPressed(MouseButtonCode mouseButtonCode) const;
 
-		bool IsMouseButtonPressedImpl(MouseButtonCode mouseButtonCode) override {
-			if (!m_Window) { return false; }
-			auto glfwWindow = static_cast<GLFWwindow*>(m_Window->GetNativeWindow());
-			auto state = glfwGetMouseButton(glfwWindow, EngineToGLFWMouseButtonCode(mouseButtonCode));
+		std::pair<float_t, float_t> GetMousePosition() const;
 
-			return state == GLFW_PRESS;
-		}
-
-		std::pair<float, float> GetMousePositionImpl() override {
-			if (!m_Window) return { 0.0f, 0.0f };
-			auto glfwWindow = static_cast<GLFWwindow*>(m_Window->GetNativeWindow());
-			double x, y;
-			glfwGetCursorPos(glfwWindow, &x, &y);
-
-			return { (float)x, (float)y };
-		}
-
-		float GetMouseXImpl() override {
-			auto[x, y] = GetMousePositionImpl();
+		float_t GetMouseX() const {
+			auto[x, y] = GetMousePosition();
 			return x;
 		}
 
-		float GetMouseYImpl() override {
-			auto[x, y] = GetMousePositionImpl();
+		float_t GetMouseY() const {
+			auto[x, y] = GetMousePosition();
 			return y;
 		}
 
 	private:
-		Shared<IWindow> m_Window;
+		Shared<Window> m_Window;
 	};
-}
 
-// ============================================================================
-// Input Facade
-// ============================================================================
+	// ============================================================================
+	// Input Alias, Concept, and Static Assert
+	// ============================================================================
+	class MacInput; class LinuxInput;
+	export using Input = std::conditional_t<g_Platform == Platform::MacOS,
+		MacInput,
+		std::conditional_t<g_Platform == Platform::Linux,
+			LinuxInput,
+			WindowsInput
+		>
+	>;
 
-namespace EEngine::Input {
-	inline Unique<IInput>& GetInstance() {
-		static Unique<IInput> instance = nullptr;
+	export template<typename TInput>
+	concept InputConcept = requires(
+		TInput input,
+		Shared<Window> window,
+		KeyCode keyCode,
+		MouseButtonCode button
+	) {
+		{ TInput(window) } -> std::same_as<TInput>;
+		{ input.IsKeyPressed(keyCode) } -> std::same_as<bool>;
+		{ input.IsMouseButtonPressed(button) } -> std::same_as<bool>;
+		{ input.GetMouseX() } -> std::same_as<float_t>;
+		{ input.GetMouseY() } -> std::same_as<float_t>;
+		{ input.GetMousePosition() } -> std::same_as<std::pair<float_t, float_t>>;
+	};
 
-		if (!instance) {
-#ifdef EE_PLATFORM_WINDOWS
-			instance = MakeUnique<WindowsInput>();
-#endif
-		}
-
-		return instance;
-	}
-
-	export inline void SetInputInstance(Unique<IInput> instance) { GetInstance() = std::move(instance); }
-	export inline void SetWindow(Shared<IWindow> window) {
-#ifdef EE_PLATFORM_WINDOWS
-		if (auto* windowsInput = dynamic_cast<WindowsInput*>(GetInstance().get())) {
-			windowsInput->SetWindow(std::move(window));
-		}
-#endif
-	}
-	export inline bool IsKeyPressed(KeyCode keyCode) { return GetInstance()->IsKeyPressedImpl(keyCode); }
-	export inline bool IsMouseButtonPressed(MouseButtonCode mouseButtonCode) { return GetInstance()->IsMouseButtonPressedImpl(mouseButtonCode); }
-	export inline std::pair<float, float> GetMousePosition() { return GetInstance()->GetMousePositionImpl(); }
-	export inline float GetMouseX() { return GetInstance()->GetMouseXImpl(); }
-	export inline float GetMouseY() { return GetInstance()->GetMouseYImpl(); }
+	static_assert(InputConcept<Input>);
 }

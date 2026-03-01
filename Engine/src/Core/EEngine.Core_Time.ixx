@@ -1,4 +1,5 @@
 export module EEngine.Core:Time;
+import EEngine.Standard;
 
 export namespace EEngine {
 	// ============================================================================
@@ -7,12 +8,12 @@ export namespace EEngine {
 
 	class Timestep {
 	public:
-		explicit Timestep(float time = 0.0f)
+		explicit Timestep(double_t time = 0.0f)
 			: m_Time(time) {}
 
-		inline float GetSeconds() const { return m_Time; }
-		inline float GetMilliseconds() const { return m_Time * 1000.0f; }
+		inline double_t GetSeconds() const { return m_Time; }
+		inline double_t GetMilliseconds() const { return m_Time * 1000.0f; }
 	private:
-		float m_Time;
+		double_t m_Time;
 	};
 }

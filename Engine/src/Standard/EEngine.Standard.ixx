@@ -13,4 +13,6 @@ export {
 	using std::int64_t;
 	using std::intptr_t;
 	using std::size_t;
+	using std::float_t;
+	using std::double_t;
 }

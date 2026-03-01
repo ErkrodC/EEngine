@@ -1,7 +1,3 @@
-module;
-#include <GLFW/glfw3.h>
-#include <../Profiling/Profiling.hpp>
-
 export module EEngine.Application:Application;
 import EEngine.Core;
 import EEngine.Event;
@@ -28,10 +24,10 @@ export namespace EEngine {
 
 			s_Instance = this;
 
-			m_Window = CreateWindow();
+			m_Window = MakeShared<Window>(WindowProps("EEngine", 1280, 720));
 			m_Window->SetEventCallback([this](auto& event) -> void { OnEvent(event); });
 
-			Input::SetWindow(m_Window);
+			m_Input = MakeUnique<Input>(m_Window);
 
 			m_RendererAPI = MakeUnique<RendererAPI>();
 			m_RendererAPI->Initialize();
@@ -58,10 +54,8 @@ export namespace EEngine {
 			while (m_Running) {
 				Profiling::Profiler::Get().BeginFrame();
 
-				auto time = (float)glfwGetTime();
-				Timestep timestep {
-					time - m_LastFrameTime
-				};
+				double_t time = m_Window->GetTime();
+				Timestep timestep { time - m_LastFrameTime };
 				m_LastFrameTime = time;
 
 				if (!m_Minimized) {
@@ -95,20 +89,21 @@ export namespace EEngine {
 		}
 
 		static inline Application& Get() { return *s_Instance; }
-		inline IWindow& GetWindow() const { return *m_Window; }
+		inline Window& GetWindow() const { return *m_Window; }
 
 	protected:
 		Unique<RendererAPI> m_RendererAPI;
 		Unique<Renderer> m_Renderer;
+		Unique<Input> m_Input;
 	private:
 		static inline Application* s_Instance = nullptr;
 
-		Shared<IWindow> m_Window;
+		Shared<Window> m_Window;
 		Shared<IMGUILayer> m_IMGUILayer;
 		bool m_Running = true;
 		bool m_Minimized = false;
 		LayerStack m_LayerStack;
-		float  m_LastFrameTime;
+		double_t m_LastFrameTime;
 
 		bool OnWindowClose(WindowCloseEvent& event) {
 			m_Running = false;

@@ -43,7 +43,7 @@ endforeach()
 
 # Platform definitions
 if(WIN32)
-	add_definitions(-DEE_PLATFORM_WINDOWS)
+	add_definitions(-DEE_PLATFORM_WINDOWS -DEE_GFX_OPENGL)
 endif()
 
 # Build type definitions

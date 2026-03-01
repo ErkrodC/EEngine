@@ -1,7 +1,8 @@
 module;
-#include <GLFW/glfw3.h>
+#include "GLFW_fwd.hpp"
 
 export module EEngine.Application:Window;
+
 import EEngine.Core;
 import EEngine.Event;
 import EEngine.Rendering;
@@ -10,208 +11,59 @@ import EEngine.Standard;
 using namespace EEngine;
 using namespace Rendering;
 
-export namespace EEngine {
-	// ============================================================================
-	// Window Interface & Props
-	// ============================================================================
+namespace EEngine {
+	using EventCallbackFn = std::function<void(Event&)>;
 
-	struct WindowProps {
+	// ============================================================================
+	// WindowProps Struct
+	// ============================================================================
+	export struct WindowProps {
 		std::string Title;
-		unsigned int Width;
-		unsigned int Height;
+		uint32_t Width;
+		uint32_t Height;
 
 		explicit WindowProps(
 			const std::string& title = "EEngine",
-			unsigned int width = 1280,
-			unsigned int height = 720
-		) : Title(title), Width(width), Height(height) {
-		}
+			uint32_t width = 1280,
+			uint32_t height = 720
+		) : Title(title), Width(width), Height(height) {}
 	};
 
-	class IWindow {
+	// ============================================================================
+	// WindowsWindow Implementation
+	// ============================================================================
+	export class WindowsWindow {
+		// Custom deleter for GLFWwindow (opaque type)
+		struct GLFWWindowDeleter {
+			void operator()(GLFWwindow* window) const;
+		};
+
 	public:
-		using EventCallbackFn = std::function<void(Event&)>;
+		explicit WindowsWindow(const WindowProps& props);
 
-		virtual ~IWindow() = default;
+		void OnUpdate() const;
 
-		virtual void OnUpdate() = 0;
+		inline uint32_t GetWidth() const { return m_Data.Width; }
+		inline uint32_t GetHeight() const { return m_Data.Height; }
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		void* GetNativeWindow() const { return m_Window.get(); }
 
-		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
-		virtual void SetVSync(bool enabled) = 0;
-		virtual bool IsVSync() const = 0;
+		inline void SetEventCallback(const EventCallbackFn& callback) { m_Data.EventCallback = callback; }
 
-		virtual void* GetNativeWindow() const = 0;
-	};
-}
+		bool IsVSync() const { return m_Data.VSync; }
+		void SetVSync(bool enabled);
 
-// ============================================================================
-// Platform-specific Implementations (Windows)
-// ============================================================================
-namespace EEngine {
-#if WIN32
-	inline int EngineToGLFWKeyCode(KeyCode engineKeyCode) { return (int)engineKeyCode; }
-	inline int EngineToGLFWMouseButtonCode(MouseButtonCode engineMouseButtonCode) { return (int)engineMouseButtonCode; }
-	inline KeyCode GLFWToEngineKeyCode(int glfwKeyCode) { return (KeyCode)glfwKeyCode; }
-	inline MouseButtonCode GLFWToEngineMouseButtonCode(int glfwMouseButtonCode) { return (MouseButtonCode)glfwMouseButtonCode; }
-#endif
-}
+		double_t GetTime() const;
 
-export namespace EEngine {
-	// Custom deleter for GLFWwindow (opaque type)
-	struct GLFWWindowDeleter {
-		void operator()(GLFWwindow* window) const {
-			if (window) {
-				glfwDestroyWindow(window);
-			}
-		}
-	};
-
-	class WindowsWindow : public IWindow {
-	public:
-		explicit WindowsWindow(const WindowProps& props) {
-			m_Data.Title = props.Title;
-			m_Data.Width = props.Width;
-			m_Data.Height = props.Height;
-
-			if (!s_GLFWInitialized) {
-				int success = glfwInit();
-				Log::CoreAssert(success, "Could not initialize GLFW!");
-				glfwSetErrorCallback([](int error, const char* description) {
-					Log::CoreError("GLFW Error {0}: {1}", error, description);
-				});
-
-				s_GLFWInitialized = true;
-			}
-
-			m_Window = MakeUniqueFromRaw(glfwCreateWindow(
-				(int)props.Width,
-				(int)props.Height,
-				m_Data.Title.c_str(),
-				nullptr,
-				nullptr
-			), GLFWWindowDeleter{});
-
-			m_Context = MakeUnique<GraphicsContext>(m_Window.get());
-			Log::CoreInfo("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
-
-			glfwSetWindowUserPointer(m_Window.get(), &m_Data);
-			SetVSync(true);
-
-			glfwSetWindowSizeCallback(m_Window.get(), [](GLFWwindow* window, int width, int height) {
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-				data.Width = width;
-				data.Height = height;
-				WindowResizeEvent event(width, height);
-				data.EventCallback(event);
-			});
-
-			glfwSetWindowCloseCallback(m_Window.get(), [](GLFWwindow* window) {
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-				WindowCloseEvent event;
-				data.EventCallback(event);
-			});
-
-			glfwSetKeyCallback(m_Window.get(), [](GLFWwindow* window, int glfwKeyCode, int, int action, int) {
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-				KeyCode engineKeyCode = GLFWToEngineKeyCode(glfwKeyCode);
-				switch (action) {
-					case GLFW_PRESS: {
-						KeyPressedEvent event(engineKeyCode, 0);
-						data.EventCallback(event);
-						break;
-					}
-					case GLFW_RELEASE: {
-						KeyReleasedEvent event(engineKeyCode);
-						data.EventCallback(event);
-						break;
-					}
-					case GLFW_REPEAT: {
-						KeyPressedEvent event(engineKeyCode, 1);
-						data.EventCallback(event);
-						break;
-					}
-					default: break;
-				}
-			});
-
-			glfwSetCharCallback(m_Window.get(), [](GLFWwindow* window, unsigned int glfwKeyCode) {
-				WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
-				KeyTypedEvent event(GLFWToEngineKeyCode((int)glfwKeyCode));
-				data.EventCallback(event);
-			});
-
-			glfwSetMouseButtonCallback(m_Window.get(), [](GLFWwindow* window, int glfwMouseButtonCode, int action, int ) {
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-				MouseButtonCode engineMouseButtonCode = GLFWToEngineMouseButtonCode(glfwMouseButtonCode);
-				switch (action) {
-					case GLFW_PRESS: {
-						MouseButtonPressedEvent event(engineMouseButtonCode);
-						data.EventCallback(event);
-						break;
-					}
-					case GLFW_RELEASE: {
-						MouseButtonReleasedEvent event(engineMouseButtonCode);
-						data.EventCallback(event);
-						break;
-					}
-					default: break;
-				}
-			});
-
-			glfwSetScrollCallback(m_Window.get(), [](GLFWwindow* window, double xOffset, double yOffset) {
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-				MouseScrolledEvent event((float)xOffset, (float)yOffset);
-				data.EventCallback(event);
-			});
-
-			glfwSetCursorPosCallback(m_Window.get(), [](GLFWwindow* window, double xPos, double yPos) {
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-				MouseMovedEvent event((float)xPos, (float)yPos);
-				data.EventCallback(event);
-			});
-		}
-
-		void OnUpdate() override {
-			glfwPollEvents();
-			if (m_Context) { m_Context->SwapBuffers(); }
-		}
-
-		inline unsigned int GetWidth() const override { return m_Data.Width; }
-		inline unsigned int GetHeight() const override { return m_Data.Height; }
-
-		void* GetNativeWindow() const override {
-			return m_Window.get();
-		}
-
-		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-
-		void SetVSync(bool enabled) override {
-			if (enabled) {
-				glfwSwapInterval(1);
-			} else {
-				glfwSwapInterval(0);
-			}
-
-			m_Data.VSync = enabled;
-		}
-
-		bool IsVSync() const override {
-			return m_Data.VSync;
-		}
 	private:
-		inline static bool s_GLFWInitialized = false;
+		static inline bool s_GLFWInitialized = false;
 
 		UniqueD<GLFWwindow, GLFWWindowDeleter> m_Window;
 		Unique<GraphicsContext> m_Context;
 
 		struct WindowData {
 			std::string Title;
-			unsigned int Width, Height;
+			uint32_t Width, Height;
 			bool VSync;
 
 			EventCallbackFn EventCallback;
@@ -220,7 +72,34 @@ export namespace EEngine {
 		WindowData m_Data;
 	};
 
-	Shared<IWindow> CreateWindow(const WindowProps& props = WindowProps()) {
-		return MakeShared<WindowsWindow>(props);
-	}
+	// ============================================================================
+	// Window Concept, Alias, and Static Assert
+	// ============================================================================
+	class MacWindow; class LinuxWindow;
+	export using Window = std::conditional_t<g_Platform == Platform::MacOS,
+		MacWindow,
+		std::conditional_t<g_Platform == Platform::Linux,
+			LinuxWindow,
+			WindowsWindow
+		>
+	>;
+
+	export template<typename TWindow>
+	concept WindowConcept = requires(
+		TWindow window,
+		WindowProps& props,
+		EventCallbackFn& callback,
+		bool enabled
+	) {
+		{ TWindow(props) } -> std::same_as<TWindow>;
+		{ window.OnUpdate() } -> std::same_as<void>;
+		{ window.GetWidth() } -> std::same_as<uint32_t>;
+		{ window.GetHeight() } -> std::same_as<uint32_t>;
+		{ window.SetEventCallback(callback) } -> std::same_as<void>;
+		{ window.IsVSync() } -> std::same_as<bool>;
+		{ window.SetVSync(enabled) } -> std::same_as<void>;
+		{ window.GetNativeWindow() } -> std::same_as<void*>;
+		{ window.GetTime() } -> std::same_as<double_t>;
+	};
+	static_assert(WindowConcept<Window>);
 }

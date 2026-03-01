@@ -17,11 +17,17 @@ add_library(engine
 	src/Core/Core.hpp
 	src/Event/Event.hpp
 	src/Profiling/Profiling.hpp
-	src/Rendering/GLFW_fwd.hpp
+	src/GLFW_fwd.hpp
 )
 
 target_sources(engine
 	PRIVATE
+		# EEngine.Application module implementations
+		src/Application/EEngine.Application_IMGUILayer.cpp
+		src/Application/EEngine.Application_Input.cpp
+		src/Application/EEngine.Application_Window.cpp
+
+		# EEngine.Rendering module implementations
 		src/Rendering/EEngine.Rendering_GraphicsContext.cpp
 		src/Rendering/EEngine.Rendering_IndexBuffer.cpp
 		src/Rendering/EEngine.Rendering_Renderer.cpp
@@ -38,28 +44,29 @@ target_sources(engine
 		# Root module
         src/EEngine.ixx
 
+		# EEngine.Application module and partitions
+		src/Application/EEngine.Application.ixx
+		src/Application/EEngine.Application_Application.ixx
+		src/Application/EEngine.Application_CameraController.ixx
+		src/Application/EEngine.Application_IMGUILayer.ixx
+		src/Application/EEngine.Application_Input.ixx
+		src/Application/EEngine.Application_Layer.ixx
+		src/Application/EEngine.Application_Window.ixx
+
 		# EEngine.Core module and partitions
         src/Core/EEngine.Core.ixx
-        src/Core/EEngine.Core_Memory.ixx
-        src/Core/EEngine.Core_Time.ixx
         src/Core/EEngine.Core_Input.ixx
-        src/Core/EEngine.Core_Log.ixx
+		src/Core/EEngine.Core_Log.ixx
+		src/Core/EEngine.Core_Memory.ixx
+		src/Core/EEngine.Core_Platform.ixx
+		src/Core/EEngine.Core_Time.ixx
 
 		# EEngine.Event module and partitions
 		src/Event/EEngine.Event.ixx
-		src/Event/EEngine.Event_Base.ixx
 		src/Event/EEngine.Event_Application.ixx
+		src/Event/EEngine.Event_Base.ixx
 		src/Event/EEngine.Event_Keyboard.ixx
 		src/Event/EEngine.Event_Mouse.ixx
-
-		# EEngine.Application module and partitions
-		src/Application/EEngine.Application.ixx
-		src/Application/EEngine.Application_Window.ixx
-		src/Application/EEngine.Application_Input.ixx
-		src/Application/EEngine.Application_Layer.ixx
-		src/Application/EEngine.Application_IMGUILayer.ixx
-		src/Application/EEngine.Application_CameraController.ixx
-		src/Application/EEngine.Application_Application.ixx
 
 		# EEngine.Rendering module and partitions
 		src/Rendering/EEngine.Rendering.ixx
@@ -76,10 +83,10 @@ target_sources(engine
 		src/Rendering/EEngine.Rendering_VertexBuffer.ixx
 
 		# Other modules (no partitions)
-		src/Math/EEngine.Math.ixx
 		src/Editor/EEngine.Editor.ixx
+		src/Math/EEngine.Math.ixx
+		src/Profiling/EEngine.Profiling.ixx
 		src/Standard/EEngine.Standard.ixx
-        src/Profiling/EEngine.Profiling.ixx
 
 		FILE_SET headers TYPE HEADERS FILES
         src/EntryPoint.ixx

@@ -12,61 +12,61 @@ export namespace EEngine {
 	// ============================================================================
 	// Camera Controller
 	// ============================================================================
-
 	class CameraController {
 	public:
-		explicit CameraController(float aspectRatio);
+		explicit CameraController(float_t aspectRatio, Input& input);
 
 		void OnUpdate(Timestep timestep);
 		void OnEvent(Event& event);
 
 		const Camera& GetCamera() { return m_Camera; }
 	private:
-		float m_AspectRatio;
-		float m_ZoomLevel = 1.0f;
-		float m_MoveSpeed = 1.0f;
-		float m_ZoomSpeed = 0.05f;
+		float_t m_AspectRatio;
+		float_t m_ZoomLevel = 1.0f;
+		float_t m_MoveSpeed = 1.0f;
+		float_t m_ZoomSpeed = 0.05f;
 		Camera m_Camera;
+		Input& m_Input;
 
 		bool OnMouseScrolled(MouseScrolledEvent& event);
 		bool OnWindowResized(WindowResizeEvent& event);
-		bool OnMouseMoved(MouseMovedEvent& event);
+		bool OnMouseMoved(MouseMovedEvent& event) const;
 	};
 }
 
 // ============================================================================
 // CameraController Implementation
 // ============================================================================
-
 namespace EEngine {
-	CameraController::CameraController(float aspectRatio)
+	CameraController::CameraController(float_t aspectRatio, Input& input)
 		: m_AspectRatio(aspectRatio)
 		, m_Camera(Math::ortho(
 			-m_AspectRatio * m_ZoomLevel,
 			m_AspectRatio * m_ZoomLevel,
 			-m_ZoomLevel,
-			m_ZoomLevel)
-	) {}
+			m_ZoomLevel))
+		, m_Input(input)
+	{}
 
 	void CameraController::OnUpdate(Timestep timestep) {
-		float deltaDist = m_MoveSpeed * timestep.GetSeconds();
+		double_t deltaDist = m_MoveSpeed * timestep.GetSeconds();
 
-		if (Input::IsKeyPressed(KeyCode::Up) || Input::IsKeyPressed(KeyCode::W)) {
+		if (m_Input.IsKeyPressed(KeyCode::Up) || m_Input.IsKeyPressed(KeyCode::W)) {
 			const auto& cameraPos = m_Camera.GetPosition();
 			m_Camera.SetPosition({ cameraPos.x, cameraPos.y + deltaDist, cameraPos.z });
 		}
 
-		if (Input::IsKeyPressed(KeyCode::Left) || Input::IsKeyPressed(KeyCode::A)) {
+		if (m_Input.IsKeyPressed(KeyCode::Left) || m_Input.IsKeyPressed(KeyCode::A)) {
 			const auto& cameraPos = m_Camera.GetPosition();
 			m_Camera.SetPosition({ cameraPos.x - deltaDist, cameraPos.y, cameraPos.z });
 		}
 
-		if (Input::IsKeyPressed(KeyCode::Down) || Input::IsKeyPressed(KeyCode::S)) {
+		if (m_Input.IsKeyPressed(KeyCode::Down) || m_Input.IsKeyPressed(KeyCode::S)) {
 			const auto& cameraPos = m_Camera.GetPosition();
 			m_Camera.SetPosition({ cameraPos.x, cameraPos.y - deltaDist, cameraPos.z });
 		}
 
-		if (Input::IsKeyPressed(KeyCode::Right) || Input::IsKeyPressed(KeyCode::D)) {
+		if (m_Input.IsKeyPressed(KeyCode::Right) || m_Input.IsKeyPressed(KeyCode::D)) {
 			const auto& cameraPos = m_Camera.GetPosition();
 			m_Camera.SetPosition({ cameraPos.x + deltaDist, cameraPos.y, cameraPos.z });
 		}
@@ -94,7 +94,7 @@ namespace EEngine {
 	}
 
 	bool CameraController::OnWindowResized(WindowResizeEvent& event) {
-		m_AspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
+		m_AspectRatio = static_cast<float_t>(event.GetWidth()) / static_cast<float_t>(event.GetHeight());
 		m_Camera.SetProjection(Math::ortho(
 			-m_AspectRatio * m_ZoomLevel,
 			m_AspectRatio * m_ZoomLevel,
@@ -105,11 +105,11 @@ namespace EEngine {
 		return false;
 	}
 
-	bool CameraController::OnMouseMoved(MouseMovedEvent& event) {
-		bool isCtrlPressed = Input::IsKeyPressed(KeyCode::LeftControl)
-			|| Input::IsKeyPressed(KeyCode::RightControl);
+	bool CameraController::OnMouseMoved(MouseMovedEvent& event) const {
+		bool isCtrlPressed = m_Input.IsKeyPressed(KeyCode::LeftControl)
+			|| m_Input.IsKeyPressed(KeyCode::RightControl);
 
-		if (isCtrlPressed && Input::IsMouseButtonPressed(MouseButtonCode::Mouse2)) {
+		if (isCtrlPressed && m_Input.IsMouseButtonPressed(MouseButtonCode::Mouse2)) {
 			// ER TODO camera rotation still broken
 		}
 

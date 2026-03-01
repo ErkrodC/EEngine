@@ -63,37 +63,37 @@ namespace EEngine::Rendering {
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::SetInt(const std::string& name, int32_t value) {
+	void OpenGLShader::SetInt(const std::string& name, int32_t value) const {
 		GLint location = GetUniformLocation(name);
-		glUniform1i(location, value);
+		glUniform1i(location, static_cast<GLint>(value));
 	}
 
-	void OpenGLShader::SetFloat(const std::string& name, float value) {
+	void OpenGLShader::SetFloat(const std::string& name, float_t value) const {
 		GLint location = GetUniformLocation(name);
-		glUniform1f(location, value);
+		glUniform1f(location, static_cast<GLfloat>(value));
 	}
 
-	void OpenGLShader::SetFloat2(const std::string& name, const Math::vec2& values) {
+	void OpenGLShader::SetFloat2(const std::string& name, const Math::vec2& values) const {
 		GLint location = GetUniformLocation(name);
 		glUniform2f(location, values.x, values.y);
 	}
 
-	void OpenGLShader::SetFloat3(const std::string& name, const Math::vec3& values) {
+	void OpenGLShader::SetFloat3(const std::string& name, const Math::vec3& values) const {
 		GLint location = GetUniformLocation(name);
 		glUniform3f(location, values.x, values.y, values.z);
 	}
 
-	void OpenGLShader::SetFloat4(const std::string& name, const Math::vec4& values) {
+	void OpenGLShader::SetFloat4(const std::string& name, const Math::vec4& values) const {
 		GLint location = GetUniformLocation(name);
 		glUniform4f(location, values.x, values.y, values.z, values.w);
 	}
 
-	void OpenGLShader::SetMat3(const std::string& name, const Math::mat3& matrix) {
+	void OpenGLShader::SetMat3(const std::string& name, const Math::mat3& matrix) const {
 		GLint location = GetUniformLocation(name);
 		glUniformMatrix3fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 	}
 
-	void OpenGLShader::SetMat4(const std::string& name, const Math::mat4& matrix) {
+	void OpenGLShader::SetMat4(const std::string& name, const Math::mat4& matrix) const {
 		GLint location = GetUniformLocation(name);
 		glUniformMatrix4fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 	}
@@ -204,7 +204,7 @@ namespace EEngine::Rendering {
 
 		std::array<GLuint, MAX_SHADER_SOURCES> compiledShaderIDs{};
 
-		int shaderIDIndex = 0;
+		int32_t shaderIDIndex = 0;
 		for (auto& pair : shaderSourceByType) {
 			GLuint compiledShaderID = 0;
 			if (TryCompileShader(pair.first, pair.second, &compiledShaderID)) {

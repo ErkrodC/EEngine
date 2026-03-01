@@ -11,9 +11,10 @@ using namespace Rendering;
 // ER TODO this class is very WIP, might not make a lot of sense what it's doing right now.
 export class RunnerLayer3D : public Layer {
 public:
-	RunnerLayer3D(RendererAPI& rendererAPI, Renderer& renderer)
+	RunnerLayer3D(RendererAPI& rendererAPI, Renderer& renderer, Input& input)
 		: Layer("RunnerLayer3D")
-		, m_CameraController(16.0f / 9.0f)
+		, m_Input(input)
+		, m_CameraController(16.0f / 9.0f, m_Input)
 		, m_RendererAPI(rendererAPI)
 		, m_Renderer(renderer)
 	{
@@ -53,26 +54,27 @@ public:
 	}
 
 	void HandleTriMovement(Timestep timestep) {
-		float deltaDist = 1.0f * timestep.GetSeconds();
+		float_t deltaDist = 1.0f * timestep.GetSeconds();
 
-		if (Input::IsKeyPressed(KeyCode::I)) {
+		if (m_Input.IsKeyPressed(KeyCode::I)) {
 			m_TriPos.y += deltaDist;
 		}
 
-		if (Input::IsKeyPressed(KeyCode::J)) {
+		if (m_Input.IsKeyPressed(KeyCode::J)) {
 			m_TriPos.x -= deltaDist;
 		}
 
-		if (Input::IsKeyPressed(KeyCode::K)) {
+		if (m_Input.IsKeyPressed(KeyCode::K)) {
 			m_TriPos.y -= deltaDist;
 		}
 
-		if (Input::IsKeyPressed(KeyCode::L)) {
+		if (m_Input.IsKeyPressed(KeyCode::L)) {
 			m_TriPos.x += deltaDist;
 		}
 	}
 
 private:
+	Input& m_Input;
 	CameraController m_CameraController;
 	RendererAPI& m_RendererAPI;
 	Renderer& m_Renderer;

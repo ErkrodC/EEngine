@@ -91,8 +91,8 @@ namespace EEngine::Rendering {
 		QuadVertex& vertex2 = m_QuadVertexBufferPtr[2];
 		QuadVertex& vertex3 = m_QuadVertexBufferPtr[3];
 
-		float xHalfLength = size.x * 0.5f;
-		float yHalfLength = size.y * 0.5f;
+		float_t xHalfLength = size.x * 0.5f;
+		float_t yHalfLength = size.y * 0.5f;
 		vertex0.Position = { position.x - xHalfLength, position.y - yHalfLength, position.z };
 		vertex1.Position = { position.x + xHalfLength, position.y - yHalfLength, position.z };
 		vertex2.Position = { position.x + xHalfLength, position.y + yHalfLength, position.z };

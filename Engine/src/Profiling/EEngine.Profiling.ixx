@@ -6,17 +6,17 @@ using namespace std::chrono;
 export namespace EEngine::Profiling {
 	struct ProfileResult {
 		const char* Name;
-		float DurationMs;
+		float_t DurationMs;
 		uint32_t CallCount;
 	};
 
 	struct FrameData {
 		std::vector<ProfileResult> Results;
-		float TotalFrameTime;
+		float_t TotalFrameTime;
 	};
 
 	// Profiler - Unity-style in-app profiler
-	export class Profiler {
+	class Profiler {
 	public:
 		static Profiler& Get() {
 			static Profiler instance;
@@ -46,7 +46,7 @@ export namespace EEngine::Profiling {
 			}
 		}
 
-		void RecordProfile(const char* name, float durationMs) {
+		void RecordProfile(const char* name, float_t durationMs) {
 			std::lock_guard lock(m_Mutex);
 
 			// Find existing entry or create new one
@@ -86,7 +86,7 @@ export namespace EEngine::Profiling {
 		ProfileResult GetAverageResult(const char* name, uint32_t frameCount = 60) const {
 			std::lock_guard lock(m_Mutex);
 
-			float totalDuration = 0.0f;
+			float_t totalDuration = 0.0f;
 			uint32_t totalCalls = 0;
 			uint32_t framesChecked = std::min(frameCount, m_FrameCount);
 
@@ -106,10 +106,10 @@ export namespace EEngine::Profiling {
 			return { name, totalDuration / framesChecked, totalCalls / framesChecked };
 		}
 
-		float GetAverageFPS(uint32_t frameCount = 60) const {
+		float_t GetAverageFPS(uint32_t frameCount = 60) const {
 			std::lock_guard lock(m_Mutex);
 
-			float totalFrameTime = 0.0f;
+			float_t totalFrameTime = 0.0f;
 			uint32_t framesChecked = std::min(frameCount, m_FrameCount);
 
 			for (uint32_t i = 0; i < framesChecked; i++) {
@@ -117,7 +117,7 @@ export namespace EEngine::Profiling {
 				totalFrameTime += m_FrameHistory[index].TotalFrameTime;
 			}
 
-			float avgFrameTime = totalFrameTime / framesChecked;
+			float_t avgFrameTime = totalFrameTime / framesChecked;
 			return avgFrameTime > 0.0f ? 1000.0f / avgFrameTime : 0.0f;
 		}
 
@@ -140,7 +140,7 @@ export namespace EEngine::Profiling {
 	};
 
 	// RAII timer for automatic profiling
-	export class Timer {
+	class Timer {
 	public:
 		Timer(const char* name)
 			: m_Name(name)
@@ -160,7 +160,7 @@ export namespace EEngine::Profiling {
 
 			m_Stopped = true;
 
-			float durationMs = duration.count() * 0.001f;
+			float_t durationMs = duration.count() * 0.001f;
 			Profiler::Get().RecordProfile(m_Name, durationMs);
 		}
 

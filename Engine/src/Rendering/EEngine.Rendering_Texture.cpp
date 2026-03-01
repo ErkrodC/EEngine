@@ -31,8 +31,8 @@ namespace EEngine::Rendering {
 		stbi_set_flip_vertically_on_load(true);
 		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
 		Log::CoreAssert(data, "Failed to load image.");
-		m_Width = (uint32_t)width;
-		m_Height = (uint32_t)height;
+		m_Width = static_cast<uint32_t>(width);
+		m_Height = static_cast<uint32_t>(height);
 
 		GLenum storageFormat = GL_NONE;
 		m_InstanceFormat = GL_NONE;
@@ -47,6 +47,9 @@ namespace EEngine::Rendering {
 				m_InstanceFormat = GL_RGB;
 				break;
 			}
+			default:
+				Log::CoreAssert(false, "Unsupported image format.");
+				break;
 		}
 
 		Log::CoreAssert(storageFormat & m_InstanceFormat, "Format not supported.");

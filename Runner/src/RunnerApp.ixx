@@ -8,8 +8,8 @@ using namespace EEngine;
 class RunnerApp : public Application {
 public:
 	RunnerApp() {
-		//PushLayer(MakeRef<RunnerLayer3D>(*m_RendererAPI, *m_Renderer));
-		PushLayer(MakeUnique<RunnerLayer2D>(*m_RendererAPI, *m_Renderer));
+		//PushLayer(MakeRef<RunnerLayer3D>(*m_RendererAPI, *m_Renderer, *m_Input));
+		PushLayer(MakeUnique<RunnerLayer2D>(*m_RendererAPI, *m_Renderer, *m_Input));
 	}
 };
 
