@@ -20,5 +20,5 @@ target_sources(app
 
 	PRIVATE
 		# EntryPoint provides main() and calls CreateApplication()
-		${CMAKE_SOURCE_DIR}/Engine/src/engine/EntryPoint.ixx
+		${CMAKE_SOURCE_DIR}/Engine/src/EntryPoint.ixx
 )
