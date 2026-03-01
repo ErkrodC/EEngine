@@ -1,7 +1,7 @@
 export module EEngine.Event:Application;
 import EEngine.Standard;
 import :Base;
-#include "Event/Event.hpp"
+#include "Event.hpp"
 
 export namespace EEngine {
 	// ============================================================================

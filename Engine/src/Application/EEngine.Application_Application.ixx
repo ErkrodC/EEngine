@@ -1,6 +1,6 @@
 module;
 #include <GLFW/glfw3.h>
-#include <Profiling/Profiling.hpp>
+#include <../Profiling/Profiling.hpp>
 
 export module EEngine.Application:Application;
 import EEngine.Core;

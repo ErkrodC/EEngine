@@ -17,19 +17,19 @@ add_library(engine
 	src/Core/Core.hpp
 	src/Event/Event.hpp
 	src/Profiling/Profiling.hpp
-	src/GLFW_fwd.hpp
+	src/Rendering/GLFW_fwd.hpp
 )
 
 target_sources(engine
 	PRIVATE
-        src/EEngine.Rendering_GraphicsContext.cpp
-        src/EEngine.Rendering_IndexBuffer.cpp
-        src/EEngine.Rendering_Renderer.cpp
-        src/EEngine.Rendering_RendererAPI.cpp
-        src/EEngine.Rendering_Shader.cpp
-        src/EEngine.Rendering_Texture.cpp
-        src/EEngine.Rendering_VertexArray.cpp
-        src/EEngine.Rendering_VertexBuffer.cpp
+		src/Rendering/EEngine.Rendering_GraphicsContext.cpp
+		src/Rendering/EEngine.Rendering_IndexBuffer.cpp
+		src/Rendering/EEngine.Rendering_Renderer.cpp
+		src/Rendering/EEngine.Rendering_RendererAPI.cpp
+		src/Rendering/EEngine.Rendering_Shader.cpp
+		src/Rendering/EEngine.Rendering_Texture.cpp
+		src/Rendering/EEngine.Rendering_VertexArray.cpp
+		src/Rendering/EEngine.Rendering_VertexBuffer.cpp
 )
 
 target_sources(engine
@@ -39,46 +39,46 @@ target_sources(engine
         src/EEngine.ixx
 
 		# EEngine.Core module and partitions
-        src/EEngine.Core.ixx
-        src/EEngine.Core_Memory.ixx
-        src/EEngine.Core_Time.ixx
-        src/EEngine.Core_Input.ixx
-        src/EEngine.Core_Log.ixx
+        src/Core/EEngine.Core.ixx
+        src/Core/EEngine.Core_Memory.ixx
+        src/Core/EEngine.Core_Time.ixx
+        src/Core/EEngine.Core_Input.ixx
+        src/Core/EEngine.Core_Log.ixx
 
 		# EEngine.Event module and partitions
-        src/EEngine.Event.ixx
-        src/EEngine.Event_Base.ixx
-        src/EEngine.Event_Application.ixx
-        src/EEngine.Event_Keyboard.ixx
-        src/EEngine.Event_Mouse.ixx
+		src/Event/EEngine.Event.ixx
+		src/Event/EEngine.Event_Base.ixx
+		src/Event/EEngine.Event_Application.ixx
+		src/Event/EEngine.Event_Keyboard.ixx
+		src/Event/EEngine.Event_Mouse.ixx
 
 		# EEngine.Application module and partitions
-        src/EEngine.Application.ixx
-        src/EEngine.Application_Window.ixx
-        src/EEngine.Application_Input.ixx
-        src/EEngine.Application_Layer.ixx
-        src/EEngine.Application_IMGUILayer.ixx
-        src/EEngine.Application_CameraController.ixx
-        src/EEngine.Application_Application.ixx
+		src/Application/EEngine.Application.ixx
+		src/Application/EEngine.Application_Window.ixx
+		src/Application/EEngine.Application_Input.ixx
+		src/Application/EEngine.Application_Layer.ixx
+		src/Application/EEngine.Application_IMGUILayer.ixx
+		src/Application/EEngine.Application_CameraController.ixx
+		src/Application/EEngine.Application_Application.ixx
 
 		# EEngine.Rendering module and partitions
-        src/EEngine.Rendering.ixx
-        src/EEngine.Rendering_API.ixx
-        src/EEngine.Rendering_Buffers.ixx
-        src/EEngine.Rendering_Camera.ixx
-        src/EEngine.Rendering_GraphicsContext.ixx
-        src/EEngine.Rendering_IndexBuffer.ixx
-        src/EEngine.Rendering_Renderer.ixx
-        src/EEngine.Rendering_RendererAPI.ixx
-        src/EEngine.Rendering_Shader.ixx
-        src/EEngine.Rendering_Texture.ixx
-        src/EEngine.Rendering_VertexArray.ixx
-        src/EEngine.Rendering_VertexBuffer.ixx
+		src/Rendering/EEngine.Rendering.ixx
+		src/Rendering/EEngine.Rendering_API.ixx
+		src/Rendering/EEngine.Rendering_Buffers.ixx
+		src/Rendering/EEngine.Rendering_Camera.ixx
+		src/Rendering/EEngine.Rendering_GraphicsContext.ixx
+		src/Rendering/EEngine.Rendering_IndexBuffer.ixx
+		src/Rendering/EEngine.Rendering_Renderer.ixx
+		src/Rendering/EEngine.Rendering_RendererAPI.ixx
+		src/Rendering/EEngine.Rendering_Shader.ixx
+		src/Rendering/EEngine.Rendering_Texture.ixx
+		src/Rendering/EEngine.Rendering_VertexArray.ixx
+		src/Rendering/EEngine.Rendering_VertexBuffer.ixx
 
 		# Other modules (no partitions)
-        src/EEngine.Math.ixx
-        src/EEngine.Editor.ixx
-        src/EEngine.Standard.ixx
+		src/Math/EEngine.Math.ixx
+		src/Editor/EEngine.Editor.ixx
+		src/Standard/EEngine.Standard.ixx
         src/Profiling/EEngine.Profiling.ixx
 
 		FILE_SET headers TYPE HEADERS FILES

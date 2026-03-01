@@ -2,7 +2,7 @@ export module EEngine.Event:Mouse;
 import EEngine.Core;
 import EEngine.Standard;
 import :Base;
-#include "Event/Event.hpp"
+#include "Event.hpp"
 
 using namespace EEngine;
 
