@@ -16,7 +16,7 @@ export namespace EEngine {
 #endif
 
 	namespace Windows {
-		inline KeyCode GLFWToEngineKeyCode(int glfwKeyCode) { return static_cast<KeyCode>(glfwKeyCode); }
+		inline KeyCode GLFWToEngineKeyCode(unsigned int glfwKeyCode) { return static_cast<KeyCode>(glfwKeyCode); }
 		inline MouseButtonCode GLFWToEngineMouseButtonCode(int glfwMouseButtonCode) { return static_cast<MouseButtonCode>(glfwMouseButtonCode); }
 		inline int32_t EngineToGLFWKeyCode(KeyCode engineKeyCode) { return static_cast<int32_t>(engineKeyCode); }
 		inline int32_t EngineToGLFWMouseButtonCode(MouseButtonCode engineMouseButtonCode) { return static_cast<int32_t>(engineMouseButtonCode); }

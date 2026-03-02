@@ -39,7 +39,7 @@ namespace EEngine {
 		SetVSync(true);
 
 		glfwSetWindowSizeCallback(m_Window.get(), [](GLFWwindow* window, int width, int height) {
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 			data.Width = static_cast<uint32_t>(width);
 			data.Height = static_cast<uint32_t>(height);
 			WindowResizeEvent event(width, height);
@@ -47,7 +47,7 @@ namespace EEngine {
 		});
 
 		glfwSetWindowCloseCallback(m_Window.get(), [](GLFWwindow* window) {
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 			WindowCloseEvent event;
 			data.EventCallback(event);
 		});
@@ -76,14 +76,14 @@ namespace EEngine {
 			}
 		});
 
-		glfwSetCharCallback(m_Window.get(), [](GLFWwindow* window, uint32_t glfwKeyCode) {
-			WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
-			KeyTypedEvent event(Windows::GLFWToEngineKeyCode((int32_t)glfwKeyCode));
+		glfwSetCharCallback(m_Window.get(), [](GLFWwindow* window, unsigned int glfwKeyCode) {
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+			KeyTypedEvent event(Windows::GLFWToEngineKeyCode(glfwKeyCode));
 			data.EventCallback(event);
 		});
 
 		glfwSetMouseButtonCallback(m_Window.get(), [](GLFWwindow* window, int glfwMouseButtonCode, int action, int ) {
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 			MouseButtonCode engineMouseButtonCode = Windows::GLFWToEngineMouseButtonCode(glfwMouseButtonCode);
 			switch (action) {
