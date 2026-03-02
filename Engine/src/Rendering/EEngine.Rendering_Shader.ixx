@@ -42,10 +42,7 @@ export namespace EEngine::Rendering {
 		std::string m_Name;
 		mutable std::unordered_map<std::string, int32_t> m_UniformLocationCache;
 
-		static void IndentLog(std::vector<char>& log);
-		static bool TryCompileShader(uint32_t shaderType, const std::string& source, uint32_t* compiledShaderID);
 		std::string ReadFile(const std::string& path);
-		static uint32_t ShaderTypeFromString(const std::string& type);
 		std::unordered_map<uint32_t, std::string> Preprocess(const std::string& source);
 		void CompileShaders(const std::unordered_map<uint32_t, std::string>& shaderSourceByType);
 		int32_t GetUniformLocation(const std::string& name) const;

@@ -98,7 +98,7 @@ namespace EEngine::Rendering {
 		glUniformMatrix4fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 	}
 
-	void OpenGLShader::IndentLog(std::vector<char>& log) {
+	void IndentLog(std::vector<char>& log) {
 		log.insert(log.begin(), '\t');
 
 		for (auto it = log.end(); it != log.begin();) {
@@ -109,8 +109,8 @@ namespace EEngine::Rendering {
 		}
 	}
 
-	bool OpenGLShader::TryCompileShader(GLenum shaderType, const std::string& source, GLuint* compiledShaderID) {
-		*compiledShaderID = 0;
+	bool TryCompileShader(GLuint shaderType, const std::string& source, GLuint& compiledShaderID) {
+		compiledShaderID = 0;
 		GLuint shader = glCreateShader(shaderType);
 
 		const auto* source_c_str = source.c_str();
@@ -134,7 +134,7 @@ namespace EEngine::Rendering {
 			return false;
 		}
 
-		*compiledShaderID = shader;
+		compiledShaderID = shader;
 		return true;
 	}
 
@@ -154,7 +154,7 @@ namespace EEngine::Rendering {
 		return result;
 	}
 
-	GLenum OpenGLShader::ShaderTypeFromString(const std::string& type) {
+	GLenum ShaderTypeFromString(const std::string& type) {
 		if (type == "vertex") {
 			return GL_VERTEX_SHADER;
 		} else if (type == "pixel" || type == "fragment") {
@@ -205,23 +205,25 @@ namespace EEngine::Rendering {
 		std::array<GLuint, MAX_SHADER_SOURCES> compiledShaderIDs{};
 
 		int32_t shaderIDIndex = 0;
-		for (auto& pair : shaderSourceByType) {
+		bool success = true;
+		std::ranges::for_each(shaderSourceByType, [&](auto& pair) {
+			auto [shaderType, shaderSource] = pair;
 			GLuint compiledShaderID = 0;
-			if (TryCompileShader(pair.first, pair.second, &compiledShaderID)) {
+			if (TryCompileShader(shaderType, shaderSource, compiledShaderID)) {
 				compiledShaderIDs[shaderIDIndex++] = compiledShaderID;
 			} else {
-				for (auto& shaderID : compiledShaderIDs) {
-					glDeleteShader(shaderID);
-				}
-				return;
+				std::ranges::for_each(compiledShaderIDs, glDeleteShader);
+				success = false;
 			}
-		}
+		});
+
+		if (!success) { return; }
 
 		m_RendererID = glCreateProgram();
 
-		for (auto& shaderID : compiledShaderIDs) {
+		std::ranges::for_each(compiledShaderIDs, [&](auto& shaderID) {
 			glAttachShader(m_RendererID, shaderID);
-		}
+		});
 
 		glLinkProgram(m_RendererID);
 
@@ -235,18 +237,16 @@ namespace EEngine::Rendering {
 			glGetProgramInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
 
 			glDeleteProgram(m_RendererID);
-			for (auto& shaderID : compiledShaderIDs) {
-				glDeleteShader(shaderID);
-			}
+			std::ranges::for_each(compiledShaderIDs, glDeleteShader);
 
 			IndentLog(infoLog);
 			Log::CoreError("Shader link failure:\n{0}", infoLog.data());
 			return;
 		}
 
-		for (auto& shaderID : compiledShaderIDs) {
+		std::ranges::for_each(compiledShaderIDs, [&](auto& shaderID) {
 			glDetachShader(m_RendererID, shaderID);
-		}
+		});
 	}
 
 	GLint OpenGLShader::GetUniformLocation(const std::string& name) const {

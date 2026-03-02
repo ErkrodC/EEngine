@@ -74,17 +74,18 @@ namespace EEngine::Rendering {
 
 		uint32_t index = 0;
 		const auto& layout = vertexBuffer->GetLayout();
-		for (const auto& element : layout) {
+
+		std::ranges::for_each(layout, [&](auto& element) {
 			glEnableVertexAttribArray(index);
 			glVertexAttribPointer(
 				index++,
-				(GLint)element.ComponentCount,
+				static_cast<GLint>(element.ComponentCount),
 				ShaderDataToOpenGLBaseType(element.Type),
 				element.Normalized ? GL_TRUE : GL_FALSE,
-				(GLsizei)layout.GetStride(),
-				(const void *)(intptr_t)element.Offset
+				static_cast<GLsizei>(layout.GetStride()),
+				reinterpret_cast<const void*>(static_cast<intptr_t>(element.Offset))
 			);
-		}
+		});
 
 		m_VertexBuffers.push_back(vertexBuffer);
 	}
