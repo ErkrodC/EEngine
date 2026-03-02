@@ -37,8 +37,10 @@ export namespace EEngine {
 		EventCategoryMouseButton = Math::Bit(4)
 	};
 
+	class EventDispatcher;
+
 	class Event {
-		friend class EventDispatcher;
+		friend EventDispatcher;
 
 	public:
 		virtual EventType GetEventType() const = 0;
