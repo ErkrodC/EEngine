@@ -76,9 +76,9 @@ namespace EEngine {
 			}
 		});
 
-		glfwSetCharCallback(m_Window.get(), [](GLFWwindow* window, unsigned int glfwKeyCode) {
+		glfwSetCharCallback(m_Window.get(), [](GLFWwindow* window, unsigned int codepoint) {
 			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-			KeyTypedEvent event(Windows::GLFWToEngineKeyCode(glfwKeyCode));
+			KeyTypedEvent event(codepoint);
 			data.EventCallback(event);
 		});
 

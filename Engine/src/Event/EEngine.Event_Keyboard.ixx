@@ -32,7 +32,7 @@ export namespace EEngine {
 
 		std::string ToString() const override {
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << (int)m_KeyCode << " (" << m_RepeatCount << " repeats)";
+			ss << "KeyPressedEvent: " << static_cast<int>(m_KeyCode) << " (" << m_RepeatCount << " repeats)";
 			return ss.str();
 		};
 
@@ -48,24 +48,30 @@ export namespace EEngine {
 
 		std::string ToString() const override {
 			std::stringstream ss;
-			ss << "KeyReleasedEvent: " << (int)m_KeyCode;
+			ss << "KeyReleasedEvent: " << static_cast<int>(m_KeyCode);
 			return ss.str();
 		};
 
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
-	class KeyTypedEvent : public KeyEvent {
+	class KeyTypedEvent : public Event {
 	public:
-		explicit KeyTypedEvent(KeyCode keyCode)
-			: KeyEvent(keyCode) {}
+		explicit KeyTypedEvent(uint32_t unicode)
+			: m_Unicode(unicode) {}
 
 		std::string ToString() const override {
 			std::stringstream ss;
-			ss << "KeyTypedEvent: " << (int)m_KeyCode;
+			ss << "KeyTypedEvent: " << m_Unicode;
 			return ss.str();
-		};
+		}
+
+		uint32_t GetUnicode() const { return m_Unicode; }
 
 		EVENT_CLASS_TYPE(KeyTyped)
+		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+
+	private:
+		uint32_t m_Unicode;
 	};
 }

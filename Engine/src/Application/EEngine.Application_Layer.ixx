@@ -9,7 +9,6 @@ export namespace EEngine {
 	// ============================================================================
 	// Layer & LayerStack
 	// ============================================================================
-
 	class Layer {
 	public:
 		Layer(const std::string& name = "Layer") : m_DebugName(name) {}
