@@ -42,8 +42,6 @@ export namespace EEngine::Rendering {
 		std::string m_Name;
 		mutable std::unordered_map<std::string, int32_t> m_UniformLocationCache;
 
-		std::string ReadFile(const std::string& path);
-		std::unordered_map<uint32_t, std::string> Preprocess(const std::string& source);
 		void CompileShaders(const std::unordered_map<uint32_t, std::string>& shaderSourceByType);
 		int32_t GetUniformLocation(const std::string& name) const;
 	};

@@ -5,6 +5,100 @@ module EEngine.Rendering;
 import :Shader;
 
 namespace EEngine::Rendering {
+	// ============================================================================
+	// Helpers
+	// ============================================================================
+	void IndentLog(std::vector<char>& log) {
+		log.insert(log.begin(), '\t');
+
+		for (auto it = log.end(); it != log.begin();) {
+			if (*--it == '\n') {
+				it = log.insert(++it, '\t');
+				--it;
+			}
+		}
+	}
+
+	Expected<GLuint, std::string> TryCompileShader(GLuint shaderType, const std::string& source) {
+		GLuint shader = glCreateShader(shaderType);
+
+		const auto* source_c_str = source.c_str();
+		glShaderSource(shader, 1, &source_c_str, nullptr);
+
+		glCompileShader(shader);
+
+		GLint isCompiled = 0;
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+		if (isCompiled == GL_FALSE) {
+			GLint maxLength = 0;
+			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+
+			std::vector<GLchar> infoLog(maxLength);
+			glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+
+			glDeleteShader(shader);
+
+			IndentLog(infoLog);
+			return Unexpected("Shader compilation failure:\n{0}", infoLog.data());
+		}
+
+		return shader;
+	}
+
+	Expected<std::string, std::string> ReadFile(const std::string& path) {
+		std::string result = "";
+		std::ifstream in(path, std::ios::in | std::ios::binary);
+		if (!in) { return Unexpected("Failed to open file {0}", path); }
+
+		in.seekg(0, std::ios::end);
+		result.resize(in.tellg());
+		in.seekg(0, std::ios::beg);
+		in.read(&result[0], result.size());
+		in.close();
+
+		return result;
+	}
+
+	GLenum ShaderTypeFromString(const std::string& type) {
+		if (type == "vertex") {
+			return GL_VERTEX_SHADER;
+		} else if (type == "pixel" || type == "fragment") {
+			return GL_FRAGMENT_SHADER;
+		} else {
+			Log::CoreError("Unknown shader type: {0}", type);
+			return GL_NONE;
+		}
+	}
+
+	std::unordered_map<GLenum, std::string> Preprocess(const std::string& source) {
+		std::unordered_map<GLenum, std::string> result;
+
+		const char* typeToken = "#type";
+		size_t typeTokenLength = std::strlen(typeToken);
+		size_t pos = source.find(typeToken, 0);
+		while (pos != std::string::npos) {
+			size_t eol = source.find_first_of("\r\n", pos);
+			Log::CoreAssert(eol != std::string::npos, "Syntax error");
+			size_t begin = pos + typeTokenLength + 1;
+			std::string type = source.substr(begin, eol - begin);
+			GLenum shaderType = ShaderTypeFromString(type);
+			Log::CoreAssert(shaderType, "Invalid shader type specified: {0}", type);
+
+			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+			pos = source.find(typeToken, nextLinePos);
+			size_t shaderSourceLength = nextLinePos == std::string::npos
+				? source.size() - 1
+				: nextLinePos;
+
+			result[shaderType] = source.substr(nextLinePos, pos - shaderSourceLength);
+		}
+
+		return result;
+	}
+
+	// ============================================================================
+	// OpenGLShader Method Definitions
+	// ============================================================================
 	OpenGLShader::OpenGLShader(
 		const std::string& name,
 		const std::string& vertexSource,
@@ -96,99 +190,6 @@ namespace EEngine::Rendering {
 	void OpenGLShader::SetMat4(const std::string& name, const Math::mat4& matrix) const {
 		GLint location = GetUniformLocation(name);
 		glUniformMatrix4fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
-	}
-
-	void IndentLog(std::vector<char>& log) {
-		log.insert(log.begin(), '\t');
-
-		for (auto it = log.end(); it != log.begin();) {
-			if (*--it == '\n') {
-				it = log.insert(++it, '\t');
-				--it;
-			}
-		}
-	}
-
-	bool TryCompileShader(GLuint shaderType, const std::string& source, GLuint& compiledShaderID) {
-		compiledShaderID = 0;
-		GLuint shader = glCreateShader(shaderType);
-
-		const auto* source_c_str = source.c_str();
-		glShaderSource(shader, 1, &source_c_str, nullptr);
-
-		glCompileShader(shader);
-
-		GLint isCompiled = 0;
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-		if (isCompiled == GL_FALSE) {
-			GLint maxLength = 0;
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
-
-			glDeleteShader(shader);
-
-			IndentLog(infoLog);
-			Log::CoreError("Shader compilation failure:\n{0}", infoLog.data());
-			return false;
-		}
-
-		compiledShaderID = shader;
-		return true;
-	}
-
-	std::string OpenGLShader::ReadFile(const std::string& path) {
-		std::string result = "";
-		std::ifstream in(path, std::ios::in | std::ios::binary);
-		if (in) {
-			in.seekg(0, std::ios::end);
-			result.resize(in.tellg());
-			in.seekg(0, std::ios::beg);
-			in.read(&result[0], result.size());
-			in.close();
-		} else {
-			Log::CoreError("Failed to open file {0}", path);
-		}
-
-		return result;
-	}
-
-	GLenum ShaderTypeFromString(const std::string& type) {
-		if (type == "vertex") {
-			return GL_VERTEX_SHADER;
-		} else if (type == "pixel" || type == "fragment") {
-			return GL_FRAGMENT_SHADER;
-		} else {
-			Log::CoreError("Unknown shader type: {0}", type);
-			return GL_NONE;
-		}
-	}
-
-	std::unordered_map<GLenum, std::string> OpenGLShader::Preprocess(const std::string& source) {
-		std::unordered_map<GLenum, std::string> result;
-
-		const char* typeToken = "#type";
-		size_t typeTokenLength = std::strlen(typeToken);
-		size_t pos = source.find(typeToken, 0);
-		while (pos != std::string::npos) {
-			size_t eol = source.find_first_of("\r\n", pos);
-			Log::CoreAssert(eol != std::string::npos, "Syntax error");
-			size_t begin = pos + typeTokenLength + 1;
-			std::string type = source.substr(begin, eol - begin);
-			GLenum shaderType = ShaderTypeFromString(type);
-			Log::CoreAssert(shaderType, "Invalid shader type specified: {0}", type);
-
-			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
-			pos = source.find(typeToken, nextLinePos);
-			size_t shaderSourceLength = nextLinePos == std::string::npos
-				? source.size() - 1
-				: nextLinePos;
-
-			result[shaderType] = source.substr(nextLinePos, pos - shaderSourceLength);
-		}
-
-		return result;
 	}
 
 	void OpenGLShader::CompileShaders(const std::unordered_map<GLenum, std::string>& shaderSourceByType) {
