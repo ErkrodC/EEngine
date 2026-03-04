@@ -70,7 +70,7 @@ namespace EEngine::Rendering {
 		}
 	}
 
-	std::unordered_map<GLenum, std::string> Preprocess(const std::string& source) {
+	Expected<std::unordered_map<GLenum, std::string>, std::string> Preprocess(const std::string& source) {
 		std::unordered_map<GLenum, std::string> result;
 
 		const char* typeToken = "#type";
@@ -78,11 +78,11 @@ namespace EEngine::Rendering {
 		size_t pos = source.find(typeToken, 0);
 		while (pos != std::string::npos) {
 			size_t eol = source.find_first_of("\r\n", pos);
-			Log::CoreAssert(eol != std::string::npos, "Syntax error");
+			if (eol == std::string::npos) { return Unexpected("Syntax error in shader: missing newline after #type"); }
 			size_t begin = pos + typeTokenLength + 1;
 			std::string type = source.substr(begin, eol - begin);
 			GLenum shaderType = ShaderTypeFromString(type);
-			Log::CoreAssert(shaderType, "Invalid shader type specified: {0}", type);
+			if (shaderType == GL_NONE) { return Unexpected("Invalid shader type specified: {0}", type); }
 
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
 			pos = source.find(typeToken, nextLinePos);
@@ -99,36 +99,42 @@ namespace EEngine::Rendering {
 	// ============================================================================
 	// OpenGLShader Method Definitions
 	// ============================================================================
-	OpenGLShader::OpenGLShader(
+	Expected<Shared<OpenGLShader>, std::string> OpenGLShader::Create(
 		const std::string& name,
 		const std::string& vertexSource,
 		const std::string& fragmentSource
-	) : m_Name(name) {
-		CompileShaders({
+	) {
+		return CompileShaders({
 			{ GL_VERTEX_SHADER, vertexSource },
 			{ GL_FRAGMENT_SHADER, fragmentSource }
+		}).and_then([&](uint32_t rendererID) {
+			return Expected<Shared<OpenGLShader>, std::string>(MakeShared<OpenGLShader>(name, rendererID));
 		});
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& path) {
-		std::string shaderSource = ReadFile(path);
-		auto shaderSourceByType = Preprocess(shaderSource);
-		CompileShaders(shaderSourceByType);
+	Expected<Shared<OpenGLShader>, std::string> OpenGLShader::Create(const std::string& path) {
+		// extracts name from path
+		auto lastSlash = path.find_last_of("/\\");
+		lastSlash = lastSlash == std::string::npos
+			? 0
+			: lastSlash + 1;
 
-		{
-			// extracts name from path
-			auto lastSlash = path.find_last_of("/\\");
-			lastSlash = lastSlash == std::string::npos
-				? 0
-				: lastSlash + 1;
+		auto lastDot = path.rfind('.');
+		auto count = lastDot == std::string::npos
+			? path.size() - lastSlash
+			: lastDot - lastSlash;
+		std::string name = path.substr(lastSlash, count);
 
-			auto lastDot = path.rfind('.');
-			auto count = lastDot == std::string::npos
-				? path.size() - lastSlash
-				: lastDot - lastSlash;
-			m_Name = path.substr(lastSlash, count);
-		}
+		return ReadFile(path)
+			.and_then(Preprocess)
+			.and_then([](const auto& sources) { return CompileShaders(sources); })
+			.and_then([&](uint32_t rendererID) {
+				return Expected<Shared<OpenGLShader>, std::string>(MakeShared<OpenGLShader>(name, rendererID));
+			});
 	}
+
+	OpenGLShader::OpenGLShader(const std::string& name, uint32_t rendererID)
+		: m_RendererID(rendererID), m_Name(name) {}
 
 	OpenGLShader::~OpenGLShader() { glDeleteProgram(m_RendererID); }
 
@@ -192,7 +198,7 @@ namespace EEngine::Rendering {
 		glUniformMatrix4fv(location, 1, GL_FALSE, Math::value_ptr(matrix));
 	}
 
-	void OpenGLShader::CompileShaders(const std::unordered_map<GLenum, std::string>& shaderSourceByType) {
+	Expected<uint32_t, std::string> OpenGLShader::CompileShaders(const std::unordered_map<uint32_t, std::string>& shaderSourceByType) {
 		static const size_t MAX_SHADER_SOURCES = 2;
 
 		size_t numShaderSources = shaderSourceByType.size();
@@ -206,48 +212,56 @@ namespace EEngine::Rendering {
 		std::array<GLuint, MAX_SHADER_SOURCES> compiledShaderIDs{};
 
 		int32_t shaderIDIndex = 0;
-		bool success = true;
-		std::ranges::for_each(shaderSourceByType, [&](auto& pair) {
-			auto [shaderType, shaderSource] = pair;
-			GLuint compiledShaderID = 0;
-			if (TryCompileShader(shaderType, shaderSource, compiledShaderID)) {
-				compiledShaderIDs[shaderIDIndex++] = compiledShaderID;
+		std::string errorMessage;
+		for (auto& [shaderType, shaderSource] : shaderSourceByType) {
+			auto compiled = TryCompileShader(shaderType, shaderSource);
+			if (compiled) {
+				compiledShaderIDs[shaderIDIndex++] = *compiled;
 			} else {
-				std::ranges::for_each(compiledShaderIDs, glDeleteShader);
-				success = false;
+				errorMessage = compiled.error();
+				break;
 			}
-		});
-
-		if (!success) { return; }
-
-		m_RendererID = glCreateProgram();
-
-		std::ranges::for_each(compiledShaderIDs, [&](auto& shaderID) {
-			glAttachShader(m_RendererID, shaderID);
-		});
-
-		glLinkProgram(m_RendererID);
-
-		GLint isLinked = 0;
-		glGetProgramiv(m_RendererID, GL_LINK_STATUS, (int*) &isLinked);
-		if (isLinked == GL_FALSE) {
-			GLint maxLength = 0;
-			glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &maxLength);
-
-			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
-
-			glDeleteProgram(m_RendererID);
-			std::ranges::for_each(compiledShaderIDs, glDeleteShader);
-
-			IndentLog(infoLog);
-			Log::CoreError("Shader link failure:\n{0}", infoLog.data());
-			return;
 		}
 
-		std::ranges::for_each(compiledShaderIDs, [&](auto& shaderID) {
-			glDetachShader(m_RendererID, shaderID);
-		});
+		if (!errorMessage.empty()) {
+			for (int i = 0; i < shaderIDIndex; ++i) {
+				glDeleteShader(compiledShaderIDs[i]);
+			}
+			return Unexpected(errorMessage);
+		}
+
+		GLuint program = glCreateProgram();
+
+		for (int i = 0; i < shaderIDIndex; ++i) {
+			glAttachShader(program, compiledShaderIDs[i]);
+		}
+
+		glLinkProgram(program);
+
+		GLint isLinked = 0;
+		glGetProgramiv(program, GL_LINK_STATUS, (int*) &isLinked);
+		if (isLinked == GL_FALSE) {
+			GLint maxLength = 0;
+			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+
+			std::vector<GLchar> infoLog(maxLength);
+			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+
+			glDeleteProgram(program);
+			for (auto& shaderID : compiledShaderIDs) {
+				glDeleteShader(shaderID);
+			}
+
+			IndentLog(infoLog);
+			return Unexpected("Shader link failure:\n{0}", infoLog.data());
+		}
+
+		for (auto& shaderID : compiledShaderIDs) {
+			glDetachShader(program, shaderID);
+			glDeleteShader(shaderID);
+		}
+
+		return program;
 	}
 
 	GLint OpenGLShader::GetUniformLocation(const std::string& name) const {

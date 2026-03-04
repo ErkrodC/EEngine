@@ -25,49 +25,6 @@ namespace EEngine::Rendering {
 		SetData(data, size);
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_Path(path) {
-		int width, height, numChannels;
-
-		stbi_set_flip_vertically_on_load(true);
-		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
-		Log::CoreAssert(data, "Failed to load image.");
-		m_Width = static_cast<uint32_t>(width);
-		m_Height = static_cast<uint32_t>(height);
-
-		GLenum storageFormat = GL_NONE;
-		m_InstanceFormat = GL_NONE;
-		switch (numChannels) {
-			case 4: {
-				storageFormat = GL_RGBA8;
-				m_InstanceFormat = GL_RGBA;
-				break;
-			}
-			case 3: {
-				storageFormat = GL_RGB8;
-				m_InstanceFormat = GL_RGB;
-				break;
-			}
-			default:
-				Log::CoreAssert(false, "Unsupported image format.");
-				break;
-		}
-
-		Log::CoreAssert(storageFormat & m_InstanceFormat, "Format not supported.");
-
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, storageFormat, m_Width, m_Height);
-
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-		SetData(data, m_Width * m_Height * GetBytesPerPixel());
-
-		stbi_image_free(data);
-	}
-
 	OpenGLTexture2D::~OpenGLTexture2D() { glDeleteTextures(1, &m_RendererID); }
 
 	OpenGLTexture2D::OpenGLTexture2D(OpenGLTexture2D&& other) noexcept
@@ -90,7 +47,22 @@ namespace EEngine::Rendering {
 		return *this;
 	}
 
-	void OpenGLTexture2D::SetData(void* data, uint32_t size) {
+	Expected<Shared<Texture2D>, std::string> OpenGLTexture2D::Create(const std::string& path) {
+		int32_t width, height, numChannels;
+		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
+		if (!data) { return Unexpected("Failed to load image from " + path); }
+
+		Shared<Texture2D> texture = MakeShared<OpenGLTexture2D>(
+			static_cast<uint32_t>(width),
+			static_cast<uint32_t>(height),
+			static_cast<void*>(data),
+			static_cast<uint32_t>(width * height * numChannels)
+		);
+		stbi_image_free(data);
+		return texture;
+	}
+
+	void OpenGLTexture2D::SetData(void* data, uint32_t size) const {
 		if (size) {
 			uint32_t expectedSize = m_Width * m_Height * GetBytesPerPixel();
 			Log::CoreAssert(

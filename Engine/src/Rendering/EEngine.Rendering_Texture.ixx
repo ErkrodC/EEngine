@@ -5,12 +5,27 @@ import :API;
 
 export namespace EEngine::Rendering {
 	// ============================================================================
+	// Texture2D Type Alias
+	// ============================================================================
+	class DirectXTexture2D;
+	class VulkanTexture2D;
+	class OpenGLTexture2D;
+	using Texture2D = std::conditional_t<g_API == API::DirectX,
+		DirectXTexture2D,
+		std::conditional_t<g_API == API::OpenGL,
+			OpenGLTexture2D,
+			VulkanTexture2D
+		>
+	>;
+
+	// ============================================================================
 	// OpenGLTexture2D Implementation
 	// ============================================================================
 	class OpenGLTexture2D {
 	public:
+		static Expected<Shared<Texture2D>, std::string> Create(const std::string& path);
+
 		explicit OpenGLTexture2D(uint32_t width, uint32_t height, void* data, uint32_t size);
-		explicit OpenGLTexture2D(const std::string& path);
 
 		~OpenGLTexture2D();
 		OpenGLTexture2D(const OpenGLTexture2D& other) = delete;
@@ -27,21 +42,8 @@ export namespace EEngine::Rendering {
 		uint32_t m_InstanceFormat;
 
 		uint32_t GetBytesPerPixel() const;
-		void SetData(void* data, uint32_t size);
+		void SetData(void* data, uint32_t size) const;
 	};
-
-	// ============================================================================
-	// Texture2D Type Alias
-	// ============================================================================
-	class DirectXTexture2D; 
-	class VulkanTexture2D; 
-	using Texture2D = std::conditional_t<g_API == API::DirectX, 
-		DirectXTexture2D, 
-		std::conditional_t<g_API == API::OpenGL, 
-			OpenGLTexture2D, 
-			VulkanTexture2D 
-		> 
-	>;
 
 	// ============================================================================
 	// Texture2D Concept and Static Assert

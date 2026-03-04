@@ -6,18 +6,32 @@ import :API;
 
 export namespace EEngine::Rendering {
 	// ============================================================================
+	// Shader Type Alias
+	// ============================================================================
+	class DirectXShader;
+	class VulkanShader;
+	class OpenGLShader;
+	using Shader = std::conditional_t<g_API == API::DirectX,
+		DirectXShader,
+		std::conditional_t<g_API == API::OpenGL,
+			OpenGLShader,
+			VulkanShader
+		>
+	>;
+
+	// ============================================================================
 	// OpenGLShader Implementation
 	// ============================================================================
 	class OpenGLShader {
 	public:
-		OpenGLShader(
+		static Expected<Shared<OpenGLShader>, std::string> Create(
 			const std::string& name,
 			const std::string& vertexSource,
 			const std::string& fragmentSource
 		);
+		static Expected<Shared<OpenGLShader>, std::string> Create(const std::string& path);
 
-		explicit OpenGLShader(const std::string& path);
-
+		OpenGLShader(const std::string& name, uint32_t rendererID);
 		~OpenGLShader();
 		OpenGLShader(const OpenGLShader& other) = delete;
 		OpenGLShader& operator=(const OpenGLShader& other) = delete;
@@ -38,26 +52,13 @@ export namespace EEngine::Rendering {
 
 		const std::string& GetName() const { return m_Name; }
 	private:
-		uint32_t m_RendererID;
+		uint32_t m_RendererID = 0;
 		std::string m_Name;
 		mutable std::unordered_map<std::string, int32_t> m_UniformLocationCache;
 
-		void CompileShaders(const std::unordered_map<uint32_t, std::string>& shaderSourceByType);
+		static Expected<uint32_t, std::string> CompileShaders(const std::unordered_map<uint32_t, std::string>& sources);
 		int32_t GetUniformLocation(const std::string& name) const;
 	};
-
-	// ============================================================================
-	// Shader Type Alias
-	// ============================================================================
-	class DirectXShader; 
-	class VulkanShader; 
-	using Shader = std::conditional_t<g_API == API::DirectX, 
-		DirectXShader, 
-		std::conditional_t<g_API == API::OpenGL, 
-			OpenGLShader, 
-			VulkanShader 
-		> 
-	>;
 
 	// ============================================================================
 	// Shader Concept and Static Assert

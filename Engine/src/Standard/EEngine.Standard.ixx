@@ -16,3 +16,18 @@ export {
 	using std::float_t;
 	using std::double_t;
 }
+
+export namespace EEngine {
+	template<typename T, typename E>
+	using Expected = std::expected<T, E>;
+
+	template<typename E>
+	auto Unexpected(E&& error) {
+		return std::unexpected<std::decay_t<E>>(std::forward<E>(error));
+	}
+
+	template<typename... Args>
+	auto Unexpected(std::format_string<Args...> fmt, Args&&... args) {
+		return std::unexpected<std::string>(std::format(fmt, std::forward<Args>(args)...));
+	}
+}

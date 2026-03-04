@@ -46,12 +46,20 @@ namespace EEngine::Rendering {
 		const std::string& name,
 		const std::string& vertexSource,
 		const std::string& fragmentSource
-	) const{
-		return MakeShared<OpenGLShader>(name, vertexSource, fragmentSource);
+	) const {
+		auto expected = OpenGLShader::Create(name, vertexSource, fragmentSource);
+		if (expected) { return *expected; }
+
+		Log::CoreError("{}", expected.error());
+		return nullptr;
 	}
 
 	Shared<Shader> OpenGLRendererAPI::CreateShader(const std::string& path) const {
-		return MakeShared<OpenGLShader>(path);
+		auto expected = OpenGLShader::Create(path);
+		if (expected) { return *expected; }
+
+		Log::CoreError("{}", expected.error());
+		return nullptr;
 	}
 
 	Shared<VertexArray> OpenGLRendererAPI::CreateVertexArray() const {
@@ -59,7 +67,11 @@ namespace EEngine::Rendering {
 	}
 
 	Shared<Texture2D> OpenGLRendererAPI::CreateTexture2D(const std::string& path) const {
-		return MakeShared<OpenGLTexture2D>(path);
+		auto expected = OpenGLTexture2D::Create(path);
+		if (expected) { return *expected; }
+
+		Log::CoreError("{}", expected.error());
+		return nullptr;
 	}
 
 	Shared<Texture2D> OpenGLRendererAPI::CreateTexture2D(
@@ -79,7 +91,13 @@ namespace EEngine::Rendering {
 	}
 
 	Shared<Shader> OpenGLRendererAPI::CreateAndCacheShader(const std::string& path) {
-		Shared<Shader> shader = CreateShader(path);
+		auto expected = OpenGLShader::Create(path);
+		if (!expected) {
+			Log::CoreError("{}", expected.error());
+			return nullptr;
+		}
+
+		auto shader = *expected;
 		const auto& name = shader->GetName();
 		Log::CoreAssert(!m_ShaderByName.contains(name), "Tried to add duplicate shader.");
 		m_ShaderByName[name] = shader;
