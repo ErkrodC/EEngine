@@ -34,6 +34,7 @@ target_sources(engine
 		src/Rendering/EEngine.Rendering_RendererAPI.cpp
 		src/Rendering/EEngine.Rendering_Shader.cpp
 		src/Rendering/EEngine.Rendering_Texture.cpp
+		src/Rendering/EEngine.Rendering_UniformBuffer.cpp
 		src/Rendering/EEngine.Rendering_VertexArray.cpp
 		src/Rendering/EEngine.Rendering_VertexBuffer.cpp
 )
@@ -79,6 +80,7 @@ target_sources(engine
 		src/Rendering/EEngine.Rendering_RendererAPI.ixx
 		src/Rendering/EEngine.Rendering_Shader.ixx
 		src/Rendering/EEngine.Rendering_Texture.ixx
+		src/Rendering/EEngine.Rendering_UniformBuffer.ixx
 		src/Rendering/EEngine.Rendering_VertexArray.ixx
 		src/Rendering/EEngine.Rendering_VertexBuffer.ixx
 

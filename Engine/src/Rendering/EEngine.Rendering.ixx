@@ -10,5 +10,6 @@ export import :Renderer;
 export import :RendererAPI;
 export import :Shader;
 export import :Texture;
+export import :UniformBuffer;
 export import :VertexArray;
 export import :VertexBuffer;

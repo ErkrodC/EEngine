@@ -32,6 +32,8 @@ namespace EEngine::Rendering {
 			m_Data.QuadVertexArray->AddVertexBuffer(quadVertexBuffer);
 			m_Data.QuadVertexArray->SetIndexBuffer(m_RendererAPI.CreateIndexBuffer(m_QuadIndexBufferPtr, MAX_QUAD_INDEX_BUFFER_COUNT));
 
+			m_Data.CameraUniformBuffer = m_RendererAPI.CreateUniformBuffer(sizeof(RendererData::CameraData), 0);
+
 			if (m_RendererAPI.TryGetOrLoadShader("assets/shaders/Texture.glsl", m_Data.TextureShader)) {
 				m_Data.TextureShader->Bind();
 				m_Data.TextureShader->SetInt("u_Texture", 0);
@@ -77,8 +79,8 @@ namespace EEngine::Rendering {
 	void Renderer::BeginScene(const Math::mat4& projectionView) {
 		m_QuadVertexBufferPtr = m_QuadVertexBufferBase;
 
-		m_Data.TextureShader->Bind();
-		m_Data.TextureShader->SetMat4("u_ProjectionView", projectionView);
+		m_Data.CameraBufferData.ProjectionView = projectionView;
+		m_Data.CameraUniformBuffer->SetData(&m_Data.CameraBufferData, sizeof(RendererData::CameraData));
 	}
 
 	void Renderer::EndScene() {

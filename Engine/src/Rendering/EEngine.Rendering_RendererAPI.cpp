@@ -66,6 +66,10 @@ namespace EEngine::Rendering {
 		return MakeShared<OpenGLVertexArray>();
 	}
 
+	Shared<UniformBuffer> OpenGLRendererAPI::CreateUniformBuffer(uint32_t size, uint32_t binding) const {
+		return MakeShared<OpenGLUniformBuffer>(size, binding);
+	}
+
 	Shared<Texture2D> OpenGLRendererAPI::CreateTexture2D(const std::string& path) const {
 		auto expected = OpenGLTexture2D::Create(path);
 		if (expected) { return *expected; }

@@ -6,6 +6,7 @@ import :API;
 import :IndexBuffer;
 import :VertexBuffer;
 import :VertexArray;
+import :UniformBuffer;
 import :Shader;
 import :Texture;
 
@@ -29,6 +30,7 @@ export namespace EEngine::Rendering {
 			const std::string& fragmentSource
 		) const;
 		Shared<VertexArray> CreateVertexArray() const;
+		Shared<UniformBuffer> CreateUniformBuffer(uint32_t size, uint32_t binding) const;
 		Shared<Texture2D> CreateTexture2D(const std::string& path) const;
 		Shared<Texture2D> CreateTexture2D(uint32_t width, uint32_t height, void* data, uint32_t size) const;
 
@@ -75,6 +77,7 @@ export namespace EEngine::Rendering {
 		{ api.CreateShader(name, vertexSource, fragmentSource) } -> std::same_as<Shared<Shader>>;
 		{ api.CreateShader(path) } -> std::same_as<Shared<Shader>>;
 		{ api.CreateVertexArray() } -> std::same_as<Shared<VertexArray>>;
+		{ api.CreateUniformBuffer(size, count) } -> std::same_as<Shared<UniformBuffer>>;
 		{ api.CreateTexture2D(path) } -> std::same_as<Shared<Texture2D>>;
 		{ api.CreateTexture2D(width, height, vertices, size) } -> std::same_as<Shared<Texture2D>>;
 		{ api.TryGetOrLoadShader(path, shader) } -> std::same_as<bool>;

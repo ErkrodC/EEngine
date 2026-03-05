@@ -36,6 +36,11 @@ namespace EEngine::Rendering {
 			Shared<Texture2D> WhiteTexture;
 			Shared<VertexArray> QuadVertexArray;
 			Shared<Texture2D> CurrentTexture;
+
+			struct CameraData {
+				Math::mat4 ProjectionView;
+			} CameraBufferData;
+			Shared<UniformBuffer> CameraUniformBuffer;
 		} m_Data;
 		QuadVertex m_QuadVertexBufferBase[MAX_QUAD_VERTEX_BUFFER_COUNT]{};
 		QuadVertex* m_QuadVertexBufferPtr;
