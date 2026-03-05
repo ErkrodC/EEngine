@@ -113,7 +113,7 @@ namespace EEngine::Rendering {
 	void Renderer::Flush() {
 		if (GetQuadVertexCount() == 0) { return; }
 
-		uint32_t dataSize = (uint32_t)((uint8_t*)m_QuadVertexBufferPtr - (uint8_t*)m_QuadVertexBufferBase);
+		uint32_t dataSize = GetQuadVertexCount() * sizeof(QuadVertex);
 		m_Data.QuadVertexArray->GetVertexBuffers().front()->SetData(m_QuadVertexBufferBase, dataSize);
 
 		if (m_Data.CurrentTexture) { m_Data.CurrentTexture->Bind(); }
