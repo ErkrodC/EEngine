@@ -46,7 +46,7 @@ namespace EEngine {
 			Shared<VertexArray> vertexArray = GetMesh(mesh.VertexArrayID);
 			if (!vertexArray) { continue; }
 
-			renderer.SubmitMesh(vertexArray, transform.Transform.GetWorldMatrix());
+			renderer.SubmitMesh(vertexArray, transform.Transform.GetWorldMatrix(), mesh.Color);
 		}
 
 		renderer.EndScene();

@@ -79,7 +79,7 @@ namespace EEngine::Rendering {
 
 			uint32_t cubeIndices[36];
 			for (uint32_t face = 0; face < 6; ++face) {
-				uint32_t b = face * 6, i = face * 6;
+				uint32_t b = face * 4, i = face * 6;
 				cubeIndices[i + 0] = b + 0;
 				cubeIndices[i + 1] = b + 1;
 				cubeIndices[i + 2] = b + 2;
@@ -188,9 +188,11 @@ namespace EEngine::Rendering {
 		// ER TODO: Replace with glDrawElementsInstanced when RendererAPI supports it.
 		//				For now, issue one DrawIndexed per transform to get correct results.
 		for (auto& batch : m_MeshBatches | std::views::values) {
-			for (const auto& transform : batch.Transforms) {
+			for (const auto& instance : batch.Instances) {
 				m_Data.TextureShader->Bind();
-				m_Data.TextureShader->SetMat4("u_Model", transform);
+				m_Data.TextureShader->SetMat4("u_Model", instance.Transform);
+				m_Data.TextureShader->SetFloat4("u_Tint", instance.Tint);
+				m_Data.WhiteTexture->Bind(); // default white texture for untextured meshes
 				batch.VertexArray->Bind();
 				m_RendererAPI.DrawIndexed(batch.VertexArray);
 			}
@@ -233,10 +235,10 @@ namespace EEngine::Rendering {
 		m_QuadVertexBufferPtr = m_QuadVertexBufferBase;
 	}
 
-	void Renderer::SubmitMesh(const Shared<VertexArray>& vertexArray, const Math::mat4& transform) {
+	void Renderer::SubmitMesh(const Shared<VertexArray>& vertexArray, const Math::mat4& transform, const Math::vec4& tint) {
 		VertexArray* key = vertexArray.get();
 		auto& batch = m_MeshBatches[key];
-		if (!batch.VertexArray) { batch.VertexArray = vertexArray; } // ER TODO what clears this?
-		batch.Transforms.push_back(transform);
+		if (!batch.VertexArray) { batch.VertexArray = vertexArray; }
+		batch.Instances.push_back({ transform, tint });
 	}
 }

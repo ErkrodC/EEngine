@@ -13,9 +13,14 @@ export namespace EEngine {
 		void DestroyEntity(SceneEntity entity);
 
 		void OnUpdate(Timestep ts);
-		void OnRender(Rendering::Renderer& renderer);;
+		void OnRender(Rendering::Renderer& renderer);
 
 		SceneEntity GetPrimaryCameraEntity();
+
+		Registry& GetRegistry() { return m_Registry; }
+
+		template<typename... Ts>
+		std::vector<uint32_t> View() { return m_Registry.View<Ts...>(); }
 
 		// Mesh asset registration (temporary until a proper AssetRegistry exists)
 		uint32_t RegisterMesh(const Shared<Rendering::VertexArray>& vertexArray);

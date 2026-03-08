@@ -103,7 +103,7 @@ export namespace EEngine {
 		bool m_Running = true;
 		bool m_Minimized = false;
 		LayerStack m_LayerStack;
-		double_t m_LastFrameTime;
+		double_t m_LastFrameTime{};
 
 		bool OnWindowClose(WindowCloseEvent& event) {
 			m_Running = false;

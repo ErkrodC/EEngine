@@ -32,7 +32,7 @@ namespace EEngine::Rendering {
 		// 3D Path: Instancing (submit during scene traversal, draw in EndScene)
 		void DrawCube(const Math::vec3& position, const Math::quat& rotation, const Math::vec3& scale, const Math::vec4& color) const;
 		void DrawCube(const Math::vec3& position, const Math::quat& rotation, const Math::vec3& scale, const Shared<Texture2D>& texture, const Math::vec4& tint) const;
-		void SubmitMesh(const Shared<VertexArray>& vertexArray, const Math::mat4& transform);
+		void SubmitMesh(const Shared<VertexArray>& vertexArray, const Math::mat4& transform, const Math::vec4& tint = Math::vec4(1.0f));
 
 	private:
 		RendererAPI& m_RendererAPI;
@@ -54,7 +54,11 @@ namespace EEngine::Rendering {
 
 		struct InstancedBatch {
 			Shared<VertexArray> VertexArray;
-			std::vector<Math::mat4> Transforms;
+			struct Instance {
+				Math::mat4 Transform;
+				Math::vec4 Tint;
+			};
+			std::vector<Instance> Instances;
 		};
 
 		// Key = raw VertexArray pointer for identity comparison, (ownership held by InstancedBatch::VertexArray)
