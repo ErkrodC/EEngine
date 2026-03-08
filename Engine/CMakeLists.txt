@@ -27,7 +27,15 @@ target_sources(engine
 		src/Application/EEngine.Application_Input.cpp
 		src/Application/EEngine.Application_Window.cpp
 
+		# EEngine.ECS module implementations
+		src/ECS/EEngine.ECS_Entity.cpp
+		src/ECS/EEngine.ECS_Scene.cpp
+
+		# EEngine.Math module implementations
+		src/Math/EEngine.Math_Transform.cpp
+
 		# EEngine.Rendering module implementations
+		src/Rendering/EEngine.Rendering_Camera.cpp
 		src/Rendering/EEngine.Rendering_GraphicsContext.cpp
 		src/Rendering/EEngine.Rendering_IndexBuffer.cpp
 		src/Rendering/EEngine.Rendering_Renderer.cpp
@@ -62,12 +70,25 @@ target_sources(engine
 		src/Core/EEngine.Core_Platform.ixx
 		src/Core/EEngine.Core_Time.ixx
 
+		# EEngine.ECS module and partitions
+		src/ECS/EEngine.ECS.ixx
+		src/ECS/EEngine.ECS_Component.ixx
+		src/ECS/EEngine.ECS_ComponentPool.ixx
+		src/ECS/EEngine.ECS_Entity.ixx
+		src/ECS/EEngine.ECS_Registry.ixx
+		src/ECS/EEngine.ECS_Scene.ixx
+
 		# EEngine.Event module and partitions
 		src/Event/EEngine.Event.ixx
 		src/Event/EEngine.Event_Application.ixx
 		src/Event/EEngine.Event_Base.ixx
 		src/Event/EEngine.Event_Keyboard.ixx
 		src/Event/EEngine.Event_Mouse.ixx
+
+		# EEngine.Math module and partitions
+		src/Math/EEngine.Math.ixx
+		src/Math/EEngine.Math_Spatial.ixx
+		src/Math/EEngine.Math_Transform.ixx
 
 		# EEngine.Rendering module and partitions
 		src/Rendering/EEngine.Rendering.ixx
@@ -86,7 +107,6 @@ target_sources(engine
 
 		# Other modules (no partitions)
 		src/Editor/EEngine.Editor.ixx
-		src/Math/EEngine.Math.ixx
 		src/Profiling/EEngine.Profiling.ixx
 		src/Standard/EEngine.Standard.ixx
 

@@ -15,7 +15,14 @@ public:
 		, m_Input(input)
 		, m_CameraController(16.0f / 9.0f, m_Input)
 		, m_RendererAPI(context)
-		, m_Renderer(renderer) {}
+		, m_Renderer(renderer)
+		, m_Scene(MakeUnique<Scene>()
+	) {
+		SceneEntity mainCameraEntity = m_Scene->CreateEntity("Main Camera");
+		CameraComponent& mainCamera = mainCameraEntity.AddComponent<CameraComponent>();
+		mainCamera.Projection = Math::perspective(Math::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+		mainCamera.IsPrimary = true;
+	}
 
 	void OnAttach() override {
 		m_Texture = m_RendererAPI.CreateTexture2D("assets/textures/test.png");
@@ -34,14 +41,8 @@ public:
 
 		HandleTriMovement(timestep);
 
-		m_Renderer.BeginScene(m_CameraController.GetCamera().GetProjectionViewMatrix());
-		m_Renderer.DrawQuad({ -1.0f, 0.0f }, {0.8f, 0.8f}, m_SquareColor);
-		//m_Renderer.DrawQuad({ 0.5f, -0.5f }, {0.5f, 0.75f}, m_SquareColor);
-		m_Renderer.DrawQuad({ 0.5f, -0.5f }, {0.5f, 0.75f}, m_Texture);
-		m_Renderer.EndScene();
-
-		// ER TODO usually executed on a separate thread
-		//EEngine::Rendering::Flush();
+		m_Scene->OnUpdate(timestep);
+		m_Scene->OnRender(m_Renderer);
 	}
 
 	void OnIMGUIRender() override {
@@ -102,6 +103,7 @@ private:
 	CameraController m_CameraController;
 	RendererAPI& m_RendererAPI;
 	Renderer& m_Renderer;
+	Unique<Scene> m_Scene;
 
 	// ER TEMP
 	Math::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };

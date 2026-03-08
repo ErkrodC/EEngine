@@ -6,9 +6,16 @@ import :API;
 import :Buffers;
 
 export namespace EEngine::Rendering {
-	struct QuadVertex {
-		Math::vec3 Position;
+	struct Vertex {
 		Math::vec4 Color;
+		Math::vec3 Normal;
+		Math::vec3 Position;
+		Math::vec2 TexCoord;
+	};
+
+	struct QuadVertex {
+		Math::vec4 Color;
+		Math::vec3 Position;
 		Math::vec2 TexCoord;
 	};
 

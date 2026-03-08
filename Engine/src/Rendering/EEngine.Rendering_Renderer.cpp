@@ -1,3 +1,6 @@
+module;
+#include <glm/detail/type_mat4x4.hpp>
+
 module EEngine.Rendering;
 import :Renderer;
 
@@ -25,8 +28,9 @@ namespace EEngine::Rendering {
 
 			Shared<VertexBuffer> quadVertexBuffer = m_RendererAPI.CreateVertexBuffer(m_QuadVertexBufferPtr, MAX_QUAD_VERTEX_BUFFER_SIZE);
 			quadVertexBuffer->SetLayout({
-				{"a_Position", ShaderData::Float3},
 				{"a_Color",    ShaderData::Float4},
+				{ "a_Normal",  ShaderData::Float3 },
+				{"a_Position", ShaderData::Float3},
 				{"a_TexCoord", ShaderData::Float2}
 			});
 			m_Data.QuadVertexArray->AddVertexBuffer(quadVertexBuffer);
@@ -52,7 +56,7 @@ namespace EEngine::Rendering {
 
 	void Renderer::DrawQuad(const Math::vec3& position, const Math::vec2& size, const Math::vec4& color) {
 		if (GetQuadVertexCount() >= MAX_QUAD_VERTEX_BUFFER_COUNT || m_Data.CurrentTexture != m_Data.WhiteTexture) {
-			Flush();
+			FlushQuads();
 		}
 
 		m_Data.CurrentTexture = m_Data.WhiteTexture;
@@ -61,7 +65,7 @@ namespace EEngine::Rendering {
 
 	void Renderer::DrawQuad(const Math::vec3& position, const Math::vec2& size, const Shared<Texture2D>& texture, const Math::vec4& tint) {
 		if (GetQuadVertexCount() >= MAX_QUAD_VERTEX_BUFFER_COUNT || m_Data.CurrentTexture != texture) {
-			Flush();
+			FlushQuads();
 		}
 
 		m_Data.CurrentTexture = texture;
@@ -76,15 +80,43 @@ namespace EEngine::Rendering {
 		DrawQuad({position.x, position.y, 0.0f}, size, texture);
 	}
 
+	void Renderer::DrawCube(
+		const Math::vec3& position,
+		const Math::quat& rotation,
+		const Math::vec3& scale,
+		const Shared<Texture2D>& texture
+	) const {
+		Math::mat4 modelTransform = Math::translate(Math::mat4(1.0f), position)
+			* Math::toMat4(rotation)
+			* Math::scale(Math::mat4(1.0f), scale);
+
+		m_Data.TextureShader->Bind();
+		m_Data.TextureShader->SetMat4("u_Model", modelTransform);
+	}
+
 	void Renderer::BeginScene(const Math::mat4& projectionView) {
 		m_QuadVertexBufferPtr = m_QuadVertexBufferBase;
+		m_MeshBatches.clear();
 
 		m_Data.CameraBufferData.ProjectionView = projectionView;
 		m_Data.CameraUniformBuffer->SetData(&m_Data.CameraBufferData, sizeof(RendererData::CameraData));
 	}
 
 	void Renderer::EndScene() {
-		Flush();
+		// 1. Flush 2D Quads
+		FlushQuads();
+
+		// 2. Flush 3D Meshes - one draw call per unique mesh, per transform
+		// ER TODO: Replace with glDrawElementsInstanced when RendererAPI supports it.
+		//				For now, issue one DrawIndexed per transform to get correct results.
+		for (auto& batch : m_MeshBatches | std::views::values) {
+			for (const auto& transform : batch.Transforms) {
+				m_Data.TextureShader->Bind();
+				m_Data.TextureShader->SetMat4("u_Model", transform);
+				batch.VertexArray->Bind();
+				m_RendererAPI.DrawIndexed(batch.VertexArray);
+			}
+		}
 	}
 
 	void Renderer::CreateQuadVertices(const Math::vec3& position, const Math::vec2& size, const Math::vec4& color) {
@@ -110,7 +142,7 @@ namespace EEngine::Rendering {
 		m_QuadVertexBufferPtr += 4;
 	}
 
-	void Renderer::Flush() {
+	void Renderer::FlushQuads() {
 		if (GetQuadVertexCount() == 0) { return; }
 
 		uint32_t dataSize = GetQuadVertexCount() * sizeof(QuadVertex);
@@ -123,4 +155,10 @@ namespace EEngine::Rendering {
 		m_QuadVertexBufferPtr = m_QuadVertexBufferBase;
 	}
 
+	void Renderer::SubmitMesh(const Shared<VertexArray>& vertexArray, const Math::mat4& transform) {
+		VertexArray* key = vertexArray.get();
+		auto& batch = m_MeshBatches[key];
+		if (!batch.VertexArray) { batch.VertexArray = vertexArray; } // ER TODO what clears this?
+		batch.Transforms.push_back(transform);
+	}
 }

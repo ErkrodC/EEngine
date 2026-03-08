@@ -51,7 +51,7 @@ namespace EEngine {
 	void CameraController::OnUpdate(Timestep timestep) {
 		double_t deltaDist = m_MoveSpeed * timestep.GetSeconds();
 
-		if (m_Input.IsKeyPressed(KeyCode::Up) || m_Input.IsKeyPressed(KeyCode::W)) {
+		/*if (m_Input.IsKeyPressed(KeyCode::Up) || m_Input.IsKeyPressed(KeyCode::W)) {
 			const auto& cameraPos = m_Camera.GetPosition();
 			m_Camera.SetPosition({ cameraPos.x, cameraPos.y + deltaDist, cameraPos.z });
 		}
@@ -69,7 +69,7 @@ namespace EEngine {
 		if (m_Input.IsKeyPressed(KeyCode::Right) || m_Input.IsKeyPressed(KeyCode::D)) {
 			const auto& cameraPos = m_Camera.GetPosition();
 			m_Camera.SetPosition({ cameraPos.x + deltaDist, cameraPos.y, cameraPos.z });
-		}
+		}*/
 	}
 
 	void CameraController::OnEvent(Event& event) {

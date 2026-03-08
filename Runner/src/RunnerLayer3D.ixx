@@ -17,6 +17,7 @@ public:
 		, m_CameraController(16.0f / 9.0f, m_Input)
 		, m_RendererAPI(rendererAPI)
 		, m_Renderer(renderer)
+		, m_Scene(MakeUnique<Scene>())
 	{
 		Shared<Shader> textureShader;
 		if (m_RendererAPI.TryGetOrLoadShader("assets/shaders/Texture.glsl", textureShader)) {
@@ -27,6 +28,11 @@ public:
 			Log::CoreCritical("Failed to load texture shader.");
 			throw std::runtime_error("Failed to load texture shader.");
 		}
+
+		SceneEntity mainCameraEntity = m_Scene->CreateEntity("Main Camera");
+		CameraComponent& mainCamera = mainCameraEntity.AddComponent<CameraComponent>();
+		mainCamera.Projection = Math::perspective(Math::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+		mainCamera.IsPrimary = true;
 	}
 
 	void OnUpdate(Timestep timestep) override {
@@ -37,12 +43,8 @@ public:
 		m_CameraController.OnUpdate(timestep);
 		HandleTriMovement(timestep);
 
-		Math::mat4 projectionView = m_CameraController.GetCamera().GetProjectionViewMatrix();
-		
-		m_Renderer.BeginScene(projectionView);
-		m_Renderer.DrawQuad(m_TriPos, { 1.0f, 1.0f }, m_Texture);
-		m_Renderer.DrawQuad({ 0.5f, 0.5f }, { 0.5f, 0.5f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-		m_Renderer.EndScene();
+		m_Scene->OnUpdate(timestep);
+		m_Scene->OnRender(m_Renderer);
 	}
 
 	void OnIMGUIRender() override {
@@ -78,6 +80,8 @@ private:
 	CameraController m_CameraController;
 	RendererAPI& m_RendererAPI;
 	Renderer& m_Renderer;
+	Unique<Scene> m_Scene;
+
 	Shared<Texture2D> m_Texture;
 	Math::vec3 m_TriPos{};
 };
