@@ -22,6 +22,7 @@ namespace EEngine::Rendering {
 			Log::CoreCritical("DirectX Renderer not implemented yet.");
 			throw std::runtime_error("DirectX Renderer not implemented yet.");
 		} else if constexpr (g_API == API::OpenGL) {
+			// --- Quad VAO ---
 			m_Data.QuadVertexArray = m_RendererAPI.CreateVertexArray();
 			uint32_t whiteTextureData = 0xffffffff;
 			m_Data.WhiteTexture = m_RendererAPI.CreateTexture2D(1, 1, &whiteTextureData, sizeof(uint32_t));
@@ -29,13 +30,76 @@ namespace EEngine::Rendering {
 			Shared<VertexBuffer> quadVertexBuffer = m_RendererAPI.CreateVertexBuffer(m_QuadVertexBufferPtr, MAX_QUAD_VERTEX_BUFFER_SIZE);
 			quadVertexBuffer->SetLayout({
 				{"a_Color",    ShaderData::Float4},
-				{ "a_Normal",  ShaderData::Float3 },
+				{"a_Normal",   ShaderData::Float3},
 				{"a_Position", ShaderData::Float3},
 				{"a_TexCoord", ShaderData::Float2}
 			});
 			m_Data.QuadVertexArray->AddVertexBuffer(quadVertexBuffer);
 			m_Data.QuadVertexArray->SetIndexBuffer(m_RendererAPI.CreateIndexBuffer(m_QuadIndexBufferPtr, MAX_QUAD_INDEX_BUFFER_COUNT));
 
+			// --- Cube VAO (24 verts, 36 indices, with face normals) ---
+			float_t w = 1.0f; // white vertex color - tinted per-draw via u_Tint
+			Vertex cubeVertices[] = {
+				// Front (z=+0.5, normal 0,0,1)
+				{{w,w,w,w}, {0,0,1}, {-0.5f,-0.5f,0.5f}, {0,0}},
+				{{w,w,w,w}, {0,0,1}, { 0.5f,-0.5f,0.5f}, {1,0}},
+				{{w,w,w,w}, {0,0,1}, { 0.5f, 0.5f,0.5f}, {1,1}},
+				{{w,w,w,w}, {0,0,1}, {-0.5f, 0.5f,0.5f}, {0,1}},
+
+				// Back (z=-0.5, normal 0,0,-1)
+				{{w,w,w,w}, {0,0,-1}, { 0.5f,-0.5f,-0.5f}, {0,0}},
+				{{w,w,w,w}, {0,0,-1}, {-0.5f,-0.5f,-0.5f}, {1,0}},
+				{{w,w,w,w}, {0,0,-1}, {-0.5f, 0.5f,-0.5f}, {1,1}},
+				{{w,w,w,w}, {0,0,-1}, { 0.5f, 0.5f,-0.5f}, {0,1}},
+
+				// Top (y=+0.5, normal 0,1,0)
+				{{w,w,w,w}, {0,1,0}, {-0.5f, 0.5f, 0.5f}, {0,0}},
+				{{w,w,w,w}, {0,1,0}, { 0.5f, 0.5f, 0.5f}, {1,0}},
+				{{w,w,w,w}, {0,1,0}, { 0.5f, 0.5f,-0.5f}, {1,1}},
+				{{w,w,w,w}, {0,1,0}, {-0.5f, 0.5f,-0.5f}, {0,1}},
+
+				// Bottom (y=-0.5, normal 0,-1,0)
+				{{w,w,w,w}, {0,-1,0}, {-0.5f,-0.5f,-0.5f}, {0,0}},
+				{{w,w,w,w}, {0,-1,0}, { 0.5f,-0.5f,-0.5f}, {1,0}},
+				{{w,w,w,w}, {0,-1,0}, { 0.5f,-0.5f, 0.5f}, {1,1}},
+				{{w,w,w,w}, {0,-1,0}, {-0.5f,-0.5f, 0.5f}, {0,1}},
+
+				// Right (x=+0.5, normal 1,0,0)
+				{{w,w,w,w}, { 1, 0, 0}, { 0.5f,-0.5f, 0.5f}, {0,0}},
+				{{w,w,w,w}, { 1, 0, 0}, { 0.5f,-0.5f,-0.5f}, {1,0}},
+				{{w,w,w,w}, { 1, 0, 0}, { 0.5f, 0.5f,-0.5f}, {1,1}},
+				{{w,w,w,w}, { 1, 0, 0}, { 0.5f, 0.5f, 0.5f}, {0,1}},
+
+				// Left (x=-0.5, normal -1,0,0)
+				{{w,w,w,w}, {-1, 0, 0}, {-0.5f,-0.5f,-0.5f}, {0,0}},
+				{{w,w,w,w}, {-1, 0, 0}, {-0.5f,-0.5f, 0.5f}, {1,0}},
+				{{w,w,w,w}, {-1, 0, 0}, {-0.5f, 0.5f, 0.5f}, {1,1}},
+				{{w,w,w,w}, {-1, 0, 0}, {-0.5f, 0.5f,-0.5f}, {0,1}}
+			};
+
+			uint32_t cubeIndices[36];
+			for (uint32_t face = 0; face < 6; ++face) {
+				uint32_t b = face * 6, i = face * 6;
+				cubeIndices[i + 0] = b + 0;
+				cubeIndices[i + 1] = b + 1;
+				cubeIndices[i + 2] = b + 2;
+				cubeIndices[i + 3] = b + 2;
+				cubeIndices[i + 4] = b + 3;
+				cubeIndices[i + 5] = b + 0;
+			}
+
+			m_Data.CubeVertexArray = m_RendererAPI.CreateVertexArray();
+			Shared<VertexBuffer> cubeVertexBuffer = m_RendererAPI.CreateVertexBuffer(cubeVertices, sizeof(cubeVertices));
+			cubeVertexBuffer->SetLayout({
+				{"a_Color",    ShaderData::Float4},
+				{"a_Normal",   ShaderData::Float3},
+				{"a_Position", ShaderData::Float3},
+				{"a_TexCoord", ShaderData::Float2}
+			});
+			m_Data.CubeVertexArray->AddVertexBuffer(cubeVertexBuffer);
+			m_Data.CubeVertexArray->SetIndexBuffer(m_RendererAPI.CreateIndexBuffer(cubeIndices, 36));
+
+			// --- Shared Resources ---
 			m_Data.CameraUniformBuffer = m_RendererAPI.CreateUniformBuffer(sizeof(RendererData::CameraData), 0);
 
 			if (m_RendererAPI.TryGetOrLoadShader("assets/shaders/Texture.glsl", m_Data.TextureShader)) {
@@ -84,7 +148,17 @@ namespace EEngine::Rendering {
 		const Math::vec3& position,
 		const Math::quat& rotation,
 		const Math::vec3& scale,
-		const Shared<Texture2D>& texture
+		const Math::vec4& color
+	) const {
+		DrawCube(position, rotation, scale, m_Data.WhiteTexture, color);
+	}
+
+	void Renderer::DrawCube(
+		const Math::vec3& position,
+		const Math::quat& rotation,
+		const Math::vec3& scale,
+		const Shared<Texture2D>& texture,
+		const Math::vec4& tint
 	) const {
 		Math::mat4 modelTransform = Math::translate(Math::mat4(1.0f), position)
 			* Math::toMat4(rotation)
@@ -92,6 +166,10 @@ namespace EEngine::Rendering {
 
 		m_Data.TextureShader->Bind();
 		m_Data.TextureShader->SetMat4("u_Model", modelTransform);
+		m_Data.TextureShader->SetFloat4("u_Tint", tint);
+		texture->Bind();
+		m_Data.CubeVertexArray->Bind();
+		m_RendererAPI.DrawIndexed(m_Data.CubeVertexArray);
 	}
 
 	void Renderer::BeginScene(const Math::mat4& projectionView) {

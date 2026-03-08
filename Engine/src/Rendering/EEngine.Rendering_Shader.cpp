@@ -112,8 +112,7 @@ namespace EEngine::Rendering {
 		});
 	}
 
-	Expected<Shared<OpenGLShader>, std::string> OpenGLShader::Create(const std::string& path) {
-		// extracts name from path
+	std::string GetNameFromPath(const std::string& path) {
 		auto lastSlash = path.find_last_of("/\\");
 		lastSlash = lastSlash == std::string::npos
 			? 0
@@ -125,11 +124,15 @@ namespace EEngine::Rendering {
 			: lastDot - lastSlash;
 		std::string name = path.substr(lastSlash, count);
 
+		return name;
+	}
+
+	Expected<Shared<OpenGLShader>, std::string> OpenGLShader::Create(const std::string& path) {
 		return ReadFile(path)
 			.and_then(Preprocess)
 			.and_then([](const auto& sources) { return CompileShaders(sources); })
 			.and_then([&](uint32_t rendererID) {
-				return Expected<Shared<OpenGLShader>, std::string>(MakeShared<OpenGLShader>(name, rendererID));
+				return Expected<Shared<OpenGLShader>, std::string>(MakeShared<OpenGLShader>(GetNameFromPath(path), rendererID));
 			});
 	}
 

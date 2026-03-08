@@ -27,10 +27,11 @@ namespace EEngine::Rendering {
 		void DrawQuad(const Math::vec3& position, const Math::vec2& size, const Shared<Texture2D>& texture, const Math::vec4& tint = Math::vec4(1.0f));
 		void DrawQuad(const Math::vec2& position, const Math::vec2& size, const Math::vec4& color);
 		void DrawQuad(const Math::vec2& position, const Math::vec2& size, const Shared<Texture2D>& texture);
-		void DrawCube(const Math::vec3& position, const Math::quat& rotation, const Math::vec3& scale, const Shared<Texture2D>& texture) const;
 		void FlushQuads();
 
 		// 3D Path: Instancing (submit during scene traversal, draw in EndScene)
+		void DrawCube(const Math::vec3& position, const Math::quat& rotation, const Math::vec3& scale, const Math::vec4& color) const;
+		void DrawCube(const Math::vec3& position, const Math::quat& rotation, const Math::vec3& scale, const Shared<Texture2D>& texture, const Math::vec4& tint) const;
 		void SubmitMesh(const Shared<VertexArray>& vertexArray, const Math::mat4& transform);
 
 	private:
@@ -39,6 +40,7 @@ namespace EEngine::Rendering {
 			Shared<Shader> TextureShader;
 			Shared<Texture2D> WhiteTexture;
 			Shared<VertexArray> QuadVertexArray;
+			Shared<VertexArray> CubeVertexArray;
 			Shared<Texture2D> CurrentTexture;
 
 			struct CameraData {

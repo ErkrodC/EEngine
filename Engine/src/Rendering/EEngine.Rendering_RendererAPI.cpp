@@ -88,10 +88,12 @@ namespace EEngine::Rendering {
 		return MakeShared<OpenGLTexture2D>(width, height, data, size);
 	}
 
-	bool OpenGLRendererAPI::TryGetOrLoadShader(const std::string& name, Shared<Shader>& outShader) {
+	bool OpenGLRendererAPI::TryGetOrLoadShader(const std::string& path, Shared<Shader>& outShader) {
+		std::string name = GetNameFromPath(path);
+
 		outShader = m_ShaderByName.contains(name)
 			? m_ShaderByName[name]
-			: CreateAndCacheShader(name);
+			: CreateAndCacheShader(path);
 		return outShader != nullptr;
 	}
 

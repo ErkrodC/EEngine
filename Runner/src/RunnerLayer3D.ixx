@@ -17,62 +17,37 @@ public:
 		, m_CameraController(16.0f / 9.0f, m_Input)
 		, m_RendererAPI(rendererAPI)
 		, m_Renderer(renderer)
-		, m_Scene(MakeUnique<Scene>())
 	{
 		Shared<Shader> textureShader;
-		if (m_RendererAPI.TryGetOrLoadShader("assets/shaders/Texture.glsl", textureShader)) {
-			// m_Texture = m_RendererAPI.CreateTexture2D("assets/textures/test.png");
-			uint32_t whiteTextureData = 0xffffffff;
-			m_Texture = m_RendererAPI.CreateTexture2D(1, 1, &whiteTextureData, sizeof(uint32_t));
-		} else {
+		if (!m_RendererAPI.TryGetOrLoadShader("assets/shaders/Texture.glsl", textureShader)) {
 			Log::CoreCritical("Failed to load texture shader.");
 			throw std::runtime_error("Failed to load texture shader.");
 		}
-
-		SceneEntity mainCameraEntity = m_Scene->CreateEntity("Main Camera");
-		CameraComponent& mainCamera = mainCameraEntity.AddComponent<CameraComponent>();
-		mainCamera.Projection = Math::perspective(Math::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
-		mainCamera.IsPrimary = true;
 	}
 
 	void OnUpdate(Timestep timestep) override {
 		EE_PROFILE_FUNCTION();
 
+		m_CameraController.OnUpdate(timestep);
 		m_RendererAPI.Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
-		m_CameraController.OnUpdate(timestep);
-		HandleTriMovement(timestep);
+		m_Rotation += timestep.GetSeconds();
 
-		m_Scene->OnUpdate(timestep);
-		m_Scene->OnRender(m_Renderer);
+		m_Renderer.BeginScene(m_CameraController.GetCamera().GetProjection());
+
+		// Three cubes: red center, green left, blue right
+		Math::quat spin = Math::quat(Math::vec3(m_Rotation * 0.5f, m_Rotation, 0.0f));
+		m_Renderer.DrawCube({0.0f,0.0f,-3.0f}, spin, {1.0f,1.0f,1.0f},{0.8f,0.2f,0.3f,1.0f});
+		m_Renderer.DrawCube({-2.5f,  0.0f, -3.0f}, spin, {0.75f, 0.75f, 0.75f}, {0.2f, 0.8f, 0.3f, 1.0f});
+		m_Renderer.DrawCube({ 2.5f,  0.0f, -3.0f}, spin, {1.0f, 1.0f, 1.0f}, {0.2f, 0.3f, 0.8f, 1.0f});
+
+		m_Renderer.EndScene();
 	}
 
-	void OnIMGUIRender() override {
-
-	}
+	void OnIMGUIRender() override {}
 
 	void OnEvent(Event& event) override {
 		m_CameraController.OnEvent(event);
-	}
-
-	void HandleTriMovement(Timestep timestep) {
-		float_t deltaDist = 1.0f * timestep.GetSeconds();
-
-		if (m_Input.IsKeyPressed(KeyCode::I)) {
-			m_TriPos.y += deltaDist;
-		}
-
-		if (m_Input.IsKeyPressed(KeyCode::J)) {
-			m_TriPos.x -= deltaDist;
-		}
-
-		if (m_Input.IsKeyPressed(KeyCode::K)) {
-			m_TriPos.y -= deltaDist;
-		}
-
-		if (m_Input.IsKeyPressed(KeyCode::L)) {
-			m_TriPos.x += deltaDist;
-		}
 	}
 
 private:
@@ -80,8 +55,6 @@ private:
 	CameraController m_CameraController;
 	RendererAPI& m_RendererAPI;
 	Renderer& m_Renderer;
-	Unique<Scene> m_Scene;
 
-	Shared<Texture2D> m_Texture;
-	Math::vec3 m_TriPos{};
+	float_t m_Rotation = 0.0f;
 };

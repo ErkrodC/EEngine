@@ -5,6 +5,8 @@ import EEngine.Standard;
 import :API;
 
 export namespace EEngine::Rendering {
+	std::string GetNameFromPath(const std::string& path);
+
 	// ============================================================================
 	// Shader Type Alias
 	// ============================================================================
