@@ -116,6 +116,8 @@ namespace EEngine::Rendering {
 			Log::CoreCritical("Unknown rendering API.");
 			throw std::runtime_error("Unknown rendering API.");
 		}
+
+		m_Data.LightUniformBuffer = m_RendererAPI.CreateUniformBuffer(sizeof(RendererData::LightData), 1);
 	}
 
 	void Renderer::DrawQuad(const Math::vec3& position, const Math::vec2& size, const Math::vec4& color) {
@@ -192,6 +194,8 @@ namespace EEngine::Rendering {
 				m_Data.TextureShader->Bind();
 				m_Data.TextureShader->SetMat4("u_Model", instance.Transform);
 				m_Data.TextureShader->SetFloat4("u_Tint", instance.Tint);
+				m_Data.TextureShader->SetFloat("u_Shininess", instance.Shininess);
+				m_Data.TextureShader->SetFloat("u_SpecularStrength", instance.SpecularStrength);
 				m_Data.WhiteTexture->Bind(); // default white texture for untextured meshes
 				batch.VertexArray->Bind();
 				m_RendererAPI.DrawIndexed(batch.VertexArray);
@@ -235,10 +239,47 @@ namespace EEngine::Rendering {
 		m_QuadVertexBufferPtr = m_QuadVertexBufferBase;
 	}
 
-	void Renderer::SubmitMesh(const Shared<VertexArray>& vertexArray, const Math::mat4& transform, const Math::vec4& tint) {
+	void Renderer::SubmitMesh(
+		const Shared<VertexArray>& vertexArray,
+		const Math::mat4& transform,
+		const Math::vec4& tint,
+		float_t shininess,
+		float_t specularStrength
+	) {
 		VertexArray* key = vertexArray.get();
 		auto& batch = m_MeshBatches[key];
 		if (!batch.VertexArray) { batch.VertexArray = vertexArray; }
-		batch.Instances.push_back({ transform, tint });
+		batch.Instances.push_back({ transform, tint, shininess, specularStrength });
+	}
+
+	void Renderer::SetDirectionalLight(
+		const Math::vec3& direction,
+		const Math::vec3& color,
+		float_t colorIntensity,
+		const Math::vec3& ambient,
+		float_t ambientIntensity
+	) {
+		Math::vec3 dir = Math::normalize(direction);
+		m_Data.LightBufferData.Direction = { dir.x, dir.y, dir.z, 0.f };
+		m_Data.LightBufferData.Color = { color.x, color.y, color.z, colorIntensity };
+		m_Data.LightBufferData.Ambient = { ambient.x, ambient.y, ambient.z, ambientIntensity };
+		m_Data.LightUniformBuffer->SetData(&m_Data.LightBufferData, sizeof(RendererData::LightData));
+	}
+
+	void Renderer::SetPointLight(uint32_t index, const Math::vec3& position, float_t radius, const Math::vec3& color, float_t colorIntensity) {
+		if (index >= MAX_POINT_LIGHTS) {
+			Log::CoreWarn("Point light index {} exceeds maximum ({}).", index, MAX_POINT_LIGHTS);
+			return;
+		}
+
+		auto& pointLight = m_Data.LightBufferData.PointLights[index];
+		pointLight.Position = { position.x, position.y, position.z, radius };
+		pointLight.Color = { color.x, color.y, color.z, colorIntensity };
+		m_Data.LightUniformBuffer->SetData(&m_Data.LightBufferData, sizeof(RendererData::LightData));
+	}
+
+	void Renderer::SetPointLightCount(uint32_t count) {
+		m_Data.LightBufferData.PointLightCount.x = static_cast<float_t>(count);
+		m_Data.LightUniformBuffer->SetData(&m_Data.LightBufferData, sizeof(RendererData::LightData));
 	}
 }

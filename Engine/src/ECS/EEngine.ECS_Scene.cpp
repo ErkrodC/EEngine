@@ -37,12 +37,58 @@ namespace EEngine {
 
 		renderer.BeginScene(viewProjection);
 
-		// 2. Submit all mesh entities
-		m_Registry.View<TransformComponent, MeshComponent>([&](const auto& transform, const auto& mesh) {
-			Shared<VertexArray> vertexArray = GetMesh(mesh.VertexArrayID);
-			if (!vertexArray) { return; }
+		using ViewReturn = Registry::ViewReturn;
+		// 2. Apply the first directional light found
+		m_Registry.View<DirectionalLightComponent>([&renderer](uint32_t, DirectionalLightComponent& directionalLight) {
+			renderer.SetDirectionalLight(
+				directionalLight.Direction,
+				directionalLight.Color,
+				directionalLight.ColorIntensity,
+				directionalLight.Ambient,
+				directionalLight.AmbientIntensity
+			);
+			return ViewReturn::Break;
+		});
 
-			renderer.SubmitMesh(vertexArray, transform.Transform.GetWorldMatrix(), mesh.Color);
+		// 3. Collect point lights
+		uint32_t pointLightIndex = 0;
+		m_Registry.View<TransformComponent, PointLightComponent>([&renderer, &pointLightIndex](uint32_t, TransformComponent& transform, PointLightComponent& pointLight) {
+			if (pointLightIndex >= MAX_POINT_LIGHTS) { return ViewReturn::Continue; }
+
+			renderer.SetPointLight(
+				pointLightIndex++,
+				transform.Transform.Position,
+				pointLight.Radius,
+				pointLight.Color,
+				pointLight.ColorIntensity
+			);
+
+			return ViewReturn::Continue;
+		});
+		renderer.SetPointLightCount(pointLightIndex);
+
+		// 4. Submit all mesh entities
+		m_Registry.View<TransformComponent, MeshComponent>([&](uint32_t entity, const TransformComponent& transform, const MeshComponent& mesh) {
+			Shared<VertexArray> vertexArray = GetMesh(mesh.VertexArrayID);
+			if (!vertexArray) { return ViewReturn::Continue; }
+
+			float_t shininess = 32.0f;
+			float_t specularStrength = 0.5f;
+			if (m_Registry.Has<MaterialComponent>(entity)) {
+				const auto& material = m_Registry.Get<MaterialComponent>(entity);
+				shininess = material.Shininess;
+				specularStrength = material.SpecularStrength;
+			}
+
+			renderer.SubmitMesh(
+				vertexArray,
+				transform.Transform.GetWorldMatrix(),
+				mesh.Color,
+				shininess,
+				specularStrength
+			);
+
+			return ViewReturn::Continue;
 		});
 
 		renderer.EndScene();
@@ -62,13 +108,13 @@ namespace EEngine {
 
 	uint32_t Scene::RegisterMesh(const Shared<VertexArray>& vertexArray) {
 		uint32_t id = ++m_NextMeshID;
-		m_MeshLookup[id] = vertexArray;
+		m_MeshByID[id] = vertexArray;
 		return id;
 	}
 
 	Shared<VertexArray> Scene::GetMesh(uint32_t id) const {
-		auto it = m_MeshLookup.find(id);
-		if (it != m_MeshLookup.end()) { return it->second; }
+		auto it = m_MeshByID.find(id);
+		if (it != m_MeshByID.end()) { return it->second; }
 		return nullptr;
 	}
 }

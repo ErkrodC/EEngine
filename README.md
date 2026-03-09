@@ -1,4 +1,4 @@
-![EEngine demo](EEngine.gif)
+![EEngine demo](EEngine.apng)
 
 # EEngine
 

@@ -20,4 +20,23 @@ export namespace EEngine {
 		Math::mat4 Projection;
 		bool IsPrimary = false;
 	};
+
+	struct DirectionalLightComponent {
+		Math::vec3 Direction = { -1.0f, -2.0f, -1.0f }; // pointing fwd-down-left
+		Math::vec3 Color = { 1.0f, 1.0f, 1.0f };
+		float_t ColorIntensity = 1.0f;
+		Math::vec3 Ambient = { 1.0f, 1.0f, 1.0f };
+		float_t AmbientIntensity = 0.15f;
+	};
+
+	struct PointLightComponent {
+		Math::vec3 Color = { 1.0f, 1.0f, 1.0f };
+		float_t ColorIntensity = 1.0f;
+		float_t Radius = 10.0f;
+	};
+
+	struct MaterialComponent {
+		float_t Shininess = 32.0f; // Blinn-Phong specular exponent
+		float_t SpecularStrength = 0.5f;
+	};
 }

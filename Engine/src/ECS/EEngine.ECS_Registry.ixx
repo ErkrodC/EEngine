@@ -50,7 +50,9 @@ export namespace EEngine {
 		template<typename... Ts, typename Func>
 		void View(Func&& func) {
 			for (uint32_t entity : View<Ts...>()) {
-				std::apply(func, std::tie(GetPool<Ts>()->Get(entity)...));
+				if (std::apply(func, std::tie(entity, GetPool<Ts>()->Get(entity)...)) == ViewReturn::Break) {
+					break;
+				}
 			}
 		}
 
@@ -60,6 +62,8 @@ export namespace EEngine {
 				pool->Remove(entity);
 			}
 		}
+
+		enum class ViewReturn { Continue, Break };
 
 	private:
 		std::unordered_map<std::type_index, Unique<IComponentPool>> m_Pools;

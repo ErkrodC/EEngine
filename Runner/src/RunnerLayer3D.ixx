@@ -124,6 +124,15 @@ public:
 			throw std::runtime_error("Failed to load texture shader.");
 		}
 
+		// -- Directional Light (Sun) ---
+		SceneEntity sun = m_Scene->CreateEntity("Sun");
+		auto& dirLight = sun.AddComponent<DirectionalLightComponent>();
+		dirLight.Direction = { -1.0f, -2.0f, -1.0f };
+		dirLight.Color = { 1.0f, 0.95f, 0.8f };
+		dirLight.ColorIntensity = 0.8f;
+		dirLight.Ambient = { 0.3f, 0.35f, 0.4f };
+		dirLight.AmbientIntensity = 0.15;
+
 		// --- Register meshes ---
 		uint32_t cubeMeshID = m_Scene->RegisterMesh(BuildVAO(m_RendererAPI, MeshBuilder::Cube()));
 		uint32_t groundMeshID = m_Scene->RegisterMesh(BuildVAO(m_RendererAPI, MeshBuilder::Plane(10.0f)));
@@ -160,6 +169,9 @@ public:
 		greenMesh.VertexArrayID = cubeMeshID;
 		greenMesh.Color = { 0.2f, 0.8f, 0.3f, 1.0f };
 		greenCube.GetComponent<TransformComponent>().Transform.Position = { 0.0f, 0.0f, 0.0f };
+		auto& greenMat = greenCube.AddComponent<MaterialComponent>();
+		greenMat.Shininess = 128.0f;
+		greenMat.SpecularStrength = 0.8f;
 
 		// --- Blue cube (right) ---
 		SceneEntity blueCube = m_Scene->CreateEntity("Blue Cube");

@@ -18,14 +18,17 @@ export module EEngine.Math:Spatial;
 
 export namespace EEngine::Math {
 	using glm::inverse;
+	using glm::lookAt;
 	using glm::mat;
 	using glm::mat3;
 	using glm::mat4;
+	using glm::normalize;
+	using glm::operator*;
 	using glm::ortho;
 	using glm::perspective;
-	using glm::quat;
-	using glm::operator*;
 	using glm::qualifier;
+	using glm::quat;
+	using glm::radians;
 	using glm::scale;
 	using glm::toMat4;
 	using glm::translate;
@@ -33,8 +36,6 @@ export namespace EEngine::Math {
 	using glm::vec2;
 	using glm::vec3;
 	using glm::vec4;
-	using glm::radians;
-	using glm::lookAt;
 
 	namespace Identity {
 		const mat4 mat4 = Math::mat4(1.0f) * Math::mat4(1.0f);

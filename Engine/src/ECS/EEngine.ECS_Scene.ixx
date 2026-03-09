@@ -38,8 +38,7 @@ export namespace EEngine {
 		Registry m_Registry;
 		uint32_t m_EntityCount = 0;
 		uint32_t m_NextMeshID = 0;
-		// ER TODO rename to m_MeshByID
-		std::unordered_map<uint32_t, Shared<Rendering::VertexArray>> m_MeshLookup;
+		std::unordered_map<uint32_t, Shared<Rendering::VertexArray>> m_MeshByID;
 		friend class SceneEntity;
 	};
 }
