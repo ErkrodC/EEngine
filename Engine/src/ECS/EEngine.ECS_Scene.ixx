@@ -1,9 +1,10 @@
 export module EEngine.ECS:Scene;
 import EEngine.Rendering;
-import :Entity;
 import :Registry;
 
 export namespace EEngine {
+	class SceneEntity;
+
 	class Scene {
 	public:
 		Scene() = default;

@@ -28,7 +28,6 @@ target_sources(engine
 		src/Application/EEngine.Application_Window.cpp
 
 		# EEngine.ECS module implementations
-		src/ECS/EEngine.ECS_Entity.cpp
 		src/ECS/EEngine.ECS_Scene.cpp
 
 		# EEngine.Math module implementations
