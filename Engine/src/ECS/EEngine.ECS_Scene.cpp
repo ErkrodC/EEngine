@@ -38,16 +38,12 @@ namespace EEngine {
 		renderer.BeginScene(viewProjection);
 
 		// 2. Submit all mesh entities
-		auto entities = m_Registry.View<TransformComponent, MeshComponent>();
-		for (auto entityID : entities) {
-			auto& transform = m_Registry.Get<TransformComponent>(entityID);
-			auto& mesh = m_Registry.Get<MeshComponent>(entityID);
-
+		m_Registry.View<TransformComponent, MeshComponent>([&](const auto& transform, const auto& mesh) {
 			Shared<VertexArray> vertexArray = GetMesh(mesh.VertexArrayID);
-			if (!vertexArray) { continue; }
+			if (!vertexArray) { return; }
 
 			renderer.SubmitMesh(vertexArray, transform.Transform.GetWorldMatrix(), mesh.Color);
-		}
+		});
 
 		renderer.EndScene();
 	}

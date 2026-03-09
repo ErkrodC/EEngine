@@ -177,7 +177,7 @@ public:
 		m_Rotation += static_cast<float>(timestep.GetSeconds());
 		auto cubeEntities = m_Scene->View<TransformComponent, MeshComponent>();
 		for (auto entityID : cubeEntities) {
-			auto& transform = m_Scene->GetRegistry().Get<TransformComponent>(entityID);
+			auto& transform = m_Scene->Get<TransformComponent>(entityID);
 			// skip the floor (it's at y = -1)
 			if (transform.Transform.Position.y < -0.5f) { continue; }
 			transform.Transform.Rotation = {

@@ -15,6 +15,11 @@ export namespace EEngine {
 		template<typename T>
 		T& Get(uint32_t entity) { return GetPool<T>()->Get(entity); }
 
+		template<typename T1, typename T2, typename... Ts>
+		auto Get(uint32_t entity) {
+			return std::tie(GetPool<T1>()->Get(entity), GetPool<T2>()->Get(entity), GetPool<Ts>()->Get(entity)...);
+		}
+
 		template<typename T>
 		bool Has(uint32_t entity) const {
 			auto it = m_Pools.find(typeid(T));
@@ -41,6 +46,14 @@ export namespace EEngine {
 
 			return result;
 		}
+
+		template<typename... Ts, typename Func>
+		void View(Func&& func) {
+			for (uint32_t entity : View<Ts...>()) {
+				std::apply(func, std::tie(GetPool<Ts>()->Get(entity)...));
+			}
+		}
+
 
 		void Remove(uint32_t entity) {
 			for (auto& [type, pool] : m_Pools) {

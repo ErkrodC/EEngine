@@ -12,6 +12,11 @@ namespace EEngine {
 		return m_Scene->m_Registry.Get<T>(m_EntityHandle);
 	}
 
+	template<typename T1, typename T2, typename... Ts>
+	auto SceneEntity::GetComponent() const {
+		return m_Scene->m_Registry.Get<T1, T2, Ts...>(m_EntityHandle);
+	}
+
 	template<typename T>
 	bool SceneEntity::HasComponent() const {
 		return m_Scene->m_Registry.Has<T>(m_EntityHandle);

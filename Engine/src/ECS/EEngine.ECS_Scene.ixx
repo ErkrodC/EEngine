@@ -17,10 +17,17 @@ export namespace EEngine {
 
 		SceneEntity GetPrimaryCameraEntity();
 
-		Registry& GetRegistry() { return m_Registry; }
+		template<typename T>
+		T& Get(uint32_t entity) { return m_Registry.Get<T>(entity); }
+
+		template<typename T1, typename T2, typename... Ts>
+		auto Get(uint32_t entity) { return m_Registry.Get<T1, T2, Ts...>(entity); }
 
 		template<typename... Ts>
-		std::vector<uint32_t> View() { return m_Registry.View<Ts...>(); }
+		auto View() { return m_Registry.View<Ts...>(); }
+
+		template<typename... Ts, typename Func>
+		void View(Func&& func) { m_Registry.View<Ts...>(std::forward<Func>(func)); }
 
 		// Mesh asset registration (temporary until a proper AssetRegistry exists)
 		uint32_t RegisterMesh(const Shared<Rendering::VertexArray>& vertexArray);

@@ -15,6 +15,9 @@ export namespace EEngine {
 		template<typename T>
 		T& GetComponent() const;
 
+		template<typename T1, typename T2, typename... Ts>
+		auto GetComponent() const;
+
 		template<typename T>
 		bool HasComponent() const;
 
