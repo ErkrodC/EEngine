@@ -10,7 +10,7 @@ export namespace EEngine {
 		Scene() = default;
 		~Scene() = default;
 
-		SceneEntity CreateEntity(const std::string& name = "Empty Enitty");
+		SceneEntity CreateEntity(const std::string& name = "Empty Entity");
 		void DestroyEntity(SceneEntity entity);
 
 		void OnUpdate(Timestep ts);
