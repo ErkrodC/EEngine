@@ -35,6 +35,46 @@ namespace EEngine::Rendering {
 		);
 	}
 
+	void OpenGLRendererAPI::CreateShadowMap(uint32_t resolution) {
+		m_ShadowMapResolution = resolution;
+
+		glGenFramebuffers(1, &m_ShadowFBO);
+
+		glGenTextures(1, &m_ShadowDepthTexture);
+		glBindTexture(GL_TEXTURE_2D, m_ShadowDepthTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, resolution, resolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		float_t borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+		// Enable hardware PCF (percentage-closer filtering)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, m_ShadowFBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_ShadowDepthTexture, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLRendererAPI::BindShadowFrameBuffer() const {
+		glViewport(0, 0, m_ShadowMapResolution, m_ShadowMapResolution);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_ShadowFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+	}
+
+	void OpenGLRendererAPI::UnbindShadowFrameBuffer() const {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLRendererAPI::BindShadowTexture(uint32_t slot) const {
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, m_ShadowDepthTexture);
+	}
+
 	Shared<IndexBuffer> OpenGLRendererAPI::CreateIndexBuffer(uint32_t* indices, uint32_t count) const {
 		return MakeShared<OpenGLIndexBuffer>(indices, count);
 	}

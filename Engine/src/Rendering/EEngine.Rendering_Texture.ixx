@@ -35,6 +35,7 @@ export namespace EEngine::Rendering {
 		OpenGLTexture2D& operator=(OpenGLTexture2D&& other) noexcept;
 
 		void Bind() const;
+		void Bind(uint32_t slot) const;
 	private:
 		std::string m_Path;
 		uint32_t m_Width, m_Height;
@@ -49,8 +50,13 @@ export namespace EEngine::Rendering {
 	// Texture2D Concept and Static Assert
 	// ============================================================================
 	template<typename T>
-	concept Texture2DConcept = requires(T texture, void* data, uint32_t size) {
+	concept Texture2DConcept = requires(
+		T texture,
+		void* data,
+		uint32_t slot
+	) {
 		{ texture.Bind() } -> std::same_as<void>;
+		{ texture.Bind(slot) } -> std::same_as<void>;
 	};
 	static_assert(Texture2DConcept<Texture2D>);
 }

@@ -90,6 +90,10 @@ namespace EEngine::Rendering {
 		glBindTextureUnit(0, m_RendererID);
 	}
 
+	void OpenGLTexture2D::Bind(uint32_t slot) const {
+		glBindTextureUnit(slot, m_RendererID);
+	}
+
 	uint32_t OpenGLTexture2D::GetBytesPerPixel() const {
 		switch (m_InstanceFormat) {
 			case GL_RGBA: return 4;

@@ -21,6 +21,13 @@ export namespace EEngine::Rendering {
 		void Clear(const Math::vec4& color) const;
 		void DrawIndexed(const Shared<VertexArray>& vertexArray, uint32_t indexCountOverride = 0) const;
 
+		// Shadow map frame buffer
+		void CreateShadowMap(uint32_t resolution);
+		void BindShadowFrameBuffer() const;
+		void UnbindShadowFrameBuffer() const;
+		void BindShadowTexture(uint32_t count) const;
+		uint32_t GetShadowMapResolution() const { return m_ShadowMapResolution; }
+
 		Shared<IndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t count) const;
 		Shared<VertexBuffer> CreateVertexBuffer(void* vertices, uint32_t size) const;
 		Shared<Shader> CreateShader(const std::string& path) const;
@@ -38,6 +45,9 @@ export namespace EEngine::Rendering {
 
 	private:
 		std::unordered_map<std::string, Shared<Shader>> m_ShaderByName;
+		uint32_t m_ShadowFBO = 0;
+		uint32_t m_ShadowDepthTexture = 0;
+		uint32_t m_ShadowMapResolution = 0;
 
 		Shared<Shader> CreateAndCacheShader(const std::string& path);
 	};
@@ -72,6 +82,11 @@ export namespace EEngine::Rendering {
 		{ api.SetViewport(x, y, x, y) } -> std::same_as<void>;
 		{ api.Clear(color) } -> std::same_as<void>;
 		{ api.DrawIndexed(Shared<VertexArray>{}) } -> std::same_as<void>;
+		{ api.CreateShadowMap(size) } -> std::same_as<void>;
+		{ api.BindShadowFrameBuffer() } -> std::same_as<void>;
+		{ api.UnbindShadowFrameBuffer() } -> std::same_as<void>;
+		{ api.BindShadowTexture(count) } -> std::same_as<void>;
+		{ api.GetShadowMapResolution() } -> std::same_as<uint32_t>;
 		{ api.CreateIndexBuffer(indices, count) } -> std::same_as<Shared<IndexBuffer>>;
 		{ api.CreateVertexBuffer(vertices, size) } -> std::same_as<Shared<VertexBuffer>>;
 		{ api.CreateShader(name, vertexSource, fragmentSource) } -> std::same_as<Shared<Shader>>;

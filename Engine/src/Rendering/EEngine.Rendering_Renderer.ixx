@@ -35,10 +35,12 @@ namespace EEngine::Rendering {
 
 	struct CameraData {
 		Math::mat4 ProjectionView;
+		Math::vec4 CameraPosition;
 	};
 
 	struct RendererData {
 		Shared<Shader> TextureShader;
+		Shared<Shader> ShadowDepthShader;
 		Shared<Texture2D> WhiteTexture;
 		Shared<VertexArray> QuadVertexArray;
 		Shared<VertexArray> CubeVertexArray;
@@ -49,6 +51,8 @@ namespace EEngine::Rendering {
 
 		LightData LightBufferData;
 		Shared<UniformBuffer> LightUniformBuffer;
+
+		Math::mat4 LightSpaceMatrix = Math::mat4(1.0f);
 	};
 
 	struct Instance {
@@ -67,7 +71,7 @@ namespace EEngine::Rendering {
 	public:
 		explicit Renderer(RendererAPI& rendererAPI);
 
-		void BeginScene(const Math::mat4& projectionView = Math::mat4(1.0f));
+		void BeginScene(const Math::mat4& projectionView = Math::mat4(1.0f), const Math::vec3& cameraPosition = Math::vec3(0.0f));
 		void EndScene(); // Execution phase: Flush 2D and 3D batches
 
 		// 2D Path: Batching
@@ -92,9 +96,12 @@ namespace EEngine::Rendering {
 		void SetPointLight(uint32_t index, const Math::vec3& position, float_t radius, const Math::vec3& color, float_t colorIntensity);
 		void SetPointLightCount(uint32_t count);
 
+		void SetViewportSize(uint32_t width, uint32_t height);
+
 	private:
 		RendererAPI& m_RendererAPI;
 		RendererData m_Data;
+		uint32_t m_ViewportWidth = 1280, m_ViewportHeight = 720;
 		QuadVertex m_QuadVertexBufferBase[MAX_QUAD_VERTEX_BUFFER_COUNT]{};
 		QuadVertex* m_QuadVertexBufferPtr;
 		uint32_t m_QuadIndexBufferPtr[MAX_QUAD_INDEX_BUFFER_COUNT];
@@ -102,6 +109,7 @@ namespace EEngine::Rendering {
 		// Key = raw VertexArray pointer for identity comparison, (ownership held by InstancedBatch::VertexArray)
 		std::unordered_map<VertexArray*, InstancedBatch> m_MeshBatches;
 
+		void ShadowPass();
 		void CreateQuadVertices(const Math::vec3& position, const Math::vec2& size, const Math::vec4& color);
 		uint32_t GetQuadVertexCount() const { return m_QuadVertexBufferPtr - m_QuadVertexBufferBase; }
 		uint32_t GetQuadIndexCount() const { return GetQuadVertexCount() / 4 * 6; }

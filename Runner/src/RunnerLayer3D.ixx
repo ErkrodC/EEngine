@@ -118,67 +118,71 @@ public:
 		, m_Renderer(renderer)
 		, m_Scene(MakeUnique<Scene>())
 	{
+		m_Renderer.SetViewportSize(1280, 720);
+
 		Shared<Shader> textureShader;
 		if (!m_RendererAPI.TryGetOrLoadShader("assets/shaders/Texture.glsl", textureShader)) {
 			Log::CoreCritical("Failed to load texture shader.");
 			throw std::runtime_error("Failed to load texture shader.");
 		}
 
-		// -- Directional Light (Sun) ---
-		SceneEntity sun = m_Scene->CreateEntity("Sun");
-		auto& dirLight = sun.AddComponent<DirectionalLightComponent>();
-		dirLight.Direction = { -1.0f, -2.0f, -1.0f };
-		dirLight.Color = { 1.0f, 0.95f, 0.8f };
-		dirLight.ColorIntensity = 0.8f;
-		dirLight.Ambient = { 0.3f, 0.35f, 0.4f };
-		dirLight.AmbientIntensity = 0.15;
+		{ // -- Directional Light (Sun) ---
+			SceneEntity sun = m_Scene->CreateEntity("Sun");
+			auto& dirLight = sun.AddComponent<DirectionalLightComponent>();
+			dirLight.Direction = { -5.0f, -3.0f, 0.0f };
+			dirLight.Color = { 1.0f, 0.95f, 0.8f };
+			dirLight.ColorIntensity = 0.8f;
+			dirLight.Ambient = { 0.3f, 0.35f, 0.4f };
+			dirLight.AmbientIntensity = 0.025f;
+		}
 
-		// --- Register meshes ---
-		uint32_t cubeMeshID = m_Scene->RegisterMesh(BuildVAO(m_RendererAPI, MeshBuilder::Cube()));
-		uint32_t groundMeshID = m_Scene->RegisterMesh(BuildVAO(m_RendererAPI, MeshBuilder::Plane(10.0f)));
+		{ // --- Camera ---
+			SceneEntity cameraEntity = m_Scene->CreateEntity("Main Camera");
+			auto& cam = cameraEntity.AddComponent<CameraComponent>();
+			cam.Projection = Math::perspective(Math::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+			cam.IsPrimary = true;
 
-		// --- Camera ---
-		SceneEntity cameraEntity = m_Scene->CreateEntity("Main Camera");
-		auto& cam = cameraEntity.AddComponent<CameraComponent>();
-		cam.Projection = Math::perspective(Math::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
-		cam.IsPrimary = true;
-		// Pull back and up
-		auto& camT = cameraEntity.GetComponent<TransformComponent>();
-		camT.Transform.Position = { 0.0f, 2.0f, 10.0f };
-		// Tilt camera down
-		float pitch = Math::radians(-20.0f);
-		camT.Transform.Rotation = {pitch, 0.0f, 0.0f};
+			// Pull back and up
+			auto& camT = cameraEntity.GetComponent<TransformComponent>();
+			camT.Transform.Position = { 0.0f, 4.0f, 10.0f };
 
-		// --- Ground plane ---
-		SceneEntity ground = m_Scene->CreateEntity("Ground");
-		auto& groundMesh = ground.AddComponent<MeshComponent>();
-		groundMesh.VertexArrayID = groundMeshID;
-		groundMesh.Color = { 0.4f, 0.4f, 0.4f, 1.0f };
-		ground.GetComponent<TransformComponent>().Transform.Position = { 0.0f, -1.0f, 0.0f };
+			// Tilt camera down
+			float pitch = Math::radians(-20.0f);
+			camT.Transform.Rotation = {pitch, 0.0f, 0.0f};
+		}
 
-		// --- Red cube (left) ---
-		SceneEntity redCube = m_Scene->CreateEntity("Red Cube");
-		auto& redMesh = redCube.AddComponent<MeshComponent>();
-		redMesh.VertexArrayID = cubeMeshID;
-		redMesh.Color = { 0.8f, 0.2f, 0.3f, 1.0f };
-		redCube.GetComponent<TransformComponent>().Transform.Position = { -2.0f, 0.0f, 0.0f };
+		{ // --- Ground plane ---
+			SceneEntity ground = m_Scene->CreateEntity("Ground");
 
-		// --- Green cube (center) ---
-		SceneEntity greenCube = m_Scene->CreateEntity("Green Cube");
-		auto& greenMesh = greenCube.AddComponent<MeshComponent>();
-		greenMesh.VertexArrayID = cubeMeshID;
-		greenMesh.Color = { 0.2f, 0.8f, 0.3f, 1.0f };
-		greenCube.GetComponent<TransformComponent>().Transform.Position = { 0.0f, 0.0f, 0.0f };
-		auto& greenMat = greenCube.AddComponent<MaterialComponent>();
-		greenMat.Metallic = 0.9f;
-		greenMat.Roughness = 0.15f;
+			// position
+			ground.GetComponent<TransformComponent>().Transform.Position = { 0.0f, -1.0f, 0.0f };
 
-		// --- Blue cube (right) ---
-		SceneEntity blueCube = m_Scene->CreateEntity("Blue Cube");
-		auto& blueMesh = blueCube.AddComponent<MeshComponent>();
-		blueMesh.VertexArrayID = cubeMeshID;
-		blueMesh.Color = { 0.2f, 0.3f, 0.8f, 1.0f };
-		blueCube.GetComponent<TransformComponent>().Transform.Position = { 2.0f, 0.0f, 0.0f };
+			// mesh/color
+			auto& groundMesh = ground.AddComponent<MeshComponent>();
+			uint32_t groundMeshID = m_Scene->RegisterMesh(BuildVAO(m_RendererAPI, MeshBuilder::Plane(25.0f)));
+			groundMesh.VertexArrayID = groundMeshID;
+			groundMesh.Color = { 0.4f, 0.4f, 0.4f, 1.0f };
+		}
+
+		{ // --- Cube (center) ---
+			SceneEntity cube = m_Scene->CreateEntity("Cube");
+
+			// position/scale
+			auto& transform = cube.GetComponent<TransformComponent>().Transform;
+			transform.Position = { 0.0f, 0.5f, 0.0f };
+			transform.Scale = { 2.0f, 2.0f, 2.0f };
+
+			// mesh/color
+			uint32_t cubeMeshID = m_Scene->RegisterMesh(BuildVAO(m_RendererAPI, MeshBuilder::Cube()));
+			auto& greenMesh = cube.AddComponent<MeshComponent>();
+			greenMesh.VertexArrayID = cubeMeshID;
+			greenMesh.Color = { 0.0f, 1.0f, 0.0f, 1.0f };
+
+			// material
+			auto& greenMat = cube.AddComponent<MaterialComponent>();
+			greenMat.Metallic = 0.9f;
+			greenMat.Roughness = 0.5f;
+		}
 	}
 
 	void OnUpdate(Timestep timestep) override {

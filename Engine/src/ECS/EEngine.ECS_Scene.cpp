@@ -35,7 +35,7 @@ namespace EEngine {
 		Math::mat4 view = Math::inverse(camTransform.Transform.GetWorldMatrix());
 		Math::mat4 viewProjection = cam.Projection * view;
 
-		renderer.BeginScene(viewProjection);
+		renderer.BeginScene(viewProjection, camTransform.Transform.Position);
 
 		using ViewReturn = Registry::ViewReturn;
 		// 2. Apply the first directional light found

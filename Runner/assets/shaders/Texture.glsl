@@ -1,4 +1,4 @@
-// PBR Shader
+// PBR Shader with Shadow Mapping
 
 #type vertex
 #version 420 core
@@ -14,11 +14,13 @@ layout(std140, binding = 0) uniform CameraData {
 };
 
 uniform mat4 u_Model;
+uniform mat4 u_LightSpaceMatrix;
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_WorldPos;
+out vec4 v_LightSpacePos;
 
 void main() {
 	vec4 worldPos = u_Model * vec4(a_Position, 1.0);
@@ -26,6 +28,7 @@ void main() {
 	v_Color = a_Color;
 	v_TexCoord = a_TexCoord;
 	v_Normal = normalize(mat3(transpose(inverse(u_Model))) * a_Normal);
+	v_LightSpacePos = u_LightSpaceMatrix * worldPos;
 	gl_Position = u_ProjectionView * worldPos;
 }
 
@@ -61,8 +64,10 @@ in vec4 v_Color;
 in vec2 v_TexCoord;
 in vec3 v_Normal;
 in vec3 v_WorldPos;
+in vec4 v_LightSpacePos;
 
 uniform sampler2D u_Texture;
+uniform sampler2DShadow u_ShadowMap;
 uniform vec4 u_Tint = vec4(1.0);
 uniform float u_Metallic = 0.0;
 uniform float u_Roughness = 0.5;
@@ -126,6 +131,35 @@ vec3 CalcPBRLight(vec3 N, vec3 V, vec3 L, vec3 radiance, vec3 albedo, float meta
 	return (kD * albedo / PI + specular) * radiance * NdotL;
 }
 
+// --------------- Shadow Calculation ---------------------
+float CalcShadow(vec4 lightSpacePos, vec3 N, vec3 L) {
+	// Perspective divide (identity for ortho, but good practice)
+	vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
+	projCoords = projCoords * 0.5 + 0.5; // [-1,1] -> [0,1]
+
+	// Outside shadow frustum -> fully lit
+	if (projCoords.z > 1.0) { return 0.0; }
+
+	// Bias to fight shadow acne - scales with angle between normal and light
+	float bias = max(0.005 * (1.0 - dot(N, L)), 0.001);
+	float biasedDepth = projCoords.z - bias;
+
+	// PCF: 3x3 kernel for soft edges
+	float shadow = 0.0;
+	vec2 texelSize = 1.0 / textureSize(u_ShadowMap, 0);
+	for (int x = -1; x <= 1; ++x)
+	for (int y = -1; y <= 1; ++y) {
+		vec2 offset = vec2(x, y) * texelSize;
+		// sampler2DShadow: texture() returns 0.0 (in shadow) or 1.0 (lit)
+		shadow += texture(u_ShadowMap, vec3(projCoords.xy + offset, biasedDepth));
+	}
+	shadow /= 9.0;
+
+	// shadow = 1.0 means fullt lit, 0.0 means fully shadowed
+	// we want to return the "shadow factor" (0 = lit, 1 = shadow)
+	return 1.0 - shadow;
+}
+
 // ----------------- Main ----------------------
 
 void main() {
@@ -138,15 +172,18 @@ void main() {
 	// Metallic surfaces use albedo as F0, dielectrics use 0.04
 	vec3 F0 = mix(vec3(0.04), albedo, u_Metallic);
 
-	// --- Ambient (very simple IBL stand-in) ---
+	// --- Ambient (very simple IBL stand-in, unaffected by shadows) ---
 	vec3 ambient = u_Ambient.rgb * u_Ambient.a * albedo;
 
-	// --- Directional Light ---
+	// --- Directional Light (with shadows) ---
 	vec3 dirL = normalize(-u_LightDirection.xyz);
 	vec3 dirRadiance = u_LightColor.rgb * u_LightColor.a;
-	vec3 Lo = CalcPBRLight(N, V, dirL, dirRadiance, albedo, u_Metallic, u_Roughness, F0);
+	vec3 dirContribution = CalcPBRLight(N, V, dirL, dirRadiance, albedo, u_Metallic, u_Roughness, F0);
 
-	// --- Point Lights ---
+	float shadow = CalcShadow(v_LightSpacePos, N, dirL);
+	vec3 Lo = dirContribution * (1.0 - shadow);
+
+	// --- Point Lights (no shadows for now) ---
 	int count = int(u_PointLightCount.x);
 	for (int i = 0; i < MAX_POINT_LIGHTS; ++i) {
 		if (i >= count) { break; }
