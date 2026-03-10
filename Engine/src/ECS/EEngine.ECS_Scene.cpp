@@ -72,20 +72,20 @@ namespace EEngine {
 			Shared<VertexArray> vertexArray = GetMesh(mesh.VertexArrayID);
 			if (!vertexArray) { return ViewReturn::Continue; }
 
-			float_t shininess = 32.0f;
-			float_t specularStrength = 0.5f;
+			float_t metallic = 0.0f;
+			float_t roughness = 0.5f;
 			if (m_Registry.Has<MaterialComponent>(entity)) {
 				const auto& material = m_Registry.Get<MaterialComponent>(entity);
-				shininess = material.Shininess;
-				specularStrength = material.SpecularStrength;
+				metallic = material.Metallic;
+				roughness = material.Roughness;
 			}
 
 			renderer.SubmitMesh(
 				vertexArray,
 				transform.Transform.GetWorldMatrix(),
 				mesh.Color,
-				shininess,
-				specularStrength
+				metallic,
+				roughness
 			);
 
 			return ViewReturn::Continue;

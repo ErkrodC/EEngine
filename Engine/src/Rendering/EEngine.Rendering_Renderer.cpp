@@ -100,7 +100,7 @@ namespace EEngine::Rendering {
 			m_Data.CubeVertexArray->SetIndexBuffer(m_RendererAPI.CreateIndexBuffer(cubeIndices, 36));
 
 			// --- Shared Resources ---
-			m_Data.CameraUniformBuffer = m_RendererAPI.CreateUniformBuffer(sizeof(RendererData::CameraData), 0);
+			m_Data.CameraUniformBuffer = m_RendererAPI.CreateUniformBuffer(sizeof(CameraData), 0);
 
 			if (m_RendererAPI.TryGetOrLoadShader("assets/shaders/Texture.glsl", m_Data.TextureShader)) {
 				m_Data.TextureShader->Bind();
@@ -117,7 +117,7 @@ namespace EEngine::Rendering {
 			throw std::runtime_error("Unknown rendering API.");
 		}
 
-		m_Data.LightUniformBuffer = m_RendererAPI.CreateUniformBuffer(sizeof(RendererData::LightData), 1);
+		m_Data.LightUniformBuffer = m_RendererAPI.CreateUniformBuffer(sizeof(LightData), 1);
 	}
 
 	void Renderer::DrawQuad(const Math::vec3& position, const Math::vec2& size, const Math::vec4& color) {
@@ -179,7 +179,7 @@ namespace EEngine::Rendering {
 		m_MeshBatches.clear();
 
 		m_Data.CameraBufferData.ProjectionView = projectionView;
-		m_Data.CameraUniformBuffer->SetData(&m_Data.CameraBufferData, sizeof(RendererData::CameraData));
+		m_Data.CameraUniformBuffer->SetData(&m_Data.CameraBufferData, sizeof(CameraData));
 	}
 
 	void Renderer::EndScene() {
@@ -194,8 +194,8 @@ namespace EEngine::Rendering {
 				m_Data.TextureShader->Bind();
 				m_Data.TextureShader->SetMat4("u_Model", instance.Transform);
 				m_Data.TextureShader->SetFloat4("u_Tint", instance.Tint);
-				m_Data.TextureShader->SetFloat("u_Shininess", instance.Shininess);
-				m_Data.TextureShader->SetFloat("u_SpecularStrength", instance.SpecularStrength);
+				m_Data.TextureShader->SetFloat("u_Metallic", instance.Metallic);
+				m_Data.TextureShader->SetFloat("u_Roughness", instance.Roughness);
 				m_Data.WhiteTexture->Bind(); // default white texture for untextured meshes
 				batch.VertexArray->Bind();
 				m_RendererAPI.DrawIndexed(batch.VertexArray);
@@ -243,13 +243,13 @@ namespace EEngine::Rendering {
 		const Shared<VertexArray>& vertexArray,
 		const Math::mat4& transform,
 		const Math::vec4& tint,
-		float_t shininess,
-		float_t specularStrength
+		float_t metallic,
+		float_t roughness
 	) {
 		VertexArray* key = vertexArray.get();
 		auto& batch = m_MeshBatches[key];
 		if (!batch.VertexArray) { batch.VertexArray = vertexArray; }
-		batch.Instances.push_back({ transform, tint, shininess, specularStrength });
+		batch.Instances.push_back({ transform, tint, metallic, roughness });
 	}
 
 	void Renderer::SetDirectionalLight(
@@ -260,10 +260,10 @@ namespace EEngine::Rendering {
 		float_t ambientIntensity
 	) {
 		Math::vec3 dir = Math::normalize(direction);
-		m_Data.LightBufferData.Direction = { dir.x, dir.y, dir.z, 0.f };
-		m_Data.LightBufferData.Color = { color.x, color.y, color.z, colorIntensity };
-		m_Data.LightBufferData.Ambient = { ambient.x, ambient.y, ambient.z, ambientIntensity };
-		m_Data.LightUniformBuffer->SetData(&m_Data.LightBufferData, sizeof(RendererData::LightData));
+		m_Data.LightBufferData.DirectionalLight.Direction = { dir.x, dir.y, dir.z, 0.f };
+		m_Data.LightBufferData.DirectionalLight.Color = { color.x, color.y, color.z, colorIntensity };
+		m_Data.LightBufferData.DirectionalLight.Ambient = { ambient.x, ambient.y, ambient.z, ambientIntensity };
+		m_Data.LightUniformBuffer->SetData(&m_Data.LightBufferData, sizeof(LightData));
 	}
 
 	void Renderer::SetPointLight(uint32_t index, const Math::vec3& position, float_t radius, const Math::vec3& color, float_t colorIntensity) {
@@ -275,11 +275,11 @@ namespace EEngine::Rendering {
 		auto& pointLight = m_Data.LightBufferData.PointLights[index];
 		pointLight.Position = { position.x, position.y, position.z, radius };
 		pointLight.Color = { color.x, color.y, color.z, colorIntensity };
-		m_Data.LightUniformBuffer->SetData(&m_Data.LightBufferData, sizeof(RendererData::LightData));
+		m_Data.LightUniformBuffer->SetData(&m_Data.LightBufferData, sizeof(LightData));
 	}
 
 	void Renderer::SetPointLightCount(uint32_t count) {
 		m_Data.LightBufferData.PointLightCount.x = static_cast<float_t>(count);
-		m_Data.LightUniformBuffer->SetData(&m_Data.LightBufferData, sizeof(RendererData::LightData));
+		m_Data.LightUniformBuffer->SetData(&m_Data.LightBufferData, sizeof(LightData));
 	}
 }

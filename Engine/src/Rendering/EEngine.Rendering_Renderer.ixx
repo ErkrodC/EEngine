@@ -16,6 +16,53 @@ namespace EEngine::Rendering {
 	constexpr uint32_t MAX_QUAD_VERTEX_BUFFER_SIZE = MAX_QUAD_VERTEX_BUFFER_COUNT * sizeof(QuadVertex);
 	constexpr uint32_t MAX_QUAD_INDEX_BUFFER_COUNT = MAX_QUADS * 6;
 
+	struct PointLight {
+		Math::vec4 Position; // XYZ, W = radius
+		Math::vec4 Color; // RGB, A = intensity
+	};
+
+	struct DirectionalLight {
+		Math::vec4 Direction; // XYZ, w = unused
+		Math::vec4 Color; // RGB, A = intensity
+		Math::vec4 Ambient; // RGB, A = strength
+	};
+
+	struct LightData {
+		DirectionalLight DirectionalLight;
+		PointLight PointLights[MAX_POINT_LIGHTS];
+		Math::vec4 PointLightCount; // Active Count, yzw = unused
+	};
+
+	struct CameraData {
+		Math::mat4 ProjectionView;
+	};
+
+	struct RendererData {
+		Shared<Shader> TextureShader;
+		Shared<Texture2D> WhiteTexture;
+		Shared<VertexArray> QuadVertexArray;
+		Shared<VertexArray> CubeVertexArray;
+		Shared<Texture2D> CurrentTexture;
+
+		CameraData CameraBufferData;
+		Shared<UniformBuffer> CameraUniformBuffer;
+
+		LightData LightBufferData;
+		Shared<UniformBuffer> LightUniformBuffer;
+	};
+
+	struct Instance {
+		Math::mat4 Transform;
+		Math::vec4 Tint;
+		float_t Metallic = 0.0f;
+		float_t Roughness = 0.5f;
+	};
+
+	struct InstancedBatch {
+		Shared<VertexArray> VertexArray;
+		std::vector<Instance> Instances;
+	};
+
 	export class Renderer {
 	public:
 		explicit Renderer(RendererAPI& rendererAPI);
@@ -37,8 +84,8 @@ namespace EEngine::Rendering {
 			const Shared<VertexArray>& vertexArray,
 			const Math::mat4& transform,
 			const Math::vec4& tint = Math::vec4(1.0f),
-			float_t shininess = 32.0f,
-			float_t specularStrength = 0.5f
+			float_t metallic = 0.0f,
+			float_t roughness = 0.5f
 		);
 
 		void SetDirectionalLight(const Math::vec3& direction, const Math::vec3& color, float_t colorIntensity, const Math::vec3& ambient, float_t ambientIntensity);
@@ -47,47 +94,10 @@ namespace EEngine::Rendering {
 
 	private:
 		RendererAPI& m_RendererAPI;
-		struct RendererData {
-			Shared<Shader> TextureShader;
-			Shared<Texture2D> WhiteTexture;
-			Shared<VertexArray> QuadVertexArray;
-			Shared<VertexArray> CubeVertexArray;
-			Shared<Texture2D> CurrentTexture;
-
-			struct CameraData {
-				Math::mat4 ProjectionView;
-			} CameraBufferData;
-			Shared<UniformBuffer> CameraUniformBuffer;
-
-			struct LightData {
-				// Directional
-				Math::vec4 Direction; // XYZ, w = unused
-				Math::vec4 Color; // RGB, A = intensity
-				Math::vec4 Ambient; // RGB, A = strength
-
-				struct PointLight {
-					Math::vec4 Position; // XYZ, W = radius
-					Math::vec4 Color; // RGB, A = intensity
-				} PointLights[MAX_POINT_LIGHTS];
-
-				Math::vec4 PointLightCount; // Active Count, yzw = unused
-			} LightBufferData;
-			Shared<UniformBuffer> LightUniformBuffer;
-		} m_Data;
+		RendererData m_Data;
 		QuadVertex m_QuadVertexBufferBase[MAX_QUAD_VERTEX_BUFFER_COUNT]{};
 		QuadVertex* m_QuadVertexBufferPtr;
 		uint32_t m_QuadIndexBufferPtr[MAX_QUAD_INDEX_BUFFER_COUNT];
-
-		struct InstancedBatch {
-			Shared<VertexArray> VertexArray;
-			struct Instance {
-				Math::mat4 Transform;
-				Math::vec4 Tint;
-				float_t Shininess = 32.0f;
-				float_t SpecularStrength = 0.5f;
-			};
-			std::vector<Instance> Instances;
-		};
 
 		// Key = raw VertexArray pointer for identity comparison, (ownership held by InstancedBatch::VertexArray)
 		std::unordered_map<VertexArray*, InstancedBatch> m_MeshBatches;

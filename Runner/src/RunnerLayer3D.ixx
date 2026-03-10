@@ -170,8 +170,8 @@ public:
 		greenMesh.Color = { 0.2f, 0.8f, 0.3f, 1.0f };
 		greenCube.GetComponent<TransformComponent>().Transform.Position = { 0.0f, 0.0f, 0.0f };
 		auto& greenMat = greenCube.AddComponent<MaterialComponent>();
-		greenMat.Shininess = 128.0f;
-		greenMat.SpecularStrength = 0.8f;
+		greenMat.Metallic = 0.9f;
+		greenMat.Roughness = 0.15f;
 
 		// --- Blue cube (right) ---
 		SceneEntity blueCube = m_Scene->CreateEntity("Blue Cube");

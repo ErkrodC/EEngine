@@ -36,7 +36,8 @@ export namespace EEngine {
 	};
 
 	struct MaterialComponent {
-		float_t Shininess = 32.0f; // Blinn-Phong specular exponent
-		float_t SpecularStrength = 0.5f;
+		float_t Metallic = 0.0f; // 0 = dielectric (plastic/wood), 1 = metal
+		float_t Roughness = 0.5f; // 0 = mirror-smooth, 1 = completely rough
+		Math::vec3 BaseReflectivity = { 0.04f, 0.04f, 0.04f };
 	};
 }
