@@ -41,6 +41,7 @@ namespace EEngine::Rendering {
 	struct RendererData {
 		Shared<Shader> TextureShader;
 		Shared<Shader> ShadowDepthShader;
+		Shared<Shader> ToneMapShader;
 		Shared<Texture2D> WhiteTexture;
 		Shared<VertexArray> QuadVertexArray;
 		Shared<VertexArray> CubeVertexArray;
@@ -53,6 +54,9 @@ namespace EEngine::Rendering {
 		Shared<UniformBuffer> LightUniformBuffer;
 
 		Math::mat4 LightSpaceMatrix = Math::mat4(1.0f);
+
+		uint32_t FullscreenVAO = 0; // empty VAO for fullscreen triangle
+		float_t Exposure = 1.0f;
 	};
 
 	struct Instance {

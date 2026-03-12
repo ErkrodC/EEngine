@@ -208,8 +208,8 @@ void main() {
 	vec3 result = ambient + Lo;
 
 	// HDR tone mapping (Reinhard) + gamma correction
-	result = result / (result + vec3(1.0)); // Reinhard
-	result = pow(result, vec3(1.0 / 2.2)); // Gamma
+	/*result = result / (result + vec3(1.0)); // Reinhard
+	result = pow(result, vec3(1.0 / 2.2)); // Gamma*/
 
 	color = vec4(result, texColor.a);
 }

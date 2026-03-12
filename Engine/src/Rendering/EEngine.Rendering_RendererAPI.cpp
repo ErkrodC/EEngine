@@ -75,6 +75,60 @@ namespace EEngine::Rendering {
 		glBindTexture(GL_TEXTURE_2D, m_ShadowDepthTexture);
 	}
 
+	void OpenGLRendererAPI::CreateHDRFrameBuffer(uint32_t width, uint32_t height) {
+		m_HDRWidth = width;
+		m_HDRHeight = height;
+
+		glGenFramebuffers(1, &m_HDRFBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_HDRFBO);
+
+		// HDR color attachment - 16-bit float, no clamping
+		glGenTextures(1, &m_HDRColorTexture);
+		glBindTexture(GL_TEXTURE_2D, m_HDRColorTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_HDRColorTexture, 0);
+
+		// Depth renderbuffer (we still need depth testing)
+		glGenRenderbuffers(1, &m_HDRDepthRBO);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_HDRDepthRBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_HDRDepthRBO);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLRendererAPI::ResizeHDRFrameBuffer(uint32_t width, uint32_t height) {
+		if (m_HDRWidth == width && m_HDRHeight == height) { return; }
+		m_HDRWidth = width;
+		m_HDRHeight = height;
+
+		// Resize color texture
+		glBindTexture(GL_TEXTURE_2D, m_HDRColorTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
+
+		// Resize depth renderbuffer
+		glBindRenderbuffer(GL_RENDERBUFFER, m_HDRDepthRBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+	}
+
+	void OpenGLRendererAPI::BindHDRFrameBuffer() const {
+		glBindFramebuffer(GL_FRAMEBUFFER, m_HDRFBO);
+		glViewport(0, 0, m_HDRWidth, m_HDRHeight);
+	}
+
+	void OpenGLRendererAPI::UnbindHDRFrameBuffer() const {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void OpenGLRendererAPI::BindHDRTexture(uint32_t slot) const {
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, m_HDRColorTexture);
+	}
+
 	Shared<IndexBuffer> OpenGLRendererAPI::CreateIndexBuffer(uint32_t* indices, uint32_t count) const {
 		return MakeShared<OpenGLIndexBuffer>(indices, count);
 	}

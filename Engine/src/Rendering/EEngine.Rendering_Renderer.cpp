@@ -1,5 +1,6 @@
 module;
 #include <glm/detail/type_mat4x4.hpp>
+#include <glad/glad.h>
 
 module EEngine.Rendering;
 import :Renderer;
@@ -102,6 +103,7 @@ namespace EEngine::Rendering {
 			// --- Shared Resources ---
 			m_Data.CameraUniformBuffer = m_RendererAPI.CreateUniformBuffer(sizeof(CameraData), 0);
 
+			// Texture Shader
 			if (m_RendererAPI.TryGetOrLoadShader("assets/shaders/Texture.glsl", m_Data.TextureShader)) {
 				m_Data.TextureShader->Bind();
 				m_Data.TextureShader->SetInt("u_Texture", 0);
@@ -111,11 +113,21 @@ namespace EEngine::Rendering {
 				throw std::runtime_error("Failed to load texture shader.");
 			}
 
+			// Shadow Depth Shader
 			if (m_RendererAPI.TryGetOrLoadShader("assets/shaders/ShadowDepth.glsl", m_Data.ShadowDepthShader)) {
 				m_RendererAPI.CreateShadowMap(2048);
 			} else {
 				Log::CoreCritical("Failed to load shadow depth shader.");
 				throw std::runtime_error("Failed to load shadow depth shader.");
+			}
+
+			// Tone Mapping Shader
+			if (m_RendererAPI.TryGetOrLoadShader("assets/shaders/ToneMap.glsl", m_Data.ToneMapShader)) {
+				m_Data.ToneMapShader->Bind();
+				m_Data.ToneMapShader->SetInt("u_HDRBuffer", 0);
+			} else {
+				Log::CoreCritical("Failed to load tone mapping shader.");
+				throw std::runtime_error("Failed to load tone mapping shader.");
 			}
 		} else if constexpr (g_API == API::Vulkan) {
 			Log::CoreCritical("Vulkan Renderer not implemented yet.");
@@ -124,6 +136,10 @@ namespace EEngine::Rendering {
 			Log::CoreCritical("Unknown rendering API.");
 			throw std::runtime_error("Unknown rendering API.");
 		}
+
+		// HDR framebuffer + empty VAO for fullscreen pass
+		m_RendererAPI.CreateHDRFrameBuffer(m_ViewportWidth, m_ViewportHeight);
+		glGenVertexArrays(1, &m_Data.FullscreenVAO);
 
 		m_Data.LightUniformBuffer = m_RendererAPI.CreateUniformBuffer(sizeof(LightData), 1);
 	}
@@ -195,8 +211,9 @@ namespace EEngine::Rendering {
 		// Shadow pass - render depth from light's perspective
 		ShadowPass();
 
-		// Restore viewport and bind shadow texture for sampling
-		m_RendererAPI.SetViewport(0, 0, m_ViewportWidth, m_ViewportHeight);
+		// Render scene into HDR frame buffer
+		m_RendererAPI.BindHDRFrameBuffer();
+		m_RendererAPI.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 
 		// Flush 2D Quads
 		FlushQuads();
@@ -218,6 +235,20 @@ namespace EEngine::Rendering {
 				m_RendererAPI.DrawIndexed(batch.VertexArray);
 			}
 		}
+
+		// Tone mapping pass - HDR frame buffer -> default frame buffer (screen)
+		m_RendererAPI.UnbindHDRFrameBuffer();
+		m_RendererAPI.SetViewport(0, 0, m_ViewportWidth, m_ViewportHeight);
+		glDisable(GL_DEPTH_TEST);
+
+		m_Data.ToneMapShader->Bind();
+		m_Data.ToneMapShader->SetFloat("u_Exposure", m_Data.Exposure);
+		m_RendererAPI.BindHDRTexture(0);
+
+		glBindVertexArray(m_Data.FullscreenVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	void Renderer::ShadowPass() {
@@ -336,5 +367,6 @@ namespace EEngine::Rendering {
 	void Renderer::SetViewportSize(uint32_t width, uint32_t height) {
 		m_ViewportWidth = width;
 		m_ViewportHeight = height;
+		m_RendererAPI.ResizeHDRFrameBuffer(width, height);
 	}
 }

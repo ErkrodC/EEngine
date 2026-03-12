@@ -28,6 +28,13 @@ export namespace EEngine::Rendering {
 		void BindShadowTexture(uint32_t count) const;
 		uint32_t GetShadowMapResolution() const { return m_ShadowMapResolution; }
 
+		// HDR frame buffer for post-processing
+		void CreateHDRFrameBuffer(uint32_t width, uint32_t height);
+		void ResizeHDRFrameBuffer(uint32_t width, uint32_t height);
+		void BindHDRFrameBuffer() const;
+		void UnbindHDRFrameBuffer() const;
+		void BindHDRTexture(uint32_t slot) const;
+
 		Shared<IndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t count) const;
 		Shared<VertexBuffer> CreateVertexBuffer(void* vertices, uint32_t size) const;
 		Shared<Shader> CreateShader(const std::string& path) const;
@@ -48,6 +55,12 @@ export namespace EEngine::Rendering {
 		uint32_t m_ShadowFBO = 0;
 		uint32_t m_ShadowDepthTexture = 0;
 		uint32_t m_ShadowMapResolution = 0;
+
+		uint32_t m_HDRFBO = 0;
+		uint32_t m_HDRColorTexture = 0;
+		uint32_t m_HDRDepthRBO = 0;
+		uint32_t m_HDRWidth = 0;
+		uint32_t m_HDRHeight = 0;
 
 		Shared<Shader> CreateAndCacheShader(const std::string& path);
 	};
@@ -82,11 +95,19 @@ export namespace EEngine::Rendering {
 		{ api.SetViewport(x, y, x, y) } -> std::same_as<void>;
 		{ api.Clear(color) } -> std::same_as<void>;
 		{ api.DrawIndexed(Shared<VertexArray>{}) } -> std::same_as<void>;
+
 		{ api.CreateShadowMap(size) } -> std::same_as<void>;
 		{ api.BindShadowFrameBuffer() } -> std::same_as<void>;
 		{ api.UnbindShadowFrameBuffer() } -> std::same_as<void>;
 		{ api.BindShadowTexture(count) } -> std::same_as<void>;
 		{ api.GetShadowMapResolution() } -> std::same_as<uint32_t>;
+
+		{ api.CreateHDRFrameBuffer(width, height) } -> std::same_as<void>;
+		{ api.ResizeHDRFrameBuffer(width, height) } -> std::same_as<void>;
+		{ api.BindHDRFrameBuffer() } -> std::same_as<void>;
+		{ api.UnbindHDRFrameBuffer() } -> std::same_as<void>;
+		{ api.BindHDRTexture(count) } -> std::same_as<void>;
+
 		{ api.CreateIndexBuffer(indices, count) } -> std::same_as<Shared<IndexBuffer>>;
 		{ api.CreateVertexBuffer(vertices, size) } -> std::same_as<Shared<VertexBuffer>>;
 		{ api.CreateShader(name, vertexSource, fragmentSource) } -> std::same_as<Shared<Shader>>;

@@ -199,7 +199,7 @@ public:
 			transform.Transform.Rotation = {
 				m_Rotation * 0.5f,
 				m_Rotation,
-				0.0f
+				m_Rotation * -1.5f,
 			};
 		}
 
